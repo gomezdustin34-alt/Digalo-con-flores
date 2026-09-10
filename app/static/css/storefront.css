@@ -37,7 +37,8 @@
 }
 
 @media (max-width: 980px) {
-  .hero-inner { flex-direction: column; }
+  .hero-inner { flex-direction: column; align-items: stretch; }
+  .hero-copy { max-width: 100%; width: 100%; }
   .hero-media { width: 100%; min-height: 320px; }
 }
 @media (max-width: 560px) {
@@ -82,9 +83,10 @@
 .pagination .current { background: var(--gold); color: var(--cream); border-color: var(--gold); }
 
 @media (max-width: 900px) {
-  .catalog-layout { flex-direction: column; }
+  .catalog-layout { flex-direction: column; align-items: stretch; }
   .filters { position: static; width: 100%; display: flex; flex-wrap: wrap; gap: 20px; }
   .filters .filter-group { flex: 1 1 160px; margin-bottom: 0; }
+  .catalog-results { width: 100%; }
 }
 
 /* ===== Promo band ===== */
@@ -127,8 +129,9 @@
 .product-tabs h3 { font-size: 15px; }
 
 @media (max-width: 900px) {
-  .product-detail { flex-direction: column; gap: 30px; }
+  .product-detail { flex-direction: column; gap: 30px; align-items: stretch; }
   .product-gallery { width: 100%; }
+  .product-summary { width: 100%; }
 }
 
 /* ===== Carrito ===== */
@@ -146,7 +149,8 @@
 .cart-summary { flex: 0 0 340px; background: var(--cream-soft); border-radius: var(--radius-md); padding: 26px; position: sticky; top: calc(var(--nav-height) + 20px); align-self: flex-start; }
 
 @media (max-width: 900px) {
-  .cart-layout { flex-direction: column; gap: 30px; }
+  .cart-layout { flex-direction: column; gap: 30px; align-items: stretch; }
+  .cart-items { width: 100%; }
   .cart-summary { width: 100%; position: static; }
 }
 @media (max-width: 480px) {
@@ -171,7 +175,8 @@
 .checkout-summary .mini-line img { width: 46px; height: 46px; border-radius: 8px; object-fit: cover; }
 
 @media (max-width: 900px) {
-  .checkout-layout { flex-direction: column; gap: 30px; }
+  .checkout-layout { flex-direction: column; gap: 30px; align-items: stretch; }
+  .checkout-form { width: 100%; }
   .checkout-summary { width: 100%; position: static; order: -1; }
 }
 
@@ -188,7 +193,12 @@
 .stat-card .value { font-size: 26px; font-weight: 600; color: var(--gold); font-family: var(--font-serif); }
 .stat-card .label { font-size: 12px; color: var(--ink-faint); margin-top: 4px; }
 .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 34px; }
-@media (max-width: 700px) { .account-layout { flex-direction: column; } .stats-row { grid-template-columns: 1fr; } }
+@media (max-width: 700px) {
+  .account-layout { flex-direction: column; align-items: stretch; }
+  .account-sidebar { width: 100%; }
+  .account-content { width: 100%; }
+  .stats-row { grid-template-columns: 1fr; }
+}
 
 .order-row { display: flex; justify-content: space-between; align-items: center; padding: 18px 0; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 10px; }
 .status-pill { font-size: 11.5px; font-weight: 600; padding: 5px 12px; border-radius: var(--radius-full); background: var(--pink-light); color: var(--gold-dark); }
