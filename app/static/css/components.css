@@ -82,6 +82,15 @@
   .nav-toggle { display: block; }
 }
 
+@media (max-width: 480px) {
+  .navbar-inner { padding: 0 14px; gap: 8px; }
+  .brand { gap: 8px; min-width: 0; }
+  .brand-mark { width: 42px; height: 42px; }
+  .brand-name .title { font-size: 15px; }
+  .brand-name .subtitle { display: none; }
+  .nav-actions { gap: 12px; }
+}
+
 /* ===== Footer ===== */
 .site-footer { background: var(--footer-bg); color: var(--footer-text); padding: 64px 0 0; }
 .footer-grid {
@@ -158,6 +167,11 @@
   box-shadow: var(--shadow-md);
 }
 .product-actions button:hover { background: var(--gold); color: var(--cream); }
+
+/* En pantallas táctiles no hay :hover confiable — el botón queda siempre visible sobre la imagen */
+@media (hover: none), (max-width: 760px) {
+  .product-actions { opacity: 1; transform: none; }
+}
 
 .product-info { padding: 16px 18px 20px; display: flex; flex-direction: column; flex: 1; }
 .product-info h3 { font-size: 16px; margin-bottom: 4px; }

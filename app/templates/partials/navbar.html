@@ -29,11 +29,9 @@
     </nav>
 
     <div class="nav-actions">
-      <form action="{{ url_for('storefront.search') }}" method="get" style="display:flex;">
-        <button type="submit" class="icon-btn" aria-label="Buscar" onclick="this.closest('form').querySelector('input').focus(); return false;">
-          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        </button>
-      </form>
+      <a href="{{ url_for('storefront.search') }}" class="icon-btn" aria-label="Buscar">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </a>
       {% if current_user.is_authenticated and current_user.role in ('super_admin', 'admin', 'editor', 'order_manager') %}
         <a href="{{ url_for('admin.dashboard') }}" class="icon-btn" aria-label="Panel administrativo" title="Panel administrativo">
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>

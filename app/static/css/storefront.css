@@ -40,6 +40,14 @@
   .hero-inner { flex-direction: column; }
   .hero-media { width: 100%; min-height: 320px; }
 }
+@media (max-width: 560px) {
+  .hero { padding: 24px 0 56px; min-height: auto; }
+  .hero-copy { max-width: 100%; }
+  .hero-desc { max-width: 100%; }
+  .hero-cta-row .btn { flex: 1 1 auto; text-align: center; }
+  .hero-media { min-height: 240px; }
+  .hero-scrollcue { display: none; }
+}
 
 /* ===== Page header (catálogo, ocasiones, promociones...) ===== */
 .page-header { padding: 40px 0 26px; background: var(--blush); }
@@ -135,7 +143,17 @@
 .cart-line-remove { background: none; border: none; color: var(--ink-faint); cursor: pointer; }
 .cart-line-remove:hover { color: var(--danger); }
 
-.cart-summary { flex: 0 0 340px; background: var(--cream-soft); border-radius: var(--radius-md); padding: 26px; position: sticky; top: calc(var(--nav-height) + 20px); }
+.cart-summary { flex: 0 0 340px; background: var(--cream-soft); border-radius: var(--radius-md); padding: 26px; position: sticky; top: calc(var(--nav-height) + 20px); align-self: flex-start; }
+
+@media (max-width: 900px) {
+  .cart-layout { flex-direction: column; gap: 30px; }
+  .cart-summary { width: 100%; position: static; }
+}
+@media (max-width: 480px) {
+  .cart-line { flex-wrap: wrap; gap: 12px; }
+  .cart-line img { width: 64px; height: 64px; }
+  .cart-line-price { order: 3; margin-left: auto; }
+}
 .summary-row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 12px; color: var(--ink-soft); }
 .summary-row.total { font-size: 17px; font-weight: 600; color: var(--ink); border-top: 1px solid var(--border); padding-top: 14px; margin-top: 6px; }
 .coupon-row { display: flex; gap: 8px; margin: 18px 0; }
@@ -148,9 +166,14 @@
 .checkout-form legend { font-family: var(--font-serif); font-size: 19px; margin-bottom: 16px; color: var(--ink); }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 @media (max-width: 700px) { .form-row { grid-template-columns: 1fr; } }
-.checkout-summary { flex: 1; background: var(--cream-soft); border-radius: var(--radius-md); padding: 26px; position: sticky; top: calc(var(--nav-height) + 20px); }
+.checkout-summary { flex: 1; background: var(--cream-soft); border-radius: var(--radius-md); padding: 26px; position: sticky; top: calc(var(--nav-height) + 20px); align-self: flex-start; }
 .checkout-summary .mini-line { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13.5px; }
 .checkout-summary .mini-line img { width: 46px; height: 46px; border-radius: 8px; object-fit: cover; }
+
+@media (max-width: 900px) {
+  .checkout-layout { flex-direction: column; gap: 30px; }
+  .checkout-summary { width: 100%; position: static; order: -1; }
+}
 
 .confirmation-box { max-width: 600px; margin: 60px auto; text-align: center; padding: 0 20px; }
 .confirmation-box .icon-circle-lg { width: 80px; height: 80px; border-radius: 50%; background: var(--pink-light); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
@@ -171,6 +194,21 @@
 .status-pill { font-size: 11.5px; font-weight: 600; padding: 5px 12px; border-radius: var(--radius-full); background: var(--pink-light); color: var(--gold-dark); }
 .status-pill.entregado { background: #E9F3E5; color: var(--success); }
 .status-pill.cancelado { background: #FBE6E9; color: var(--danger); }
+
+/* ===== Ajustes generales para pantallas pequeñas ===== */
+@media (max-width: 560px) {
+  .page-header { padding: 28px 0 20px; }
+  .page-header h1 { font-size: 26px; }
+  .page-header-row { align-items: flex-start; }
+  .toolbar { width: 100%; }
+  .toolbar input, .toolbar select { flex: 1 1 auto; min-width: 0; }
+  .section { padding: 40px 0; }
+  .promo-band { padding: 44px 20px; }
+  .product-summary h1 { font-size: 24px; }
+  .personalization { padding: 18px; }
+  .confirmation-box { margin: 36px auto; }
+  .empty-state { padding: 44px 16px; }
+}
 
 /* ===== Auth ===== */
 .auth-wrap { max-width: 420px; margin: 60px auto; padding: 0 20px; }
