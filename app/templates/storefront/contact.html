@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Contacto — {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="{{ url_for('storefront.home') }}">Inicio</a> / <span class="current">Contacto</span></div>
+    <h1>Hablemos</h1>
+    <p>¿Tienes dudas sobre un pedido o quieres un arreglo personalizado? Escríbenos.</p>
+  </div>
+</div>
+
+<div class="container section" style="display:flex; gap:50px; flex-wrap:wrap;">
+  <div style="flex:1.2; min-width:300px;">
+    <form method="post" novalidate>
+      {{ form.hidden_tag() }}
+      <div class="form-row">
+        <div class="field">
+          {{ form.name.label }}
+          {{ form.name(placeholder="Tu nombre") }}
+          {% for e in form.name.errors %}<div class="error">{{ e }}</div>{% endfor %}
+        </div>
+        <div class="field">
+          {{ form.email.label }}
+          {{ form.email(placeholder="tu@email.com") }}
+          {% for e in form.email.errors %}<div class="error">{{ e }}</div>{% endfor %}
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          {{ form.phone.label }}
+          {{ form.phone(placeholder="+57 300 000 0000") }}
+        </div>
+        <div class="field">
+          {{ form.subject.label }}
+          {{ form.subject(placeholder="¿En qué te ayudamos?") }}
+        </div>
+      </div>
+      <div class="field">
+        {{ form.message.label }}
+        {{ form.message(placeholder="Cuéntanos más...", rows=5) }}
+        {% for e in form.message.errors %}<div class="error">{{ e }}</div>{% endfor %}
+      </div>
+      <button type="submit" class="btn btn-primary">Enviar mensaje</button>
+    </form>
+  </div>
+
+  <div style="flex:0.8; min-width:260px;">
+    <div class="testimonial-card" style="background:var(--cream-soft);">
+      <h3 style="font-size:16px; margin-bottom:16px;">Información de contacto</h3>
+      <p style="margin-bottom:10px;"><strong>Dirección:</strong> {{ get_setting('address', 'Calle 10 # 25-30, Bogotá') }}</p>
+      <p style="margin-bottom:10px;"><strong>Teléfono:</strong> {{ get_setting('contact_phone', '+57 300 123 4567') }}</p>
+      <p style="margin-bottom:10px;"><strong>Email:</strong> {{ get_setting('contact_email', 'hola@digaloconflores.com') }}</p>
+      <p><strong>Horario:</strong> {{ get_setting('hours', 'Lun-Sáb · 8:00-19:00') }}</p>
+    </div>
+  </div>
+</div>
+{% endblock %}

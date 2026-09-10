@@ -1,0 +1,87 @@
+{% set logo_url = get_setting('logo_url') %}
+<header class="navbar" id="navbar">
+  <div class="navbar-inner">
+    <a href="{{ url_for('storefront.home') }}" class="brand">
+      <span class="brand-mark">
+        {% if logo_url %}
+          <img src="{{ logo_url }}" alt="{{ store_name }}">
+        {% else %}
+          <span class="script">Digalo</span>
+        {% endif %}
+      </span>
+      <span class="brand-name">
+        <span class="title">{{ store_name }}</span>
+        <span class="subtitle">FLORISTERÍA</span>
+      </span>
+    </a>
+
+    <nav aria-label="Navegación principal">
+      <ul class="nav-links">
+        <li><a href="{{ url_for('storefront.home') }}" class="{{ 'active' if request.endpoint == 'storefront.home' }}">Inicio</a></li>
+        <li><a href="{{ url_for('storefront.catalog') }}" class="{{ 'active' if request.endpoint == 'storefront.catalog' }}">Flores</a></li>
+        <li><a href="{{ url_for('storefront.category', slug='ramos') }}">Ramos</a></li>
+        <li><a href="{{ url_for('storefront.category', slug='arreglos-florales') }}">Arreglos</a></li>
+        <li><a href="{{ url_for('storefront.occasions') }}" class="{{ 'active' if request.endpoint == 'storefront.occasions' }}">Ocasiones</a></li>
+        <li><a href="{{ url_for('storefront.promotions') }}" class="{{ 'active' if request.endpoint == 'storefront.promotions' }}">Promociones</a></li>
+        <li><a href="{{ url_for('storefront.about') }}" class="{{ 'active' if request.endpoint == 'storefront.about' }}">Nosotros</a></li>
+        <li><a href="{{ url_for('storefront.contact') }}" class="{{ 'active' if request.endpoint == 'storefront.contact' }}">Contacto</a></li>
+      </ul>
+    </nav>
+
+    <div class="nav-actions">
+      <form action="{{ url_for('storefront.search') }}" method="get" style="display:flex;">
+        <button type="submit" class="icon-btn" aria-label="Buscar" onclick="this.closest('form').querySelector('input').focus(); return false;">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+      </form>
+      {% if current_user.is_authenticated and current_user.role in ('super_admin', 'admin', 'editor', 'order_manager') %}
+        <a href="{{ url_for('admin.dashboard') }}" class="icon-btn" aria-label="Panel administrativo" title="Panel administrativo">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        </a>
+      {% elif current_user.is_authenticated %}
+        <a href="{{ url_for('account.favorites') }}" class="icon-btn" aria-label="Favoritos">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20.5s-7.5-4.6-9.7-9C.8 8 2 4.5 5.4 3.7 8 3 10.3 4.2 12 6.5c1.7-2.3 4-3.5 6.6-2.8C22 4.5 23.2 8 21.7 11.5c-2.2 4.4-9.7 9-9.7 9z"/></svg>
+        </a>
+        <a href="{{ url_for('account.dashboard') }}" class="icon-btn" aria-label="Mi cuenta">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+        </a>
+      {% else %}
+        <a href="{{ url_for('auth.login') }}" class="icon-btn" aria-label="Iniciar sesión">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+        </a>
+      {% endif %}
+      <a href="{{ url_for('cart.view_cart') }}" class="icon-btn" aria-label="Carrito">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+        <span class="icon-badge cart-count-badge">{{ cart_count }}</span>
+      </a>
+      <button class="nav-toggle" aria-label="Abrir menú"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-menu">
+  <div class="mobile-menu-header">
+    <span class="brand-name"><span class="title" style="font-family:var(--font-serif); font-size:18px;">{{ store_name }}</span></span>
+    <button class="mobile-menu-close" aria-label="Cerrar menú">&times;</button>
+  </div>
+  <a href="{{ url_for('storefront.home') }}">Inicio</a>
+  <a href="{{ url_for('storefront.catalog') }}">Flores</a>
+  <a href="{{ url_for('storefront.category', slug='ramos') }}">Ramos</a>
+  <a href="{{ url_for('storefront.category', slug='arreglos-florales') }}">Arreglos</a>
+  <a href="{{ url_for('storefront.occasions') }}">Ocasiones</a>
+  <a href="{{ url_for('storefront.promotions') }}">Promociones</a>
+  <a href="{{ url_for('storefront.about') }}">Nosotros</a>
+  <a href="{{ url_for('storefront.contact') }}">Contacto</a>
+  <div class="nav-actions">
+    {% if current_user.is_authenticated and current_user.role in ('super_admin', 'admin', 'editor', 'order_manager') %}
+      <a href="{{ url_for('admin.dashboard') }}" class="icon-btn">Panel administrativo</a>
+      <a href="{{ url_for('auth.logout') }}" class="icon-btn">Salir</a>
+    {% elif current_user.is_authenticated %}
+      <a href="{{ url_for('account.dashboard') }}" class="icon-btn">Mi cuenta</a>
+      <a href="{{ url_for('auth.logout') }}" class="icon-btn">Salir</a>
+    {% else %}
+      <a href="{{ url_for('auth.login') }}" class="icon-btn">Iniciar sesión</a>
+    {% endif %}
+    <a href="{{ url_for('cart.view_cart') }}" class="icon-btn">Carrito ({{ cart_count }})</a>
+  </div>
+</div>

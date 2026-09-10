@@ -1,0 +1,20 @@
+{% extends "admin/base.html" %}
+{% block title %}Mensaje de {{ message.name }} — Panel{% endblock %}
+{% block page_title %}Mensaje de {{ message.name }}{% endblock %}
+
+{% block content %}
+<div class="admin-panel" style="max-width:640px;">
+  <p style="margin-bottom:6px;"><strong>Nombre:</strong> {{ message.name }}</p>
+  <p style="margin-bottom:6px;"><strong>Email:</strong> {{ message.email }}</p>
+  {% if message.phone %}<p style="margin-bottom:6px;"><strong>Teléfono:</strong> {{ message.phone }}</p>{% endif %}
+  {% if message.subject %}<p style="margin-bottom:6px;"><strong>Asunto:</strong> {{ message.subject }}</p>{% endif %}
+  <p style="margin-bottom:16px;"><strong>Fecha:</strong> {{ message.created_at.strftime('%d/%m/%Y %H:%M') }}</p>
+  <div style="background:var(--cream-soft); border-radius:var(--radius-sm); padding:18px; margin-bottom:20px;">{{ message.message }}</div>
+
+  <a href="mailto:{{ message.email }}" class="btn btn-primary">Responder por email</a>
+  <form action="{{ url_for('admin.message_delete', message_id=message.id) }}" method="post" style="display:inline;" data-confirm="¿Eliminar este mensaje?">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button type="submit" class="btn btn-outline">Eliminar</button>
+  </form>
+</div>
+{% endblock %}

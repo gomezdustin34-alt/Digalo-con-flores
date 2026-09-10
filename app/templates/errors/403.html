@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Acceso restringido — {{ store_name }}{% endblock %}
+{% block content %}
+<div class="container section text-center">
+  <span style="font-size:64px;">🔒</span>
+  <h1 style="margin-top:20px;">No tienes acceso a esta página</h1>
+  <p>Si crees que esto es un error, contáctanos.</p>
+  <a href="{{ url_for('storefront.home') }}" class="btn btn-primary" style="margin-top:10px;">Volver al inicio</a>
+</div>
+{% endblock %}

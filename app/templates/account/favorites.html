@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Mis favoritos — {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="page-header"><div class="container"><h1>Mis favoritos ❤️</h1></div></div>
+
+<div class="container account-layout">
+  {% include "partials/account_sidebar.html" %}
+  <div class="account-content">
+    {% if favorites %}
+      <div class="product-grid">
+        {% for fav in favorites %}
+          {% set product = fav.product %}
+          {% set favorite_ids = [product.id] %}
+          {% include "partials/product_card.html" %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state"><p>Todavía no tienes productos favoritos.</p><a href="{{ url_for('storefront.catalog') }}" class="btn btn-primary">Ver catálogo</a></div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

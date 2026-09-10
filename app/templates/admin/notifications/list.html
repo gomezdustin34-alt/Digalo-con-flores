@@ -1,0 +1,34 @@
+{% extends "admin/base.html" %}
+{% block title %}Notificaciones — Panel{% endblock %}
+{% block page_title %}Notificaciones{% endblock %}
+
+{% block content %}
+<div class="toolbar-admin">
+  <div></div>
+  <form action="{{ url_for('admin.notifications_mark_all_read') }}" method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <button type="submit" class="btn btn-outline btn-sm">Marcar todas como leídas</button>
+  </form>
+</div>
+
+<div class="admin-panel">
+  {% for n in notifications %}
+    <div class="notif-item {{ 'unread' if not n.is_read }}">
+      {% if not n.is_read %}<span class="notif-dot"></span>{% else %}<span style="width:8px;"></span>{% endif %}
+      <div style="flex:1;">
+        <div style="font-size:13.5px;">{{ n.message }}</div>
+        <div style="font-size:11.5px; color:var(--ink-faint); margin-top:4px;">{{ n.created_at.strftime('%d/%m/%Y %H:%M') }}</div>
+      </div>
+      {% if n.link %}<a href="{{ n.link }}" class="btn btn-outline btn-sm">Ver</a>{% endif %}
+      {% if not n.is_read %}
+        <form action="{{ url_for('admin.notification_mark_read', notification_id=n.id) }}" method="post">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn btn-ghost btn-sm">Marcar leída</button>
+        </form>
+      {% endif %}
+    </div>
+  {% else %}
+    <p style="color:var(--ink-faint);">No hay notificaciones todavía.</p>
+  {% endfor %}
+</div>
+{% endblock %}

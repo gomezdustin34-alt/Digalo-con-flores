@@ -1,0 +1,24 @@
+{% extends "admin/base.html" %}
+{% block title %}Suscriptores — Panel{% endblock %}
+{% block page_title %}Suscriptores{% endblock %}
+
+{% block content %}
+<div class="admin-panel">
+  <div class="table-wrap">
+    <table class="admin-table">
+      <thead><tr><th>Email</th><th>Fecha de suscripción</th><th>Estado</th></tr></thead>
+      <tbody>
+        {% for s in subscribers %}
+        <tr>
+          <td>{{ s.email }}</td>
+          <td>{{ s.created_at.strftime('%d/%m/%Y') }}</td>
+          <td><span class="status-tag {{ 'tag-active' if s.is_active else 'tag-inactive' }}">{{ 'Activo' if s.is_active else 'Cancelado' }}</span></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="3" style="color:var(--ink-faint);">Todavía no hay suscriptores.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Iniciar sesión — {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-card">
+    <span class="brand-mark" style="width:56px; height:56px; display:flex;">
+      {% set logo_url = get_setting('logo_url') %}
+      {% if logo_url %}<img src="{{ logo_url }}" alt="{{ store_name }}">{% else %}<span class="script">Digalo</span>{% endif %}
+    </span>
+    <h1>Bienvenido/a de nuevo</h1>
+    <p class="subtitle">Inicia sesión para ver tus pedidos y favoritos.</p>
+
+    <form method="post" novalidate>
+      {{ form.hidden_tag() }}
+      <div class="field">{{ form.email.label }}{{ form.email(placeholder="tu@email.com") }}{% for e in form.email.errors %}<div class="error">{{ e }}</div>{% endfor %}</div>
+      <div class="field">{{ form.password.label }}{{ form.password(placeholder="••••••••") }}{% for e in form.password.errors %}<div class="error">{{ e }}</div>{% endfor %}</div>
+      <div class="checkbox-field">{{ form.remember() }}{{ form.remember.label }}</div>
+      <button type="submit" class="btn btn-primary btn-block">Iniciar sesión</button>
+    </form>
+    <p style="text-align:center; margin-top:14px;"><a href="{{ url_for('auth.forgot_password') }}">¿Olvidaste tu contraseña?</a></p>
+    <div class="auth-footer-link">¿No tienes cuenta? <a href="{{ url_for('auth.register') }}">Regístrate</a></div>
+  </div>
+</div>
+{% endblock %}

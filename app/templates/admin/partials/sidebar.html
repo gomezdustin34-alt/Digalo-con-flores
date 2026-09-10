@@ -1,0 +1,102 @@
+{% set is_super = current_user.role == 'super_admin' %}
+{% set is_mgmt = current_user.role in ('super_admin', 'admin') %}
+{% set is_content = current_user.role in ('super_admin', 'admin', 'editor') %}
+{% set is_order = current_user.role in ('super_admin', 'admin', 'order_manager') %}
+
+<aside class="admin-sidebar">
+  <div class="brand">
+    <span class="brand-mark" style="width:42px; height:42px;">
+      {% set logo_url = get_setting('logo_url') %}
+      {% if logo_url %}<img src="{{ logo_url }}" alt="{{ store_name }}">{% else %}<span class="script" style="font-size:11px;">Digalo</span>{% endif %}
+    </span>
+    <span class="brand-name"><span class="title">{{ store_name }}</span><span class="subtitle" style="color:#8C7F68;">PANEL</span></span>
+  </div>
+
+  <ul class="admin-nav">
+    <li><a href="{{ url_for('admin.dashboard') }}" class="{{ 'active' if request.endpoint == 'admin.dashboard' }}">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+      Dashboard</a></li>
+
+    {% if is_order or is_mgmt %}
+    <li class="nav-section">Catálogo</li>
+    {% if is_order %}
+    <li><a href="{{ url_for('admin.products_list') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.product') }}">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2 3 7v10l9 5 9-5V7z"/></svg>
+      Productos</a></li>
+    <li><a href="{{ url_for('admin.categories_list') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.categor') }}">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>
+      Categorías</a></li>
+    {% endif %}
+    {% if is_mgmt %}
+    <li><a href="{{ url_for('admin.coupons_list') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.coupon') }}">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 12a2 2 0 0 1 0-4V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v2a2 2 0 0 1 0 4v2a2 2 0 0 1 0 4v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2a2 2 0 0 1 0-4z"/></svg>
+      Cupones</a></li>
+    {% endif %}
+    {% endif %}
+
+    {% if is_order or is_mgmt %}
+    <li class="nav-section">Ventas</li>
+    {% if is_order %}
+    <li><a href="{{ url_for('admin.orders_list') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.order') }}">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2h9l3 3v17H6z"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/></svg>
+      Pedidos</a></li>
+    {% endif %}
+    {% if is_mgmt %}
+    <li><a href="{{ url_for('admin.customers_list') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.customer') }}">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+      Clientes</a></li>
+    {% endif %}
+    {% endif %}
+
+    {% if is_content or is_mgmt %}
+    <li class="nav-section">Marketing</li>
+    {% if is_content %}
+    <li><a href="{{ url_for('admin.testimonials_list') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.testimonial') }}">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21c-5-3.5-8-6.6-8-10.4A5.6 5.6 0 0 1 12 7a5.6 5.6 0 0 1 8 3.6C20 14.4 17 17.5 12 21z"/></svg>
+      Testimonios</a></li>
+    {% endif %}
+    {% if is_mgmt %}
+    <li><a href="{{ url_for('admin.subscribers_list') }}" class="{{ 'active' if request.endpoint == 'admin.subscribers_list' }}">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v16H4z"/><path d="m4 6 8 7 8-7"/></svg>
+      Suscriptores</a></li>
+    <li><a href="{{ url_for('admin.campaigns_list') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.campaign') }}">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>
+      Campañas</a></li>
+    <li><a href="{{ url_for('admin.messages_list') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.message') }}">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Mensajes</a></li>
+    {% endif %}
+    {% endif %}
+
+    {% if is_content %}
+    <li class="nav-section">Contenido</li>
+    <li><a href="{{ url_for('admin.content_home') }}" class="{{ 'active' if request.endpoint == 'admin.content_home' }}">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      Inicio</a></li>
+    <li><a href="{{ url_for('admin.content_about') }}" class="{{ 'active' if request.endpoint == 'admin.content_about' }}">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="12"/><circle cx="12" cy="16" r="0.6"/></svg>
+      Nosotros</a></li>
+    <li><a href="{{ url_for('admin.content_footer') }}" class="{{ 'active' if request.endpoint == 'admin.content_footer' }}">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="15" x2="21" y2="15"/></svg>
+      Footer</a></li>
+    <li><a href="{{ url_for('admin.content_sections') }}" class="{{ 'active' if request.endpoint == 'admin.content_sections' }}">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      Secciones</a></li>
+    {% endif %}
+
+    <li class="nav-section">Sistema</li>
+    <li><a href="{{ url_for('admin.notifications_list') }}" class="{{ 'active' if request.endpoint == 'admin.notifications_list' }}">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+      Notificaciones</a></li>
+    {% if is_mgmt %}
+    <li><a href="{{ url_for('admin.settings') }}" class="{{ 'active' if request.endpoint == 'admin.settings' }}">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.9.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.9V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      Configuración</a></li>
+    {% endif %}
+    {% if is_super %}
+    <li><a href="{{ url_for('admin.staff_list') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.staff') }}">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 1v6m0 10v6M4.2 4.2l4.2 4.2m7.2 7.2 4.2 4.2M1 12h6m10 0h6M4.2 19.8l4.2-4.2m7.2-7.2 4.2-4.2"/></svg>
+      Usuarios y roles</a></li>
+    {% endif %}
+  </ul>
+</aside>

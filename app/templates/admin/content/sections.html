@@ -1,0 +1,19 @@
+{% extends "admin/base.html" %}
+{% block title %}Secciones — Panel{% endblock %}
+{% block page_title %}Secciones activables{% endblock %}
+
+{% block content %}
+<div class="admin-panel" style="max-width:600px;">
+  <p style="color:var(--ink-faint); font-size:13px; margin-bottom:20px;">Activa o desactiva bloques del sitio sin tocar código.</p>
+  <form method="post" novalidate>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {% for section in sections %}
+      <div class="checkbox-field" style="justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--border);">
+        <label style="margin:0;">{{ section.label }}</label>
+        <input type="checkbox" name="visible_{{ section.key }}" {{ 'checked' if section.is_visible }}>
+      </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary" style="margin-top:20px;">Guardar cambios</button>
+  </form>
+</div>
+{% endblock %}

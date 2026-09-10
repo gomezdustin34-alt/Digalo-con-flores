@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Promociones — {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="{{ url_for('storefront.home') }}">Inicio</a> / <span class="current">Promociones</span></div>
+    <h1>Promociones</h1>
+    <p>{{ page_obj.total }} producto{{ 's' if page_obj.total != 1 }} en descuento por tiempo limitado.</p>
+  </div>
+</div>
+
+{% if show_promo_band %}
+<div class="container" style="margin-top:32px;">
+  <div class="promo-band reveal">
+    <div class="promo-blob" style="width:260px; height:260px; top:-100px; left:-60px;"></div>
+    <div class="promo-blob" style="width:190px; height:190px; bottom:-90px; right:60px;"></div>
+    <span class="eyebrow">POR TIEMPO LIMITADO</span>
+    <h2>{{ get_content('promo_title', 'Hasta 20% de descuento en ramos seleccionados') }}</h2>
+    <a href="#promo-products" class="btn btn-primary">Ver promoción</a>
+  </div>
+</div>
+{% endif %}
+
+<div class="container section" id="promo-products">
+  {% if products %}
+    <div class="product-grid">
+      {% for product in products %}
+        {% include "partials/product_card.html" %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 12V7a2 2 0 0 0-2-2h-5L4 14l7 7 9-9z"/></svg>
+      <p>No hay promociones activas en este momento. ¡Vuelve pronto!</p>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

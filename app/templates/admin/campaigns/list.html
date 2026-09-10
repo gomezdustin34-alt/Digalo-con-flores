@@ -1,0 +1,49 @@
+{% extends "admin/base.html" %}
+{% block title %}Campañas — Panel{% endblock %}
+{% block page_title %}Campañas de email{% endblock %}
+
+{% block content %}
+<div class="toolbar-admin">
+  <span style="font-size:13px; color:var(--ink-faint);">{{ active_subscribers }} suscriptores activos</span>
+  <a href="{{ url_for('admin.campaign_new') }}" class="btn btn-primary btn-sm">+ Nueva campaña</a>
+</div>
+
+<div class="admin-panel">
+  <div class="table-wrap">
+    <table class="admin-table">
+      <thead><tr><th>Asunto</th><th>Estado</th><th>Destinatarios</th><th>Fecha envío</th><th></th></tr></thead>
+      <tbody>
+        {% for c in campaigns %}
+        <tr>
+          <td>{{ c.subject }}</td>
+          <td><span class="status-tag {{ 'tag-active' if c.status == 'enviada' else 'tag-pendiente' }}">{{ c.status|capitalize }}</span></td>
+          <td>{{ c.recipients_count or '—' }}</td>
+          <td>{{ c.sent_at.strftime('%d/%m/%Y %H:%M') if c.sent_at else (c.scheduled_at.strftime('%d/%m/%Y %H:%M') if c.scheduled_at else '—') }}</td>
+          <td class="table-actions">
+            {% if c.status != 'enviada' %}
+              <a href="{{ url_for('admin.campaign_edit', campaign_id=c.id) }}" title="Editar">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+              </a>
+              <form action="{{ url_for('admin.campaign_send', campaign_id=c.id) }}" method="post" data-confirm="¿Enviar esta campaña a {{ active_subscribers }} suscriptores ahora?">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" title="Enviar ahora">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4z"/></svg>
+                </button>
+              </form>
+            {% endif %}
+            <form action="{{ url_for('admin.campaign_delete', campaign_id=c.id) }}" method="post" data-confirm="¿Eliminar esta campaña?">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button type="submit" class="danger" title="Eliminar">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 7h12M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2m2 0-1 13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 7"/></svg>
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" style="color:var(--ink-faint);">No hay campañas todavía.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

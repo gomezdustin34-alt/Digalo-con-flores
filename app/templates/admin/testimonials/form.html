@@ -1,0 +1,23 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Editar' if testimonial else 'Nuevo' }} testimonio — Panel{% endblock %}
+{% block page_title %}{{ 'Editar testimonio' if testimonial else 'Nuevo testimonio' }}{% endblock %}
+
+{% block content %}
+<div class="admin-panel" style="max-width:600px;">
+  <form method="post" enctype="multipart/form-data" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="field">{{ form.name.label }}{{ form.name() }}</div>
+    <div class="field">{{ form.comment.label }}{{ form.comment(rows=4) }}</div>
+    <div class="admin-form-grid">
+      <div class="field">{{ form.rating.label }}{{ form.rating() }}</div>
+      <div class="field">{{ form.status.label }}{{ form.status() }}</div>
+    </div>
+    <div class="field">
+      {{ form.photo.label }}{{ form.photo() }}
+      {% if testimonial and testimonial.photo_url %}<div class="thumb-strip"><img src="{{ testimonial.photo_url }}" style="border-radius:50%;"></div>{% endif %}
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar testimonio</button>
+    <a href="{{ url_for('admin.testimonials_list') }}" class="btn btn-outline">Cancelar</a>
+  </form>
+</div>
+{% endblock %}

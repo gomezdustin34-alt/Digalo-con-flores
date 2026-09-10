@@ -1,0 +1,24 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Editar' if category else 'Nueva' }} categoría — Panel{% endblock %}
+{% block page_title %}{{ 'Editar categoría' if category else 'Nueva categoría' }}{% endblock %}
+
+{% block content %}
+<div class="admin-panel" style="max-width:600px;">
+  <form method="post" enctype="multipart/form-data" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="field">{{ form.name.label }}{{ form.name() }}</div>
+    <div class="field">{{ form.description.label }}{{ form.description(rows=3) }}</div>
+    <div class="admin-form-grid">
+      <div class="field">{{ form.icon.label }}{{ form.icon(placeholder="🌹") }}</div>
+      <div class="field">{{ form.sort_order.label }}{{ form.sort_order() }}</div>
+    </div>
+    <div class="checkbox-field">{{ form.is_active() }}{{ form.is_active.label }}</div>
+    <div class="field">
+      {{ form.image.label }}{{ form.image() }}
+      {% if category and category.image_url %}<div class="thumb-strip"><img src="{{ category.image_url }}"></div>{% endif %}
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar categoría</button>
+    <a href="{{ url_for('admin.categories_list') }}" class="btn btn-outline">Cancelar</a>
+  </form>
+</div>
+{% endblock %}

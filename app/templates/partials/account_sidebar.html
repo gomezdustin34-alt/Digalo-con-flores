@@ -1,0 +1,8 @@
+<aside class="account-sidebar">
+  <a href="{{ url_for('account.dashboard') }}" class="{{ 'active' if request.endpoint == 'account.dashboard' }}">Resumen</a>
+  <a href="{{ url_for('account.orders') }}" class="{{ 'active' if request.endpoint in ['account.orders', 'account.order_detail'] }}">Mis pedidos</a>
+  <a href="{{ url_for('account.addresses') }}" class="{{ 'active' if request.endpoint in ['account.addresses', 'account.new_address'] }}">Direcciones</a>
+  <a href="{{ url_for('account.favorites') }}" class="{{ 'active' if request.endpoint == 'account.favorites' }}">Favoritos</a>
+  <a href="{{ url_for('account.profile') }}" class="{{ 'active' if request.endpoint == 'account.profile' }}">Mi perfil</a>
+  <a href="{{ url_for('auth.logout') }}">Cerrar sesión</a>
+</aside>

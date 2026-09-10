@@ -1,0 +1,31 @@
+{% extends "admin/base.html" %}
+{% block title %}Mensajes — Panel{% endblock %}
+{% block page_title %}Mensajes de contacto{% endblock %}
+
+{% block content %}
+<div class="admin-panel">
+  <div class="table-wrap">
+    <table class="admin-table">
+      <thead><tr><th></th><th>Nombre</th><th>Email</th><th>Asunto</th><th>Fecha</th><th></th></tr></thead>
+      <tbody>
+        {% for m in messages %}
+        <tr style="{{ 'font-weight:600;' if not m.is_read }}">
+          <td>{% if not m.is_read %}<span class="notif-dot" style="display:inline-block;"></span>{% endif %}</td>
+          <td>{{ m.name }}</td>
+          <td>{{ m.email }}</td>
+          <td>{{ m.subject or '(Sin asunto)' }}</td>
+          <td>{{ m.created_at.strftime('%d/%m/%Y') }}</td>
+          <td class="table-actions">
+            <a href="{{ url_for('admin.message_detail', message_id=m.id) }}" title="Ver">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            </a>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" style="color:var(--ink-faint);">No hay mensajes todavía.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

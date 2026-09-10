@@ -1,0 +1,38 @@
+{% extends "admin/base.html" %}
+{% block title %}Contenido del inicio — Panel{% endblock %}
+{% block page_title %}Contenido del inicio{% endblock %}
+
+{% block content %}
+<div class="admin-panel" style="max-width:700px;">
+  <form method="post" enctype="multipart/form-data" novalidate>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="field">
+      <label>Texto pequeño (eyebrow)</label>
+      <input type="text" name="hero_eyebrow" value="{{ values.hero_eyebrow }}" placeholder="FLORES FRESCAS · ENTREGA EL MISMO DÍA">
+    </div>
+    <div class="field">
+      <label>Título principal</label>
+      <textarea name="hero_title" rows="3" placeholder="Hay cosas que las palabras no pueden decir.">{{ values.hero_title }}</textarea>
+      <div class="help">Usa saltos de línea para controlar dónde se corta el texto.</div>
+    </div>
+    <div class="field">
+      <label>Línea en script (frase destacada)</label>
+      <input type="text" name="hero_script" value="{{ values.hero_script }}" placeholder="Dígalo con Flores.">
+    </div>
+    <div class="field">
+      <label>Descripción</label>
+      <textarea name="hero_description" rows="3">{{ values.hero_description }}</textarea>
+    </div>
+    <div class="admin-form-grid">
+      <div class="field"><label>Texto botón principal</label><input type="text" name="hero_cta_primary" value="{{ values.hero_cta_primary }}"></div>
+      <div class="field"><label>Texto botón secundario</label><input type="text" name="hero_cta_secondary" value="{{ values.hero_cta_secondary }}"></div>
+    </div>
+    <div class="field">
+      <label>Imagen del hero</label>
+      <input type="file" name="hero_image" accept="image/*">
+      {% if values.hero_image %}<div class="thumb-strip"><img src="{{ values.hero_image }}"></div>{% endif %}
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+  </form>
+</div>
+{% endblock %}

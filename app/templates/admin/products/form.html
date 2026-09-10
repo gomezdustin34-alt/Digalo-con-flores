@@ -1,0 +1,53 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Editar' if product else 'Nuevo' }} producto — Panel{% endblock %}
+{% block page_title %}{{ 'Editar producto' if product else 'Nuevo producto' }}{% endblock %}
+
+{% block content %}
+<div class="admin-panel" style="max-width:900px;">
+  <form method="post" enctype="multipart/form-data" novalidate>
+    {{ form.hidden_tag() }}
+
+    <div class="admin-form-grid">
+      <div class="field">{{ form.name.label }}{{ form.name() }}</div>
+      <div class="field">{{ form.category_id.label }}{{ form.category_id() }}</div>
+    </div>
+
+    <div class="field">{{ form.short_description.label }}{{ form.short_description() }}</div>
+    <div class="field">{{ form.description.label }}{{ form.description(rows=4) }}</div>
+
+    <div class="admin-form-grid">
+      <div class="field">{{ form.price.label }}{{ form.price() }}</div>
+      <div class="field">{{ form.compare_at_price.label }}{{ form.compare_at_price() }}</div>
+      <div class="field">{{ form.sku.label }}{{ form.sku() }}</div>
+      <div class="field">{{ form.stock.label }}{{ form.stock() }}</div>
+      <div class="field">{{ form.stock_minimo.label }}{{ form.stock_minimo() }}</div>
+      <div class="field">{{ form.tags.label }}{{ form.tags(placeholder="rosas, romántico, aniversario") }}</div>
+    </div>
+
+    <div class="admin-form-grid">
+      <div class="checkbox-field">{{ form.is_active() }}{{ form.is_active.label }}</div>
+      <div class="checkbox-field">{{ form.is_featured() }}{{ form.is_featured.label }}</div>
+      <div class="checkbox-field">{{ form.is_new() }}{{ form.is_new.label }}</div>
+    </div>
+
+    <h3 style="font-size:15px; margin:24px 0 12px;">Personalización disponible para el cliente</h3>
+    <div class="admin-form-grid">
+      <div class="checkbox-field">{{ form.allow_dedication() }}{{ form.allow_dedication.label }}</div>
+      <div class="checkbox-field">{{ form.allow_recipient_name() }}{{ form.allow_recipient_name.label }}</div>
+      <div class="checkbox-field">{{ form.allow_delivery_datetime() }}{{ form.allow_delivery_datetime.label }}</div>
+      <div class="checkbox-field">{{ form.allow_color_choice() }}{{ form.allow_color_choice.label }}</div>
+      <div class="checkbox-field">{{ form.allow_size_choice() }}{{ form.allow_size_choice.label }}</div>
+    </div>
+
+    <div class="field">
+      {{ form.image.label }}{{ form.image() }}
+      {% if product and product.images %}
+        <div class="thumb-strip">{% for img in product.images %}<img src="{{ img.url }}">{% endfor %}</div>
+      {% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar producto</button>
+    <a href="{{ url_for('admin.products_list') }}" class="btn btn-outline">Cancelar</a>
+  </form>
+</div>
+{% endblock %}

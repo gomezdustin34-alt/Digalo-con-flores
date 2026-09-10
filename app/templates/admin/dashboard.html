@@ -1,0 +1,104 @@
+{% extends "admin/base.html" %}
+{% block title %}Dashboard — Panel{% endblock %}
+{% block page_title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="kpi-grid">
+  <div class="kpi-card"><div class="label">Ventas totales</div><div class="value">{{ format_currency(total_sales, get_setting('currency','COP')) }}</div></div>
+  <div class="kpi-card"><div class="label">Ventas de hoy</div><div class="value">{{ format_currency(sales_today, get_setting('currency','COP')) }}</div></div>
+  <div class="kpi-card"><div class="label">Ventas del mes</div><div class="value">{{ format_currency(sales_month, get_setting('currency','COP')) }}</div></div>
+  <div class="kpi-card"><div class="label">Pedidos totales</div><div class="value">{{ total_orders }}</div></div>
+</div>
+
+<div class="kpi-grid">
+  <div class="kpi-card"><div class="label">Clientes</div><div class="value">{{ total_customers }}</div></div>
+  <div class="kpi-card"><div class="label">Suscriptores activos</div><div class="value">{{ total_subscribers }}</div></div>
+  <div class="kpi-card {{ 'warn' if low_stock }}"><div class="label">Stock bajo</div><div class="value">{{ low_stock }}</div></div>
+  <div class="kpi-card {{ 'danger' if out_of_stock }}"><div class="label">Agotados</div><div class="value">{{ out_of_stock }}</div></div>
+</div>
+
+<div class="panel-grid-2">
+  <div class="admin-panel">
+    <h2>Ventas de los últimos 7 días</h2>
+    <canvas id="salesChart" height="110"></canvas>
+  </div>
+  <div class="admin-panel">
+    <h2>Productos más vendidos</h2>
+    {% if best_sellers %}
+      <table class="admin-table">
+        <thead><tr><th>Producto</th><th>Unidades</th></tr></thead>
+        <tbody>
+          {% for name, qty in best_sellers %}
+          <tr><td>{{ name }}</td><td>{{ qty }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p style="color:var(--ink-faint); font-size:13.5px;">Todavía no hay ventas registradas.</p>
+    {% endif %}
+  </div>
+</div>
+
+<div class="panel-grid-2">
+  <div class="admin-panel">
+    <h2>Últimos pedidos</h2>
+    <div class="table-wrap">
+      <table class="admin-table">
+        <thead><tr><th>Pedido</th><th>Cliente</th><th>Total</th><th>Estado</th></tr></thead>
+        <tbody>
+          {% for order in recent_orders %}
+          <tr>
+            <td><a href="{{ url_for('admin.order_detail', order_id=order.id) }}">{{ order.number }}</a></td>
+            <td>{{ order.customer_name }}</td>
+            <td>{{ format_currency(order.total, get_setting('currency','COP')) }}</td>
+            <td><span class="status-tag tag-{{ order.status }}">{{ order.status_label }}</span></td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4" style="color:var(--ink-faint);">Sin pedidos todavía.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="admin-panel">
+    <h2>Últimos clientes</h2>
+    <div class="table-wrap">
+      <table class="admin-table">
+        <thead><tr><th>Nombre</th><th>Email</th></tr></thead>
+        <tbody>
+          {% for c in recent_customers %}
+          <tr><td>{{ c.full_name }}</td><td>{{ c.email }}</td></tr>
+          {% else %}
+          <tr><td colspan="2" style="color:var(--ink-faint);">Sin clientes todavía.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script>
+  const ctx = document.getElementById('salesChart');
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: {{ chart_days | tojson }},
+      datasets: [{
+        label: 'Ventas',
+        data: {{ chart_sales | tojson }},
+        borderColor: '#8A6A3A',
+        backgroundColor: 'rgba(138,106,58,0.12)',
+        fill: true,
+        tension: 0.35,
+      }],
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: { y: { beginAtZero: true } },
+    },
+  });
+</script>
+{% endblock %}

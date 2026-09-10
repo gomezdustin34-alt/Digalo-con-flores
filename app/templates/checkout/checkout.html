@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Checkout — {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="{{ url_for('storefront.home') }}">Inicio</a> / <a href="{{ url_for('cart.view_cart') }}">Carrito</a> / <span class="current">Checkout</span></div>
+    <h1>Finalizar compra</h1>
+  </div>
+</div>
+
+<div class="container checkout-layout">
+  <form class="checkout-form" method="post" novalidate>
+    {{ form.hidden_tag() }}
+
+    <fieldset>
+      <legend>Datos de contacto</legend>
+      <div class="form-row">
+        <div class="field">{{ form.first_name.label }}{{ form.first_name() }}{% for e in form.first_name.errors %}<div class="error">{{ e }}</div>{% endfor %}</div>
+        <div class="field">{{ form.last_name.label }}{{ form.last_name() }}{% for e in form.last_name.errors %}<div class="error">{{ e }}</div>{% endfor %}</div>
+      </div>
+      <div class="form-row">
+        <div class="field">{{ form.email.label }}{{ form.email() }}{% for e in form.email.errors %}<div class="error">{{ e }}</div>{% endfor %}</div>
+        <div class="field">{{ form.phone.label }}{{ form.phone() }}{% for e in form.phone.errors %}<div class="error">{{ e }}</div>{% endfor %}</div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Entrega</legend>
+      <div class="field">{{ form.address.label }}{{ form.address() }}{% for e in form.address.errors %}<div class="error">{{ e }}</div>{% endfor %}</div>
+      <div class="field">{{ form.city.label }}{{ form.city() }}{% for e in form.city.errors %}<div class="error">{{ e }}</div>{% endfor %}</div>
+      <div class="field">{{ form.additional_info.label }}{{ form.additional_info(rows=2, placeholder="Referencias, apto, portería, etc.") }}</div>
+      <div class="form-row">
+        <div class="field">{{ form.delivery_date.label }}{{ form.delivery_date() }}</div>
+        <div class="field">{{ form.delivery_time.label }}{{ form.delivery_time() }}</div>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Dedicatoria (opcional)</legend>
+      <div class="field">{{ form.recipient_name.label }}{{ form.recipient_name(placeholder="Nombre de quien recibe") }}</div>
+      <div class="field">{{ form.dedication_message.label }}{{ form.dedication_message(rows=3, placeholder="Escribe tu mensaje...") }}</div>
+    </fieldset>
+
+    <button type="submit" class="btn btn-primary btn-block">Enviar pedido por WhatsApp</button>
+    <p class="field help" style="text-align:center; margin-top:10px;">Después de enviar tus datos, te llevamos a WhatsApp para confirmar el pedido y coordinar el pago.</p>
+  </form>
+
+  <aside class="checkout-summary">
+    <h3 style="font-size:16px; margin-bottom:16px;">Tu pedido</h3>
+    {% for line in cart.lines %}
+      <div class="mini-line">
+        <img src="{{ line.product.primary_image or url_for('static', filename='img/seed/prod1.jpg') }}" alt="{{ line.product.name }}">
+        <div style="flex:1;">
+          <div>{{ line.product.name }} × {{ line.quantity }}</div>
+        </div>
+        <div>{{ format_currency(line.line_total, get_setting('currency','COP')) }}</div>
+      </div>
+    {% endfor %}
+    <div class="summary-row" style="margin-top:16px;"><span>Subtotal</span><span>{{ format_currency(cart.subtotal, get_setting('currency','COP')) }}</span></div>
+    {% if cart.discount %}<div class="summary-row"><span>Descuento</span><span>-{{ format_currency(cart.discount, get_setting('currency','COP')) }}</span></div>{% endif %}
+    <div class="summary-row"><span>Envío</span><span>{{ 'Gratis' if cart.shipping == 0 else format_currency(cart.shipping, get_setting('currency','COP')) }}</span></div>
+    <div class="summary-row total"><span>Total</span><span>{{ format_currency(cart.total, get_setting('currency','COP')) }}</span></div>
+  </aside>
+</div>
+{% endblock %}

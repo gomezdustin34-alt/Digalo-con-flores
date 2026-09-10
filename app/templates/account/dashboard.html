@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Mi cuenta — {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <h1>Hola, {{ current_user.first_name }} 🌸</h1>
+    <p>Aquí puedes ver el resumen de tu cuenta.</p>
+  </div>
+</div>
+
+<div class="container account-layout">
+  {% include "partials/account_sidebar.html" %}
+  <div class="account-content">
+    <div class="stats-row">
+      <div class="stat-card"><div class="value">{{ current_user.total_orders }}</div><div class="label">Pedidos realizados</div></div>
+      <div class="stat-card"><div class="value">{{ format_currency(current_user.total_spent, get_setting('currency','COP')) }}</div><div class="label">Total comprado</div></div>
+      <div class="stat-card"><div class="value">{{ current_user.favorites|length }}</div><div class="label">Favoritos</div></div>
+    </div>
+
+    <h3 style="font-size:16px; margin-bottom:12px;">Pedidos recientes</h3>
+    {% if orders %}
+      {% for order in orders %}
+        <div class="order-row">
+          <div>
+            <strong>{{ order.number }}</strong>
+            <div style="font-size:12px; color:var(--ink-faint);">{{ order.created_at.strftime('%d/%m/%Y') }}</div>
+          </div>
+          <span class="status-pill {{ order.status }}">{{ order.status_label }}</span>
+          <div>{{ format_currency(order.total, get_setting('currency','COP')) }}</div>
+          <a href="{{ url_for('account.order_detail', number=order.number) }}" class="btn btn-outline btn-sm">Ver</a>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>Todavía no tienes pedidos. <a href="{{ url_for('storefront.catalog') }}">Ver catálogo</a></p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

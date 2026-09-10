@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Mi perfil — {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="page-header"><div class="container"><h1>Mi perfil</h1></div></div>
+
+<div class="container account-layout">
+  {% include "partials/account_sidebar.html" %}
+  <div class="account-content" style="max-width:520px;">
+    <h3 style="font-size:15px; margin-bottom:16px;">Datos personales</h3>
+    <form method="post" novalidate>
+      {{ form.hidden_tag() }}
+      <div class="form-row">
+        <div class="field">{{ form.first_name.label }}{{ form.first_name() }}</div>
+        <div class="field">{{ form.last_name.label }}{{ form.last_name() }}</div>
+      </div>
+      <div class="field">{{ form.phone.label }}{{ form.phone() }}</div>
+      <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    </form>
+
+    <h3 style="font-size:15px; margin:34px 0 16px;">Cambiar contraseña</h3>
+    <form method="post" novalidate>
+      {{ password_form.hidden_tag() }}
+      <div class="field">{{ password_form.current_password.label }}{{ password_form.current_password() }}</div>
+      <div class="field">{{ password_form.new_password.label }}{{ password_form.new_password() }}</div>
+      <div class="field">{{ password_form.confirm_password.label }}{{ password_form.confirm_password() }}</div>
+      <button type="submit" class="btn btn-outline">Actualizar contraseña</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Algo salió mal — {{ store_name }}{% endblock %}
+{% block content %}
+<div class="container section text-center">
+  <span style="font-size:64px;">🌷</span>
+  <h1 style="margin-top:20px;">Algo salió mal de nuestro lado</h1>
+  <p>Ya estamos trabajando en solucionarlo. Intenta de nuevo en unos minutos.</p>
+  <a href="{{ url_for('storefront.home') }}" class="btn btn-primary" style="margin-top:10px;">Volver al inicio</a>
+</div>
+{% endblock %}

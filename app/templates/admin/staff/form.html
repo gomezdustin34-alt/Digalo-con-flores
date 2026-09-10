@@ -1,0 +1,20 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Editar' if staff_user else 'Nuevo' }} usuario — Panel{% endblock %}
+{% block page_title %}{{ 'Editar usuario' if staff_user else 'Nuevo usuario del panel' }}{% endblock %}
+
+{% block content %}
+<div class="admin-panel" style="max-width:520px;">
+  <form method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="admin-form-grid">
+      <div class="field">{{ form.first_name.label }}{{ form.first_name() }}</div>
+      <div class="field">{{ form.last_name.label }}{{ form.last_name() }}</div>
+    </div>
+    <div class="field">{{ form.email.label }}{{ form.email() }}</div>
+    <div class="field">{{ form.role.label }}{{ form.role() }}</div>
+    <div class="field">{{ form.password.label }}{{ form.password() }}</div>
+    <button type="submit" class="btn btn-primary">Guardar usuario</button>
+    <a href="{{ url_for('admin.staff_list') }}" class="btn btn-outline">Cancelar</a>
+  </form>
+</div>
+{% endblock %}

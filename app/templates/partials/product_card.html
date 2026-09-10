@@ -1,0 +1,34 @@
+<div class="product-card reveal">
+  <div class="product-media">
+    <a href="{{ url_for('storefront.product_detail', slug=product.slug) }}">
+      <img src="{{ product.primary_image or url_for('static', filename='img/seed/prod1.jpg') }}" alt="{{ product.name }}" loading="lazy">
+    </a>
+    {% if product.is_new %}<span class="badge badge-new">NUEVO</span>
+    {% elif product.is_on_sale %}<span class="badge badge-sale">-{{ product.discount_percent }}%</span>
+    {% elif product.is_featured %}<span class="badge badge-featured">DESTACADO</span>
+    {% endif %}
+    <button class="fav-toggle {{ 'is-active' if product.id in (favorite_ids or []) }}" data-product-id="{{ product.id }}" aria-label="Guardar en favoritos">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21c-5-3.5-8-6.6-8-10.4A5.6 5.6 0 0 1 12 7a5.6 5.6 0 0 1 8 3.6C20 14.4 17 17.5 12 21z"/></svg>
+    </button>
+    <div class="product-actions">
+      <form class="add-to-cart-form" action="{{ url_for('cart.add', product_id=product.id) }}" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" name="quantity" value="1">
+        <button type="submit">Agregar al carrito</button>
+      </form>
+    </div>
+  </div>
+  <div class="product-info">
+    <h3><a href="{{ url_for('storefront.product_detail', slug=product.slug) }}" style="color:inherit;">{{ product.name }}</a></h3>
+    <div class="product-meta">{{ product.category.name if product.category else '' }}</div>
+    <div class="product-price-row">
+      <div>
+        {% if product.is_on_sale %}<span class="price-old">{{ format_currency(product.compare_at_price, get_setting('currency', 'COP')) }}</span>{% endif %}
+        <span class="price-current">{{ format_currency(product.price, get_setting('currency', 'COP')) }}</span>
+      </div>
+      <button class="add-cart-round" type="button" onclick="this.closest('.product-card').querySelector('.add-to-cart-form').requestSubmit()" aria-label="Agregar al carrito">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+      </button>
+    </div>
+  </div>
+</div>

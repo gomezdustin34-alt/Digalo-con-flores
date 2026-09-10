@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Nueva dirección — {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="page-header"><div class="container"><h1>Nueva dirección</h1></div></div>
+
+<div class="container account-layout">
+  {% include "partials/account_sidebar.html" %}
+  <div class="account-content" style="max-width:480px;">
+    <form method="post" novalidate>
+      {{ form.hidden_tag() }}
+      <div class="field">{{ form.label.label }}{{ form.label(placeholder="Casa, Oficina...") }}</div>
+      <div class="field">{{ form.recipient_name.label }}{{ form.recipient_name() }}</div>
+      <div class="field">{{ form.line1.label }}{{ form.line1() }}</div>
+      <div class="field">{{ form.line2.label }}{{ form.line2() }}</div>
+      <div class="field">{{ form.city.label }}{{ form.city() }}</div>
+      <div class="field">{{ form.phone.label }}{{ form.phone() }}</div>
+      <div class="field">{{ form.notes.label }}{{ form.notes() }}</div>
+      <div class="checkbox-field">{{ form.is_default() }}{{ form.is_default.label }}</div>
+      <button type="submit" class="btn btn-primary">Guardar dirección</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

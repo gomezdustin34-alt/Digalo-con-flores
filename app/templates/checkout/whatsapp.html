@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Pedido {{ order.number }} — {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="confirmation-box">
+  <div class="icon-circle-lg" style="background:#DFF5E3;">
+    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#25A244" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+  </div>
+  <h1>¡Tu pedido fue registrado!</h1>
+  <p>Solo falta un paso: envíanos tu pedido por WhatsApp para confirmar la disponibilidad, el pago y coordinar la entrega.</p>
+
+  <div style="background:var(--cream-soft); border-radius:var(--radius-md); padding:24px; text-align:left; margin:24px 0;">
+    <p style="display:flex; justify-content:space-between; margin-bottom:8px;"><strong>Pedido</strong><span>{{ order.number }}</span></p>
+    <p style="display:flex; justify-content:space-between; margin-bottom:8px;"><strong>Total</strong><span>{{ format_currency(order.total, get_setting('currency','COP')) }}</span></p>
+    <p style="display:flex; justify-content:space-between; margin-bottom:0;"><strong>Estado</strong><span class="status-pill {{ order.status }}">{{ order.status_label }}</span></p>
+  </div>
+
+  {% if has_whatsapp %}
+    <a href="{{ whatsapp_url }}" target="_blank" rel="noopener" class="btn btn-primary btn-block" style="background:#25A244; gap:10px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 3.5A11 11 0 0 0 2.2 16.9L1 23l6.3-1.7A11 11 0 1 0 20.5 3.5zM12 20.6a8.6 8.6 0 0 1-4.4-1.2l-.3-.2-3.3.9.9-3.2-.2-.3A8.6 8.6 0 1 1 12 20.6zm4.7-6.4c-.3-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1-.2.3-.6.8-.8 1-.1.2-.3.2-.5.1-1.5-.7-2.5-1.3-3.5-3-.3-.4.3-.4.7-1.3.1-.2.1-.3 0-.5-.1-.1-.6-1.5-.8-2-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-1 1-1 2.3s1 2.7 1.1 2.9c.1.2 2 3 4.8 4.2.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.6-.3z"/></svg>
+      Enviar pedido por WhatsApp
+    </a>
+    <p class="field help" style="margin-top:14px;">Se abrirá WhatsApp con tu pedido ya escrito — solo dale enviar.</p>
+  {% else %}
+    <div class="empty-state">
+      <p>Aún no hay un número de WhatsApp configurado en la tienda. Contáctanos por <a href="{{ url_for('storefront.contact') }}">el formulario de contacto</a> o al {{ get_setting('contact_phone', '') }} para coordinar tu pedido.</p>
+    </div>
+  {% endif %}
+
+  <a href="{{ url_for('storefront.home') }}" style="display:inline-block; margin-top:20px; font-size:13.5px;">← Volver al inicio</a>
+</div>
+{% endblock %}

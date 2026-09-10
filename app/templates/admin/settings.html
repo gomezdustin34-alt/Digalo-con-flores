@@ -1,0 +1,59 @@
+{% extends "admin/base.html" %}
+{% block title %}Configuración — Panel{% endblock %}
+{% block page_title %}Configuración general{% endblock %}
+
+{% block content %}
+<div class="admin-panel" style="max-width:800px;">
+  <form method="post" enctype="multipart/form-data" novalidate>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <h3 style="font-size:15px; margin-bottom:16px;">Identidad de marca</h3>
+    <div class="admin-form-grid">
+      <div class="field"><label>Nombre de la tienda</label><input type="text" name="store_name" value="{{ values.store_name }}"></div>
+      <div class="field"><label>Moneda</label>
+        <select name="currency">
+          <option value="COP" {{ 'selected' if values.currency == 'COP' }}>COP — Peso colombiano</option>
+          <option value="USD" {{ 'selected' if values.currency == 'USD' }}>USD — Dólar</option>
+          <option value="MXN" {{ 'selected' if values.currency == 'MXN' }}>MXN — Peso mexicano</option>
+        </select>
+      </div>
+    </div>
+    <div class="admin-form-grid">
+      <div class="field">
+        <label>Logo</label>
+        <input type="file" name="logo" accept="image/*">
+        {% if values.logo_url %}<div class="thumb-strip"><img src="{{ values.logo_url }}"></div>{% endif %}
+      </div>
+      <div class="field">
+        <label>Favicon</label>
+        <input type="file" name="favicon" accept="image/*">
+        {% if values.favicon_url %}<div class="thumb-strip"><img src="{{ values.favicon_url }}"></div>{% endif %}
+      </div>
+    </div>
+
+    <h3 style="font-size:15px; margin:26px 0 16px;">Contacto</h3>
+    <div class="admin-form-grid">
+      <div class="field"><label>Email de contacto</label><input type="email" name="contact_email" value="{{ values.contact_email }}"></div>
+      <div class="field"><label>Teléfono</label><input type="text" name="contact_phone" value="{{ values.contact_phone }}"></div>
+      <div class="field"><label>WhatsApp</label><input type="text" name="whatsapp" value="{{ values.whatsapp }}"></div>
+      <div class="field"><label>Horario</label><input type="text" name="hours" value="{{ values.hours }}" placeholder="Lun-Sáb · 8:00-19:00"></div>
+    </div>
+    <div class="field"><label>Dirección</label><input type="text" name="address" value="{{ values.address }}"></div>
+
+    <h3 style="font-size:15px; margin:26px 0 16px;">Redes sociales</h3>
+    <div class="admin-form-grid">
+      <div class="field"><label>Instagram</label><input type="url" name="instagram_url" value="{{ values.instagram_url }}"></div>
+      <div class="field"><label>Facebook</label><input type="url" name="facebook_url" value="{{ values.facebook_url }}"></div>
+      <div class="field"><label>TikTok</label><input type="url" name="tiktok_url" value="{{ values.tiktok_url }}"></div>
+    </div>
+
+    <h3 style="font-size:15px; margin:26px 0 16px;">Envíos</h3>
+    <div class="admin-form-grid">
+      <div class="field"><label>Costo de envío estándar</label><input type="number" name="shipping_flat_rate" value="{{ values.shipping_flat_rate }}"></div>
+      <div class="field"><label>Envío gratis desde</label><input type="number" name="free_shipping_threshold" value="{{ values.free_shipping_threshold }}"></div>
+    </div>
+
+    <button type="submit" class="btn btn-primary" style="margin-top:10px;">Guardar configuración</button>
+  </form>
+</div>
+{% endblock %}

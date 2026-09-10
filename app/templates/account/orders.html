@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Mis pedidos — {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="page-header"><div class="container"><h1>Mis pedidos</h1></div></div>
+
+<div class="container account-layout">
+  {% include "partials/account_sidebar.html" %}
+  <div class="account-content">
+    {% if orders %}
+      {% for order in orders %}
+        <div class="order-row">
+          <div>
+            <strong>{{ order.number }}</strong>
+            <div style="font-size:12px; color:var(--ink-faint);">{{ order.created_at.strftime('%d/%m/%Y') }} · {{ order.items|length }} producto{{ 's' if order.items|length != 1 }}</div>
+          </div>
+          <span class="status-pill {{ order.status }}">{{ order.status_label }}</span>
+          <div>{{ format_currency(order.total, get_setting('currency','COP')) }}</div>
+          <a href="{{ url_for('account.order_detail', number=order.number) }}" class="btn btn-outline btn-sm">Ver detalle</a>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state"><p>Todavía no tienes pedidos.</p><a href="{{ url_for('storefront.catalog') }}" class="btn btn-primary">Ver catálogo</a></div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

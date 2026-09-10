@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Ocasiones — {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="{{ url_for('storefront.home') }}">Inicio</a> / <span class="current">Ocasiones</span></div>
+    <h1>Flores para cada ocasión</h1>
+    <p>Encuentra el arreglo perfecto para el momento que quieres celebrar.</p>
+  </div>
+</div>
+
+<div class="container section">
+  {% if categories %}
+    <div class="category-grid">
+      {% for cat in categories %}
+        <a href="{{ url_for('storefront.category', slug=cat.slug) }}" class="category-card reveal">
+          <div class="category-photo">
+            <img src="{{ cat.image_url or url_for('static', filename='img/seed/cat-arreglos.jpg') }}" alt="{{ cat.name }}">
+          </div>
+          <span>{{ cat.icon or '' }} {{ cat.name }}</span>
+        </a>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state"><p>Todavía no hay categorías configuradas.</p></div>
+  {% endif %}
+</div>
+{% endblock %}

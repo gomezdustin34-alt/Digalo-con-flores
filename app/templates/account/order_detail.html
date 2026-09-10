@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Pedido {{ order.number }} — {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="page-header"><div class="container">
+  <div class="breadcrumb"><a href="{{ url_for('account.orders') }}">Mis pedidos</a> / <span class="current">{{ order.number }}</span></div>
+  <h1>Pedido {{ order.number }}</h1>
+</div></div>
+
+<div class="container account-layout">
+  {% include "partials/account_sidebar.html" %}
+  <div class="account-content">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+      <span class="status-pill {{ order.status }}">{{ order.status_label }}</span>
+      <span style="font-size:13px; color:var(--ink-faint);">{{ order.created_at.strftime('%d/%m/%Y %H:%M') }}</span>
+    </div>
+
+    {% for item in order.items %}
+      <div class="cart-line">
+        <img src="{{ item.product.primary_image if item.product else url_for('static', filename='img/seed/prod1.jpg') }}" alt="{{ item.product_name }}">
+        <div class="cart-line-info">
+          <h4>{{ item.product_name }}</h4>
+          <div class="meta">
+            {% if item.variation_label %}{{ item.variation_label }} · {% endif %}
+            {% if item.recipient_name %}Para: {{ item.recipient_name }} · {% endif %}
+            Cantidad: {{ item.quantity }}
+          </div>
+        </div>
+        <div class="cart-line-price">{{ format_currency(item.line_total, get_setting('currency','COP')) }}</div>
+      </div>
+    {% endfor %}
+
+    <div style="max-width:340px; margin-left:auto; margin-top:20px;">
+      <div class="summary-row"><span>Subtotal</span><span>{{ format_currency(order.subtotal, get_setting('currency','COP')) }}</span></div>
+      {% if order.discount_total %}<div class="summary-row"><span>Descuento</span><span>-{{ format_currency(order.discount_total, get_setting('currency','COP')) }}</span></div>{% endif %}
+      <div class="summary-row"><span>Envío</span><span>{{ 'Gratis' if order.shipping_total == 0 else format_currency(order.shipping_total, get_setting('currency','COP')) }}</span></div>
+      <div class="summary-row total"><span>Total</span><span>{{ format_currency(order.total, get_setting('currency','COP')) }}</span></div>
+    </div>
+
+    <div style="margin-top:30px; padding-top:24px; border-top:1px solid var(--border);">
+      <h3 style="font-size:15px;">Entrega</h3>
+      <p>{{ order.delivery_address }}</p>
+      {% if order.delivery_date %}<p>Fecha estimada: {{ order.delivery_date.strftime('%d/%m/%Y') }} {{ order.delivery_time or '' }}</p>{% endif %}
+      {% if order.dedication_message %}<p><strong>Dedicatoria:</strong> "{{ order.dedication_message }}"</p>{% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

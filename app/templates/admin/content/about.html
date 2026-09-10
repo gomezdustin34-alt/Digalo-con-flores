@@ -1,0 +1,19 @@
+{% extends "admin/base.html" %}
+{% block title %}Contenido de Nosotros — Panel{% endblock %}
+{% block page_title %}Contenido de "Nosotros"{% endblock %}
+
+{% block content %}
+<div class="admin-panel" style="max-width:700px;">
+  <form method="post" enctype="multipart/form-data" novalidate>
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="field"><label>Título</label><input type="text" name="about_title" value="{{ values.about_title }}"></div>
+    <div class="field"><label>Texto</label><textarea name="about_text" rows="8">{{ values.about_text }}</textarea></div>
+    <div class="field">
+      <label>Imagen</label>
+      <input type="file" name="about_image" accept="image/*">
+      {% if values.about_image %}<div class="thumb-strip"><img src="{{ values.about_image }}"></div>{% endif %}
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+  </form>
+</div>
+{% endblock %}

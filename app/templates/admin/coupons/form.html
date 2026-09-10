@@ -1,0 +1,27 @@
+{% extends "admin/base.html" %}
+{% block title %}{{ 'Editar' if coupon else 'Nuevo' }} cupón — Panel{% endblock %}
+{% block page_title %}{{ 'Editar cupón' if coupon else 'Nuevo cupón' }}{% endblock %}
+
+{% block content %}
+<div class="admin-panel" style="max-width:600px;">
+  <form method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <div class="field">{{ form.code.label }}{{ form.code(placeholder="FLORES20") }}</div>
+    <div class="admin-form-grid">
+      <div class="field">{{ form.discount_type.label }}{{ form.discount_type() }}</div>
+      <div class="field">{{ form.discount_value.label }}{{ form.discount_value() }}</div>
+    </div>
+    <div class="admin-form-grid">
+      <div class="field">{{ form.starts_at.label }}{{ form.starts_at() }}</div>
+      <div class="field">{{ form.expires_at.label }}{{ form.expires_at() }}</div>
+    </div>
+    <div class="admin-form-grid">
+      <div class="field">{{ form.max_uses.label }}{{ form.max_uses() }}</div>
+      <div class="field">{{ form.min_purchase.label }}{{ form.min_purchase() }}</div>
+    </div>
+    <div class="checkbox-field">{{ form.is_active() }}{{ form.is_active.label }}</div>
+    <button type="submit" class="btn btn-primary">Guardar cupón</button>
+    <a href="{{ url_for('admin.coupons_list') }}" class="btn btn-outline">Cancelar</a>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Mis direcciones — {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="page-header"><div class="container"><h1>Mis direcciones</h1></div></div>
+
+<div class="container account-layout">
+  {% include "partials/account_sidebar.html" %}
+  <div class="account-content">
+    <a href="{{ url_for('account.new_address') }}" class="btn btn-primary btn-sm" style="margin-bottom:20px;">+ Nueva dirección</a>
+    {% if addresses %}
+      {% for address in addresses %}
+        <div class="order-row">
+          <div>
+            <strong>{{ address.label }}</strong> {% if address.is_default %}<span class="badge badge-featured" style="margin-left:8px;">Principal</span>{% endif %}
+            <div style="font-size:13px; color:var(--ink-soft); margin-top:4px;">{{ address.line1 }}{% if address.line2 %}, {{ address.line2 }}{% endif %}, {{ address.city }}</div>
+          </div>
+          <form action="{{ url_for('account.delete_address', address_id=address.id) }}" method="post" data-confirm="¿Eliminar esta dirección?">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="btn btn-outline btn-sm">Eliminar</button>
+          </form>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="empty-state"><p>No tienes direcciones guardadas.</p></div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

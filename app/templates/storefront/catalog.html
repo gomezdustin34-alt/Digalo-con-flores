@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}{{ page_title }} — {{ store_name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="{{ url_for('storefront.home') }}">Inicio</a> / <span class="current">{{ breadcrumb }}</span></div>
+    <div class="page-header-row">
+      <div>
+        <h1>{{ page_title }}</h1>
+        <div class="count">{{ page_obj.total }} producto{{ 's' if page_obj.total != 1 }}{% if category %} · flores frescas seleccionadas a mano{% endif %}</div>
+      </div>
+      <form class="toolbar" method="get">
+        {% for key in ['q', 'price_min', 'price_max', 'in_stock', 'is_new', 'on_sale'] %}
+          {% if request.args.get(key) %}<input type="hidden" name="{{ key }}" value="{{ request.args.get(key) }}">{% endif %}
+        {% endfor %}
+        <input type="text" name="q" value="{{ request.args.get('q', '') }}" placeholder="Buscar en {{ page_title }}">
+        <select name="sort" onchange="this.form.submit()">
+          <option value="mas_vendidos" {{ 'selected' if request.args.get('sort', 'mas_vendidos') == 'mas_vendidos' }}>Más vendidos</option>
+          <option value="nuevos" {{ 'selected' if request.args.get('sort') == 'nuevos' }}>Nuevos</option>
+          <option value="precio_asc" {{ 'selected' if request.args.get('sort') == 'precio_asc' }}>Precio: menor a mayor</option>
+          <option value="precio_desc" {{ 'selected' if request.args.get('sort') == 'precio_desc' }}>Precio: mayor a menor</option>
+        </select>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="container catalog-layout">
+  <aside class="filters">
+    <form method="get">
+      {% for key in ['q', 'sort'] %}
+        {% if request.args.get(key) %}<input type="hidden" name="{{ key }}" value="{{ request.args.get(key) }}">{% endif %}
+      {% endfor %}
+      <div class="filter-group">
+        <div class="filter-title">Categoría</div>
+        <div class="filter-option {{ 'active' if not category }}"><a href="{{ url_for('storefront.catalog') }}">Todas</a></div>
+        {% for cat in categories %}
+          <div class="filter-option {{ 'active' if category and category.id == cat.id }}">
+            <a href="{{ url_for('storefront.category', slug=cat.slug) }}">{{ cat.icon or '' }} {{ cat.name }}</a>
+          </div>
+        {% endfor %}
+      </div>
+      <div class="filter-group">
+        <div class="filter-title">Precio</div>
+        <div style="display:flex; gap:8px;">
+          <input type="number" name="price_min" placeholder="Mín" value="{{ request.args.get('price_min', '') }}" style="width:50%; padding:8px; border-radius:8px; border:1px solid var(--border);">
+          <input type="number" name="price_max" placeholder="Máx" value="{{ request.args.get('price_max', '') }}" style="width:50%; padding:8px; border-radius:8px; border:1px solid var(--border);">
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-title">Disponibilidad</div>
+        <label class="filter-option"><input type="checkbox" name="in_stock" {{ 'checked' if request.args.get('in_stock') }}> En stock</label>
+        <label class="filter-option"><input type="checkbox" name="is_new" {{ 'checked' if request.args.get('is_new') }}> Nuevos</label>
+        <label class="filter-option"><input type="checkbox" name="on_sale" {{ 'checked' if request.args.get('on_sale') }}> En promoción</label>
+      </div>
+      <button type="submit" class="btn btn-outline btn-block btn-sm">Aplicar filtros</button>
+    </form>
+  </aside>
+
+  <div class="catalog-results">
+    {% if products %}
+      <div class="product-grid">
+        {% for product in products %}
+          {% include "partials/product_card.html" %}
+        {% endfor %}
+      </div>
+      {% if page_obj.pages > 1 %}
+        <div class="pagination">
+          {% for p in page_obj.iter_pages() %}
+            {% if p %}
+              <a href="{{ pagination_url(p) }}" class="{{ 'current' if p == page_obj.page }}">{{ p }}</a>
+            {% else %}<span>…</span>{% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% else %}
+      <div class="empty-state">
+        <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <p>No encontramos productos con esos filtros.</p>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

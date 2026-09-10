@@ -1,0 +1,37 @@
+{% extends "admin/base.html" %}
+{% block title %}Clientes — Panel{% endblock %}
+{% block page_title %}Clientes{% endblock %}
+
+{% block content %}
+<div class="toolbar-admin">
+  <form method="get"><input type="text" name="q" value="{{ q }}" placeholder="Buscar por email..." style="padding:10px 16px; border-radius:999px; border:1px solid var(--border);"></form>
+</div>
+
+<div class="admin-panel">
+  <div class="table-wrap">
+    <table class="admin-table">
+      <thead><tr><th>Nombre</th><th>Email</th><th>Teléfono</th><th>Registro</th><th>Pedidos</th><th>Total comprado</th><th>Estado</th><th></th></tr></thead>
+      <tbody>
+        {% for c in customers %}
+        <tr>
+          <td>{{ c.full_name }}</td>
+          <td>{{ c.email }}</td>
+          <td>{{ c.phone or '—' }}</td>
+          <td>{{ c.created_at.strftime('%d/%m/%Y') }}</td>
+          <td>{{ c.total_orders }}</td>
+          <td>{{ format_currency(c.total_spent, get_setting('currency','COP')) }}</td>
+          <td><span class="status-tag {{ 'tag-cancelado' if c.is_blocked else 'tag-active' }}">{{ 'Bloqueado' if c.is_blocked else 'Activo' }}</span></td>
+          <td class="table-actions">
+            <a href="{{ url_for('admin.customer_detail', user_id=c.id) }}" title="Ver">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            </a>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="8" style="color:var(--ink-faint);">No hay clientes todavía.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

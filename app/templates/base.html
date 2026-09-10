@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>{% block title %}{{ store_name }} — Floristería online{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Flores y arreglos florales frescos, hechos a mano y entregados el mismo día. {{ store_name }}, tu floristería de confianza.{% endblock %}">
+  <meta property="og:title" content="{% block og_title %}{{ store_name }}{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}Flores y arreglos florales frescos, hechos a mano.{% endblock %}">
+  <meta property="og:type" content="website">
+  {% if get_setting('favicon_url') %}
+    <link rel="icon" href="{{ get_setting('favicon_url') }}">
+  {% else %}
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
+  {% endif %}
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Great+Vibes&family=Jost:wght@300;400;500;600&display=swap">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/storefront.css') }}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Saltar al contenido</a>
+
+  {% include "partials/navbar.html" %}
+  {% include "partials/flash.html" %}
+
+  <main id="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  {% include "partials/footer.html" %}
+
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/cart.js') }}"></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

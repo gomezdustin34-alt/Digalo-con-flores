@@ -1,0 +1,11 @@
+.env
+__pycache__/
+*.pyc
+instance/
+.venv/
+venv/
+*.db
+_mockup_assets/
+.pytest_cache/
+flask_server.log
+.claude/
