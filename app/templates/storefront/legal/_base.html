@@ -1,0 +1,38 @@
+{# Armazon comun de las paginas legales: cabecera, migas y caja de texto.
+   Cada pagina solo rellena el bloque `legal`. #}
+{% extends "base.html" %}
+
+{% block title %}{{ legal_title }} — {{ store_name }}{% endblock %}
+{% block meta_description %}{{ legal_title }} de {{ store_name }}.{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="{{ url_for('storefront.home') }}">Inicio</a> / <span class="current">{{ legal_breadcrumb }}</span>
+    </div>
+    <h1>{{ legal_title }}</h1>
+  </div>
+</div>
+
+<div class="container section">
+  <article class="legal-prose">
+    <p class="legal-updated">Última actualización: {{ legal_updated }}</p>
+    {% block legal %}{% endblock %}
+
+    <div class="legal-footer-note">
+      <p>
+        Si tienes dudas sobre este documento, escríbenos a
+        <a href="mailto:{{ get_setting('contact_email', 'hola@digaloconflores.com') }}">{{ get_setting('contact_email', 'hola@digaloconflores.com') }}</a>{% if get_setting('contact_phone') %}
+        o llámanos al {{ get_setting('contact_phone') }}{% endif %}.
+      </p>
+      <p class="legal-links">
+        <a href="{{ url_for('storefront.privacy') }}">Privacidad</a>
+        <a href="{{ url_for('storefront.cookies') }}">Cookies</a>
+        <a href="{{ url_for('storefront.terms') }}">Términos y condiciones</a>
+        <a href="{{ url_for('storefront.shipping_policy') }}">Envíos y devoluciones</a>
+      </p>
+    </div>
+  </article>
+</div>
+{% endblock %}

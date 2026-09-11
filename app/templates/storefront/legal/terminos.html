@@ -1,0 +1,153 @@
+{% extends "storefront/legal/_base.html" %}
+
+{% block legal %}
+<p>
+  Estos términos rigen la compra de productos en {{ request.host_url }}, operado por
+  {{ get_setting('legal_name') or store_name }}. Al hacer un pedido declaras que los leíste y los
+  aceptas. Se rigen por la <strong>Ley 1480 de 2011</strong> (Estatuto del Consumidor), la
+  <strong>Ley 527 de 1999</strong> sobre comercio electrónico y demás normas colombianas aplicables.
+</p>
+
+<h2>1. Quiénes somos</h2>
+<table class="legal-table">
+  <tbody>
+    <tr><th>Proveedor</th><td>{{ get_setting('legal_name') or store_name }}</td></tr>
+    {% if get_setting('legal_id') %}<tr><th>NIT / documento</th><td>{{ get_setting('legal_id') }}</td></tr>{% endif %}
+    {% if get_setting('address') %}<tr><th>Dirección</th><td>{{ get_setting('address') }}</td></tr>{% endif %}
+    <tr><th>Correo</th><td><a href="mailto:{{ get_setting('contact_email', 'hola@digaloconflores.com') }}">{{ get_setting('contact_email', 'hola@digaloconflores.com') }}</a></td></tr>
+    {% if get_setting('contact_phone') %}<tr><th>Teléfono</th><td>{{ get_setting('contact_phone') }}</td></tr>{% endif %}
+    {% if get_setting('hours') %}<tr><th>Horario de atención</th><td>{{ get_setting('hours') }}</td></tr>{% endif %}
+  </tbody>
+</table>
+
+<h2>2. Cómo se hace un pedido</h2>
+<ol>
+  <li>Eliges los productos y los agregas al carrito.</li>
+  <li>Completas el formulario de compra con tus datos, los del destinatario y la fecha de entrega.</li>
+  <li>Al enviarlo se genera un <strong>número de pedido</strong> y te llevamos a WhatsApp para
+      confirmarlo con nosotros.</li>
+  <li>Allí acordamos el medio de pago y te confirmamos la disponibilidad y el horario de entrega.</li>
+</ol>
+<p>
+  Es importante que entiendas este punto: el pedido que generas en el sitio es una
+  <strong>solicitud de compra</strong>. La venta queda perfeccionada cuando te confirmamos la
+  aceptación del pedido y el pago. Mientras eso no ocurra, podemos rechazar o ajustar un pedido por
+  falta de existencias, errores evidentes de precio o imposibilidad de llegar a la dirección indicada;
+  si ya habías pagado, te devolvemos el dinero completo.
+</p>
+
+<h2>3. Precios</h2>
+<ul>
+  <li>Todos los precios están en <strong>pesos colombianos (COP)</strong> e incluyen los impuestos
+      aplicables.</li>
+  <li>El <strong>costo de envío no está incluido</strong> en el precio del producto y se informa antes
+      de que confirmes el pedido.</li>
+  <li>Los precios pueden cambiar sin previo aviso, pero el que rige tu compra es el que viste al
+      generar el pedido.</li>
+  <li>Si por un error de digitación un producto aparece con un precio evidentemente equivocado, te lo
+      informaremos antes de cobrarte y podrás decidir si continúas o cancelas sin costo.</li>
+</ul>
+
+<h2>4. Flores naturales: lo que debes saber</h2>
+<p>
+  Trabajamos con un producto vivo y de temporada, así que hay dos cosas que conviene decir sin letra
+  pequeña:
+</p>
+<ul>
+  <li><strong>Las fotos son de referencia.</strong> Cada arreglo se elabora a mano, y el resultado puede
+      variar levemente en forma, tamaño de los tallos o tono de las flores.</li>
+  <li><strong>Podemos sustituir flores.</strong> Si una variedad no llega fresca al mercado el día de tu
+      entrega, la reemplazamos por otra de <em>valor y estilo equivalentes</em>, cuidando la paleta de
+      colores del arreglo. Cuando el cambio sea significativo te avisamos antes de despachar.</li>
+</ul>
+
+<h2>5. Entregas</h2>
+<p>
+  Las condiciones de cobertura, tiempos, horarios y qué pasa si no hay quién reciba están detalladas en
+  la <a href="{{ url_for('storefront.shipping_policy') }}">Política de Envíos, Cambios y Devoluciones</a>,
+  que hace parte de estos términos.
+</p>
+
+<h2>6. Derecho de retracto</h2>
+<p>
+  El artículo 47 de la Ley 1480 de 2011 le da al consumidor cinco (5) días hábiles para retractarse de
+  una compra hecha por internet. Ese mismo artículo excluye expresamente, entre otros, los
+  <strong>bienes perecederos</strong> y los <strong>bienes confeccionados conforme a las especificaciones
+  del consumidor o claramente personalizados</strong>.
+</p>
+<p>
+  Las flores naturales y los arreglos que preparamos para tu pedido caen en ambas excepciones, de modo
+  que <strong>el derecho de retracto no aplica</strong> a nuestros productos. Esto no te deja sin
+  protección: conservas íntegra la garantía legal y puedes cancelar tu pedido con las reglas del punto
+  siguiente.
+</p>
+
+<h2>7. Cancelaciones y cambios</h2>
+<ul>
+  <li>Puedes <strong>cancelar o modificar sin costo</strong> mientras el pedido no haya entrado en
+      preparación. Escríbenos lo antes posible con tu número de pedido.</li>
+  <li>Si el arreglo ya fue elaborado, no podemos revertirlo: es un producto perecedero hecho a tu
+      medida.</li>
+  <li>Los cambios de fecha, dirección o mensaje de la tarjeta se atienden hasta el día anterior a la
+      entrega, sujetos a disponibilidad.</li>
+</ul>
+
+<h2>8. Garantía legal</h2>
+<p>
+  Respondemos por la calidad e idoneidad de lo que vendemos. Si las flores llegan marchitas, dañadas,
+  incompletas o distintas de lo pedido, tienes derecho a que las repongamos o a que te devolvamos el
+  dinero. El procedimiento y los plazos están en la
+  <a href="{{ url_for('storefront.shipping_policy') }}">Política de Envíos, Cambios y Devoluciones</a>.
+</p>
+
+<h2>9. Tu cuenta</h2>
+<p>
+  Si creas una cuenta, eres responsable de la veracidad de los datos que registras y de mantener tu
+  contraseña en reserva. Avísanos de inmediato si crees que alguien más accedió a ella. Podemos
+  suspender cuentas que se usen para fines fraudulentos o contrarios a estos términos.
+</p>
+
+<h2>10. Mensajes de las tarjetas</h2>
+<p>
+  El mensaje que escribes para la tarjeta lo transcribimos tal cual, así que revísalo antes de enviarlo.
+  Nos reservamos el derecho de no imprimir mensajes con contenido ilícito, amenazante, discriminatorio,
+  difamatorio u obsceno, en cuyo caso te contactaremos para que lo modifiques.
+</p>
+
+<h2>11. Propiedad intelectual</h2>
+<p>
+  Los textos, fotografías, diseños, el logotipo y el nombre comercial de este sitio nos pertenecen o
+  los usamos con autorización. Puedes verlos y compartir enlaces, pero no reproducirlos con fines
+  comerciales sin nuestro permiso escrito.
+</p>
+
+<h2>12. Responsabilidad</h2>
+<p>
+  Hacemos lo razonable para que el sitio esté disponible y la información sea exacta, pero no podemos
+  garantizar que funcione sin interrupciones: depende de servicios de terceros, como el alojamiento y
+  la conexión a internet. Tampoco respondemos por retrasos causados por fuerza mayor, bloqueos de vías,
+  paros, condiciones climáticas extremas o direcciones incorrectas suministradas por el comprador.
+</p>
+
+<h2>13. Peticiones, quejas y reclamos</h2>
+<p>
+  Escríbenos a <a href="mailto:{{ get_setting('contact_email', 'hola@digaloconflores.com') }}">{{ get_setting('contact_email', 'hola@digaloconflores.com') }}</a>{% if get_setting('whatsapp') %}
+  o por WhatsApp al {{ get_setting('whatsapp') }}{% endif %}. Respondemos dentro de los quince (15) días
+  hábiles siguientes. Si no quedas conforme, puedes acudir a la
+  <strong>Superintendencia de Industria y Comercio</strong>, que es la autoridad competente en materia
+  de protección al consumidor en Colombia.
+</p>
+
+<h2>14. Ley aplicable</h2>
+<p>
+  Estos términos se rigen por las leyes de la República de Colombia y cualquier controversia se
+  someterá a los jueces competentes del país.
+</p>
+
+<h2>15. Cambios a estos términos</h2>
+<p>
+  Podemos actualizarlos cuando cambien nuestras condiciones comerciales. La versión vigente es siempre
+  la publicada en esta página, y a tu pedido se le aplica la que estaba vigente el día en que lo
+  hiciste.
+</p>
+{% endblock %}

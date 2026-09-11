@@ -8,6 +8,8 @@ from app.utils.uploads import save_upload
 SETTING_FIELDS = [
     "store_name", "contact_email", "contact_phone", "whatsapp",
     "address", "hours", "currency",
+    # Identificacion legal: aparece en las paginas de privacidad y terminos
+    "legal_name", "legal_id",
     "instagram_url", "facebook_url", "tiktok_url",
     "shipping_flat_rate", "free_shipping_threshold",
 ]

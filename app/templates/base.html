@@ -49,6 +49,7 @@
   </main>
 
   {% include "partials/footer.html" %}
+  {% include "partials/cookie_notice.html" %}
 
   {% for src in assets('tienda.js') %}<script src="{{ src }}" defer></script>{% endfor %}
   {% block extra_js %}{% endblock %}

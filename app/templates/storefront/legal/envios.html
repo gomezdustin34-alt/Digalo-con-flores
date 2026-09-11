@@ -1,0 +1,104 @@
+{% extends "storefront/legal/_base.html" %}
+
+{% block legal %}
+{% set tarifa = get_setting('shipping_flat_rate') %}
+{% set umbral = get_setting('free_shipping_threshold') %}
+<p>
+  Aquí encuentras cómo, cuándo y dónde entregamos, y qué hacer si algo sale mal. Esta política hace
+  parte de nuestros <a href="{{ url_for('storefront.terms') }}">Términos y Condiciones</a>.
+</p>
+
+<h2>1. Cobertura y costo</h2>
+<ul>
+  {% if get_setting('address') %}<li>Despachamos desde {{ get_setting('address') }}.</li>{% endif %}
+  {% if tarifa %}<li>La tarifa de domicilio es de <strong>{{ format_currency(tarifa, get_setting('currency', 'COP')) }}</strong>.</li>{% endif %}
+  {% if umbral %}<li>El envío es <strong>gratis</strong> en pedidos superiores a {{ format_currency(umbral, get_setting('currency', 'COP')) }}.</li>{% endif %}
+  <li>Para entregas fuera de nuestra zona habitual de cobertura cotizamos el domicilio antes de
+      confirmar el pedido.</li>
+</ul>
+<p>El valor exacto del envío siempre se te informa antes de que confirmes la compra.</p>
+
+<h2>2. Tiempos de entrega</h2>
+<ul>
+  <li>Los pedidos se preparan el <strong>mismo día de la entrega</strong> para que las flores lleguen
+      frescas.</li>
+  <li>Para entregas el mismo día, haz tu pedido con la mayor anticipación posible dentro de nuestro
+      horario de atención{% if get_setting('hours') %} ({{ get_setting('hours') }}){% endif %}; los que
+      llegan sobre el cierre se programan para el día siguiente.</li>
+  <li>Entregamos dentro de una franja horaria aproximada, no a una hora exacta: el recorrido del
+      mensajero depende del tráfico y del orden de las direcciones.</li>
+  <li>En fechas de alta demanda —Día de la Madre, San Valentín, Amor y Amistad, Navidad— las franjas se
+      amplían. Te lo advertimos al confirmar el pedido.</li>
+</ul>
+
+<h2>3. Quién recibe</h2>
+<p>
+  Entregamos a la persona destinataria o a quien se encuentre en la dirección y acepte recibir el
+  pedido (un familiar, un portero, un compañero de trabajo, la recepción del edificio). Esa entrega se
+  considera cumplida.
+</p>
+<p>Si no encontramos a nadie:</p>
+<ul>
+  <li>Intentamos comunicarnos con el destinatario al teléfono que nos diste.</li>
+  <li>Si no responde, te llamamos a ti para acordar qué hacer.</li>
+  <li>Si nadie contesta, dejamos el pedido con la portería o administración cuando sea posible.</li>
+  <li>Un <strong>segundo intento</strong> de entrega tiene costo adicional de domicilio, porque el
+      arreglo ya fue elaborado y transportado.</li>
+</ul>
+<p>
+  <strong>Revisa bien la dirección antes de enviar tu pedido.</strong> Una dirección incompleta o
+  equivocada es la causa más común de entregas fallidas, y en ese caso el nuevo domicilio corre por
+  cuenta del comprador.
+</p>
+
+<h2>4. Sorpresas</h2>
+<p>
+  Si el pedido es una sorpresa y prefieres que no llamemos al destinatario, indícanoslo. Ten en cuenta
+  que sin ese contacto aumenta el riesgo de no encontrar a nadie, y aplican las reglas del punto
+  anterior.
+</p>
+
+<h2>5. Si algo llega mal</h2>
+<p>
+  Respondemos por la calidad de lo que entregamos. Si el arreglo llega
+  <strong>marchito, dañado, incompleto o distinto de lo que pediste</strong>:
+</p>
+<ol>
+  <li>Escríbenos dentro de las <strong>veinticuatro (24) horas</strong> siguientes a la entrega, con tu
+      número de pedido y <strong>fotografías</strong> del arreglo como llegó. Ese plazo corto no es un
+      capricho: pasado un día ya no es posible distinguir un defecto nuestro del deterioro natural de
+      una flor cortada.</li>
+  <li>Revisamos el caso y te respondemos lo antes posible.</li>
+  <li>Si la reclamación procede, <strong>reponemos el arreglo sin costo</strong> o te devolvemos el
+      dinero, como prefieras.</li>
+</ol>
+<p>
+  Las devoluciones de dinero se hacen por el mismo medio con el que pagaste, dentro de los treinta (30)
+  días calendario siguientes a que aceptemos la reclamación.
+</p>
+
+<h2>6. Lo que no cubre la garantía</h2>
+<ul>
+  <li>El deterioro normal de las flores con el paso de los días.</li>
+  <li>El daño por falta de cuidado después de la entrega: no cambiar el agua, dejar el arreglo al sol
+      directo, cerca de una fuente de calor o de frutas maduras.</li>
+  <li>Diferencias menores de tono, tamaño o forma respecto de la fotografía, o las sustituciones de
+      flores por equivalentes explicadas en los
+      <a href="{{ url_for('storefront.terms') }}">Términos y Condiciones</a>.</li>
+  <li>Entregas fallidas por datos incorrectos suministrados por el comprador.</li>
+</ul>
+
+<h2>7. Cómo cuidar tus flores</h2>
+<p>
+  Para que duren más: corta un centímetro de los tallos en diagonal al recibirlas, cambia el agua cada
+  dos días, mantenlas lejos del sol directo, del calor y de la fruta madura —que libera un gas que las
+  marchita antes de tiempo.
+</p>
+
+<h2>8. Contacto</h2>
+<p>
+  Para cualquier tema de entregas, cambios o devoluciones escríbenos a
+  <a href="mailto:{{ get_setting('contact_email', 'hola@digaloconflores.com') }}">{{ get_setting('contact_email', 'hola@digaloconflores.com') }}</a>{% if get_setting('whatsapp') %}
+  o por WhatsApp al {{ get_setting('whatsapp') }}{% endif %}, siempre con tu número de pedido a la mano.
+</p>
+{% endblock %}

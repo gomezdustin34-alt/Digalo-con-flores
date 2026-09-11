@@ -105,3 +105,9 @@ table.admin-table tr:hover td { background: var(--cream-soft); }
 
 .thumb-strip { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
 .thumb-strip img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; }
+
+/* Nota explicativa bajo el titulo de una seccion del panel */
+.admin-hint {
+  font-size: 12.5px; line-height: 1.6; color: var(--ink-faint); max-width: 620px;
+}
+.admin-hint a { color: var(--coral); text-decoration: underline; text-underline-offset: 2px; }

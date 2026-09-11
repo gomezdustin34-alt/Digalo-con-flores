@@ -112,6 +112,48 @@ def contact():
     return render_template("storefront/contact.html", form=form)
 
 
+# Fecha de la ultima revision de los textos legales. Actualizala cuando cambies
+# el contenido de cualquiera de las paginas de abajo.
+LEGAL_ACTUALIZADO = "11 de septiembre de 2026"
+
+PAGINAS_LEGALES = {
+    "privacidad": ("Politica de Privacidad y Tratamiento de Datos", "Politica de privacidad"),
+    "cookies": ("Politica de Cookies", "Cookies"),
+    "terminos": ("Terminos y Condiciones", "Terminos y condiciones"),
+    "envios": ("Politica de Envios, Cambios y Devoluciones", "Envios y devoluciones"),
+}
+
+
+def _legal(pagina):
+    titulo, breadcrumb = PAGINAS_LEGALES[pagina]
+    return render_template(
+        f"storefront/legal/{pagina}.html",
+        legal_title=titulo,
+        legal_breadcrumb=breadcrumb,
+        legal_updated=LEGAL_ACTUALIZADO,
+    )
+
+
+@bp.route("/politica-de-privacidad")
+def privacy():
+    return _legal("privacidad")
+
+
+@bp.route("/politica-de-cookies")
+def cookies():
+    return _legal("cookies")
+
+
+@bp.route("/terminos-y-condiciones")
+def terms():
+    return _legal("terminos")
+
+
+@bp.route("/envios-y-devoluciones")
+def shipping_policy():
+    return _legal("envios")
+
+
 @bp.route("/buscar")
 def search():
     page_obj = filtered_products(request.args)

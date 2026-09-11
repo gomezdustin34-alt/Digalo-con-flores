@@ -1,0 +1,13 @@
+{# Aviso de cookies. Es informativo, no un muro de consentimiento: el sitio solo
+   usa las cookies necesarias para que funcionen el carrito y la sesion, que no
+   requieren autorizacion previa. Arranca oculto y el JS lo muestra solo si el
+   visitante no lo ha cerrado antes (ver static/js/main.js). #}
+<div class="cookie-notice" id="cookie-notice" hidden>
+  <div class="cookie-notice-inner">
+    <p>
+      Usamos solo las cookies necesarias para que funcionen tu carrito y tu sesión. No tenemos
+      publicidad ni rastreadores. <a href="{{ url_for('storefront.cookies') }}">Más información</a>.
+    </p>
+    <button type="button" class="btn btn-primary" id="cookie-notice-accept">Entendido</button>
+  </div>
+</div>

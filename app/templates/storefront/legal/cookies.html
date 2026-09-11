@@ -1,0 +1,83 @@
+{% extends "storefront/legal/_base.html" %}
+
+{% block legal %}
+<p>
+  Esta página explica qué cookies usa {{ get_setting('legal_name') or store_name }}, para qué sirven y
+  cómo puedes desactivarlas. La versión corta: <strong>solo usamos las estrictamente necesarias para
+  que la tienda funcione</strong>. No tenemos analítica, ni publicidad, ni rastreadores de terceros.
+</p>
+
+<h2>1. Qué es una cookie</h2>
+<p>
+  Es un archivo diminuto de texto que el sitio guarda en tu navegador para recordar algo entre una
+  página y la siguiente. Sin ellas, la web no tendría memoria: cada vez que cambiaras de página, tu
+  carrito aparecería vacío.
+</p>
+
+<h2>2. Las que usamos</h2>
+<table class="legal-table">
+  <thead>
+    <tr><th>Nombre</th><th>Para qué sirve</th><th>Tipo</th><th>Duración</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>session</code></td>
+      <td>Guarda tu carrito, el cupón aplicado, tu sesión iniciada y el token que protege los
+          formularios contra falsificación de peticiones (CSRF).</td>
+      <td>Necesaria</td>
+      <td>Hasta que cierras el navegador</td>
+    </tr>
+    <tr>
+      <td><code>remember_token</code></td>
+      <td>Solo si marcas «Recordarme» al iniciar sesión: te mantiene identificado en visitas
+          posteriores.</td>
+      <td>Necesaria</td>
+      <td>Hasta 30 días</td>
+    </tr>
+    <tr>
+      <td><code>aviso_cookies</code></td>
+      <td>Recuerda que ya viste el aviso de cookies, para no volver a mostrártelo. No es una cookie
+          sino un dato guardado en el almacenamiento local de tu navegador.</td>
+      <td>Necesaria</td>
+      <td>Hasta que borres los datos del navegador</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>3. Lo que no usamos</h2>
+<p>
+  No instalamos cookies de <strong>analítica</strong> (Google Analytics o similares), de
+  <strong>publicidad</strong> ni de <strong>redes sociales</strong>, y ningún tercero coloca cookies a
+  través de nuestro sitio. Por eso no verás un panel para aceptar o rechazar categorías: no hay nada
+  opcional que rechazar. Las cookies que usamos son imprescindibles para prestarte el servicio que nos
+  pediste, de modo que no requieren autorización previa.
+</p>
+<p>
+  Sí cargamos las tipografías desde el servicio de fuentes de Google, que recibe la dirección IP con la
+  que haces la petición, como ocurre con cualquier archivo que un navegador descarga de otro servidor.
+  Eso no instala cookies en tu equipo.
+</p>
+
+<h2>4. Cómo desactivarlas</h2>
+<p>
+  Todos los navegadores permiten bloquear o borrar cookies desde su configuración, normalmente en la
+  sección de <em>Privacidad y seguridad</em>. También puedes navegar en modo incógnito, que las descarta
+  al cerrar la ventana.
+</p>
+<p>
+  <strong>Ten en cuenta una cosa:</strong> como las nuestras son las necesarias, si las bloqueas la
+  tienda deja de funcionar bien. En concreto, el carrito se vaciará al cambiar de página, no podrás
+  iniciar sesión y los formularios serán rechazados por seguridad. No es una amenaza, es simplemente
+  cómo funciona: esa cookie <em>es</em> tu carrito.
+</p>
+
+<h2>5. Cambios</h2>
+<p>
+  Si en el futuro incorporamos herramientas de medición o publicidad, actualizaremos esta página y
+  habilitaremos un mecanismo para que puedas aceptarlas o rechazarlas antes de que se instalen.
+</p>
+<p>
+  Para saber cómo tratamos los datos personales que sí recogemos, consulta la
+  <a href="{{ url_for('storefront.privacy') }}">Política de Privacidad</a>.
+</p>
+{% endblock %}

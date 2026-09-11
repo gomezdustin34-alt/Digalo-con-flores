@@ -1,0 +1,139 @@
+{% extends "storefront/legal/_base.html" %}
+
+{% block legal %}
+<p>
+  En {{ get_setting('legal_name') or store_name }} sabemos que para enviarte flores necesitamos datos
+  tuyos y de la persona que las recibe. Este documento explica qué recogemos, para qué lo usamos y
+  cómo puedes controlarlo, en cumplimiento de la <strong>Ley 1581 de 2012</strong>, el
+  <strong>Decreto 1074 de 2015</strong> y demás normas colombianas de protección de datos personales.
+</p>
+
+<h2>1. Responsable del tratamiento</h2>
+<table class="legal-table">
+  <tbody>
+    <tr><th>Responsable</th><td>{{ get_setting('legal_name') or store_name }}</td></tr>
+    {% if get_setting('legal_id') %}<tr><th>NIT / documento</th><td>{{ get_setting('legal_id') }}</td></tr>{% endif %}
+    {% if get_setting('address') %}<tr><th>Dirección</th><td>{{ get_setting('address') }}</td></tr>{% endif %}
+    <tr><th>Correo</th><td><a href="mailto:{{ get_setting('contact_email', 'hola@digaloconflores.com') }}">{{ get_setting('contact_email', 'hola@digaloconflores.com') }}</a></td></tr>
+    {% if get_setting('contact_phone') %}<tr><th>Teléfono</th><td>{{ get_setting('contact_phone') }}</td></tr>{% endif %}
+    <tr><th>Sitio web</th><td>{{ request.host_url }}</td></tr>
+  </tbody>
+</table>
+
+<h2>2. Qué datos recogemos</h2>
+<p>Solo pedimos lo que hace falta para atenderte:</p>
+<ul>
+  <li><strong>De identificación y contacto:</strong> nombre, apellidos, correo electrónico y teléfono.</li>
+  <li><strong>De entrega:</strong> dirección, ciudad, indicaciones para llegar, fecha y franja horaria.</li>
+  <li><strong>Del destinatario del pedido:</strong> nombre, teléfono, dirección y el mensaje de la tarjeta.</li>
+  <li><strong>De tus compras:</strong> productos, valores, cupones aplicados y estado de cada pedido.</li>
+  <li><strong>De tu cuenta:</strong> correo y contraseña cifrada, tus favoritos y tus direcciones guardadas.</li>
+  <li><strong>De los mensajes que nos envías:</strong> lo que escribes en el formulario de contacto o por WhatsApp.</li>
+  <li><strong>Técnicos:</strong> los estrictamente necesarios para que el sitio funcione, descritos en la
+      <a href="{{ url_for('storefront.cookies') }}">Política de Cookies</a>.</li>
+</ul>
+<p>
+  No pedimos datos sensibles (salud, origen étnico, creencias, orientación política o sexual, datos
+  biométricos) y te agradecemos no incluirlos en los mensajes de las tarjetas ni en el formulario de
+  contacto.
+</p>
+
+<h2>3. Datos de la persona que recibe las flores</h2>
+<p>
+  Casi siempre el regalo es para alguien más. Cuando nos entregas los datos de un tercero,
+  <strong>declaras que cuentas con su autorización</strong> para entregárnoslos con el fin de hacer la
+  entrega. Nosotros los usamos únicamente para eso —coordinar y realizar el envío— y los conservamos
+  asociados al pedido. Si el destinatario nos escribe pidiendo que eliminemos sus datos, lo hacemos.
+</p>
+
+<h2>4. Para qué usamos tus datos</h2>
+<ul>
+  <li>Preparar, cobrar, despachar y entregar tus pedidos.</li>
+  <li>Comunicarnos contigo sobre un pedido en curso, por correo, teléfono o WhatsApp.</li>
+  <li>Crear y administrar tu cuenta, tus favoritos y tu historial de compras.</li>
+  <li>Responder tus preguntas, reclamos y solicitudes de garantía.</li>
+  <li>Emitir facturas y cumplir obligaciones contables y tributarias.</li>
+  <li>Enviarte novedades, promociones y recordatorios de fechas especiales <strong>solo si te
+      suscribiste</strong> a nuestro boletín. Puedes darte de baja cuando quieras.</li>
+  <li>Detectar fraudes y proteger la seguridad del sitio.</li>
+</ul>
+<p>No vendemos, arrendamos ni cedemos tus datos personales a terceros para que te hagan publicidad.</p>
+
+<h2>5. Con quién los compartimos</h2>
+<p>
+  Para operar la tienda nos apoyamos en proveedores que actúan como encargados del tratamiento y solo
+  pueden usar los datos siguiendo nuestras instrucciones:
+</p>
+<ul>
+  <li><strong>Alojamiento del sitio y base de datos:</strong> proveedores de infraestructura en la nube,
+      con servidores ubicados en Estados Unidos.</li>
+  <li><strong>Correo electrónico:</strong> el servicio con el que enviamos confirmaciones y respuestas.</li>
+  <li><strong>Mensajería:</strong> WhatsApp, cuando la conversación del pedido ocurre por ese canal.</li>
+  <li><strong>Transporte y domicilios:</strong> el mensajero o la empresa que realiza la entrega, a quien
+      le entregamos únicamente los datos necesarios para llegar a la dirección.</li>
+  <li><strong>Autoridades:</strong> cuando una orden judicial o una norma nos obligue a entregarlos.</li>
+</ul>
+<p>
+  Algunos de estos proveedores están fuera de Colombia, de modo que el tratamiento puede implicar una
+  <strong>transferencia internacional de datos</strong>. Al aceptar esta política autorizas esa
+  transferencia, que hacemos exigiendo a nuestros proveedores estándares de seguridad equivalentes a
+  los que aplicamos nosotros.
+</p>
+
+<h2>6. Cuánto tiempo los conservamos</h2>
+<p>
+  Mientras tengas una cuenta activa y, después, durante los plazos que nos exige la ley: los soportes
+  de las operaciones comerciales y contables se conservan <strong>diez (10) años</strong> conforme al
+  Código de Comercio, y los datos de contacto para fines publicitarios, hasta que revoques tu
+  autorización. Cumplidos esos plazos, los eliminamos o los anonimizamos.
+</p>
+
+<h2>7. Tus derechos como titular</h2>
+<p>La ley te reconoce el derecho a:</p>
+<ul>
+  <li>Conocer, actualizar y rectificar tus datos.</li>
+  <li>Solicitar prueba de la autorización que nos diste.</li>
+  <li>Ser informado sobre el uso que les hemos dado.</li>
+  <li>Revocar la autorización o pedir la supresión de tus datos, cuando no exista un deber legal o
+      contractual que nos obligue a conservarlos.</li>
+  <li>Acceder gratuitamente a tus datos.</li>
+  <li>Presentar quejas ante la <strong>Superintendencia de Industria y Comercio</strong>.</li>
+</ul>
+
+<h2>8. Cómo ejercerlos</h2>
+<p>
+  Escríbenos a <a href="mailto:{{ get_setting('contact_email', 'hola@digaloconflores.com') }}">{{ get_setting('contact_email', 'hola@digaloconflores.com') }}</a>
+  desde el correo con el que nos conoces, indicando tu nombre, tu solicitud y los datos sobre los que
+  recae. Los plazos que cumplimos son los de ley:
+</p>
+<ul>
+  <li><strong>Consultas:</strong> respondemos en máximo diez (10) días hábiles, prorrogables por cinco (5) más.</li>
+  <li><strong>Reclamos:</strong> respondemos en máximo quince (15) días hábiles, prorrogables por ocho (8) más.</li>
+</ul>
+<p>
+  Si el reclamo llega incompleto te lo haremos saber dentro de los cinco (5) días siguientes para que
+  lo completes; pasados dos (2) meses sin respuesta tuya, entenderemos que desististe.
+</p>
+
+<h2>9. Menores de edad</h2>
+<p>
+  La tienda está dirigida a mayores de edad. No recogemos deliberadamente datos de niñas, niños y
+  adolescentes; si detectamos que un registro corresponde a un menor, lo eliminamos. Si eres su padre,
+  madre o representante y crees que tenemos datos de un menor, escríbenos y los borramos.
+</p>
+
+<h2>10. Seguridad</h2>
+<p>
+  El sitio funciona íntegramente sobre HTTPS, las contraseñas se guardan cifradas —nunca en texto
+  plano, ni siquiera nosotros podemos verlas—, las sesiones usan cookies protegidas y el acceso al
+  panel administrativo está restringido. Ningún sistema es infalible, pero mantenemos medidas técnicas
+  y administrativas razonables para proteger tu información.
+</p>
+
+<h2>11. Cambios a esta política</h2>
+<p>
+  Si modificamos este documento publicaremos la nueva versión en esta misma página con su fecha de
+  actualización. Cuando el cambio sea sustancial y afecte la finalidad del tratamiento, te lo
+  comunicaremos por correo antes de aplicarlo.
+</p>
+{% endblock %}

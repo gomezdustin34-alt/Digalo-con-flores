@@ -96,7 +96,7 @@
 /* ===== Footer ===== */
 .site-footer { background: var(--footer-bg); color: var(--footer-text); padding: 64px 0 0; }
 .footer-grid {
-  display: grid; grid-template-columns: 1.6fr 1fr 1fr 1.2fr; gap: 40px;
+  display: grid; grid-template-columns: 1.6fr 1fr 1fr 1.1fr 1.2fr; gap: 34px;
   padding-bottom: 40px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 .footer-col h4 { font-size: 12.5px; letter-spacing: 1px; color: var(--footer-text); margin-bottom: 16px; text-transform: uppercase; }
@@ -272,3 +272,15 @@
 /* ===== Empty states ===== */
 .empty-state { text-align: center; padding: 70px 20px; color: var(--ink-faint); }
 .empty-state svg { margin-bottom: 16px; opacity: 0.6; }
+
+/* Aviso de tratamiento de datos bajo los formularios */
+.form-legal-note {
+  font-size: 12.5px; line-height: 1.6; color: var(--ink-faint);
+  margin: 4px 0 16px; max-width: 520px;
+}
+.form-legal-note a { color: var(--coral); text-decoration: underline; text-underline-offset: 2px; }
+.footer-newsletter-legal {
+  font-size: 11.5px; line-height: 1.55; color: var(--footer-text-soft);
+  opacity: 0.85; margin-top: 8px; max-width: 420px;
+}
+.footer-newsletter-legal a { color: var(--pink); text-decoration: underline; text-underline-offset: 2px; }

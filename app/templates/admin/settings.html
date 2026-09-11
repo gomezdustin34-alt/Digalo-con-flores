@@ -40,6 +40,24 @@
     </div>
     <div class="field"><label>Dirección</label><input type="text" name="address" value="{{ values.address }}"></div>
 
+    <h3 style="font-size:15px; margin:26px 0 16px;">Datos legales</h3>
+    <p class="admin-hint" style="margin:-6px 0 16px;">
+      Aparecen en las páginas de <a href="{{ url_for('storefront.privacy') }}" target="_blank" rel="noopener">privacidad</a>
+      y <a href="{{ url_for('storefront.terms') }}" target="_blank" rel="noopener">términos y condiciones</a>.
+      La ley colombiana exige identificar al proveedor: si los dejas vacíos, esas filas no se muestran
+      y los documentos quedan incompletos.
+    </p>
+    <div class="admin-form-grid">
+      <div class="field">
+        <label>Razón social o nombre del responsable</label>
+        <input type="text" name="legal_name" value="{{ values.legal_name }}" placeholder="{{ values.store_name or 'Dígalo con Flores S.A.S.' }}">
+      </div>
+      <div class="field">
+        <label>NIT o documento de identidad</label>
+        <input type="text" name="legal_id" value="{{ values.legal_id }}" placeholder="901.234.567-8">
+      </div>
+    </div>
+
     <h3 style="font-size:15px; margin:26px 0 16px;">Redes sociales</h3>
     <div class="admin-form-grid">
       <div class="field"><label>Instagram</label><input type="url" name="instagram_url" value="{{ values.instagram_url }}"></div>

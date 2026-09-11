@@ -6,6 +6,7 @@
       <div>
         <h4>Recibe flores, promociones y sorpresas.</h4>
         <p>Sé el primero en enterarte de nuevas colecciones y descuentos exclusivos.</p>
+        <p class="footer-newsletter-legal">Al suscribirte autorizas el envío de comunicaciones comerciales y aceptas nuestra <a href="{{ url_for('storefront.privacy') }}">Política de Privacidad</a>. Puedes darte de baja cuando quieras.</p>
       </div>
       <form action="{{ url_for('storefront.newsletter_subscribe') }}" method="post">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -46,6 +47,13 @@
         {% else %}
           <a href="{{ url_for('auth.login') }}">Mi cuenta</a>
         {% endif %}
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="{{ url_for('storefront.terms') }}">Términos y condiciones</a>
+        <a href="{{ url_for('storefront.privacy') }}">Política de privacidad</a>
+        <a href="{{ url_for('storefront.cookies') }}">Política de cookies</a>
+        <a href="{{ url_for('storefront.shipping_policy') }}">Envíos y devoluciones</a>
       </div>
       <div class="footer-col">
         <h4>Contacto</h4>
