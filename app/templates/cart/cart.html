@@ -14,7 +14,7 @@
     {% if cart.lines %}
       {% for line in cart.lines %}
         <div class="cart-line">
-          <img src="{{ line.product.primary_image or url_for('static', filename='img/seed/prod1.jpg') }}" alt="{{ line.product.name }}">
+          <img src="{{ line.product.primary_image or url_for('static', filename='img/seed/prod1.jpg') }}" alt="{{ line.product.name }}" width="84" height="84" loading="lazy" decoding="async">
           <div class="cart-line-info">
             <h4>{{ line.product.name }}</h4>
             <div class="meta">

@@ -1,4 +1,5 @@
 {% extends "admin/base.html" %}
+{% from "partials/icons.html" import cat_icon %}
 {% block title %}Categorías — Panel{% endblock %}
 {% block page_title %}Categorías{% endblock %}
 
@@ -15,8 +16,8 @@
       <tbody>
         {% for c in categories %}
         <tr>
-          <td><img class="table-thumb" src="{{ c.image_url or url_for('static', filename='img/seed/cat-ramos.jpg') }}" alt=""></td>
-          <td>{{ c.icon or '' }} {{ c.name }}</td>
+          <td><img class="table-thumb" src="{{ c.image_url or url_for('static', filename='img/seed/cat-ramos.jpg') }}" alt="" width="44" height="44" loading="lazy" decoding="async"></td>
+          <td><span style="display:inline-flex; align-items:center; gap:9px; color:var(--gold);">{{ cat_icon(c.icon_key, 18) }}<span style="color:var(--ink);">{{ c.name }}</span></span></td>
           <td style="color:var(--ink-faint);">/{{ c.slug }}</td>
           <td>{{ c.products.count() }}</td>
           <td><span class="status-tag {{ 'tag-active' if c.is_active else 'tag-inactive' }}">{{ 'Activa' if c.is_active else 'Inactiva' }}</span></td>

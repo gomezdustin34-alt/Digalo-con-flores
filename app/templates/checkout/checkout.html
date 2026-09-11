@@ -50,7 +50,7 @@
     <h3 style="font-size:16px; margin-bottom:16px;">Tu pedido</h3>
     {% for line in cart.lines %}
       <div class="mini-line">
-        <img src="{{ line.product.primary_image or url_for('static', filename='img/seed/prod1.jpg') }}" alt="{{ line.product.name }}">
+        <img src="{{ line.product.primary_image or url_for('static', filename='img/seed/prod1.jpg') }}" alt="{{ line.product.name }}" width="46" height="46" loading="lazy" decoding="async">
         <div style="flex:1;">
           <div>{{ line.product.name }} × {{ line.quantity }}</div>
         </div>

@@ -56,13 +56,14 @@
 .kpi-card.warn .value { color: var(--warning); }
 .kpi-card.danger .value { color: var(--danger); }
 
-.admin-panel { background: var(--cream); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); padding: 24px; margin-bottom: 24px; }
+.admin-panel { background: var(--cream); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); padding: 24px; margin-bottom: 24px; min-width: 0; }
 .admin-panel h2 { font-size: 16px; margin-bottom: 18px; }
 .panel-grid-2 { display: grid; grid-template-columns: 1.3fr 1fr; gap: 24px; }
+.panel-grid-2 > * { min-width: 0; }
 @media (max-width: 980px) { .panel-grid-2 { grid-template-columns: 1fr; } }
 
-/* Tablas */
-.table-wrap { overflow-x: auto; }
+/* Tablas — se desplazan dentro de su caja en vez de ensanchar la página */
+.table-wrap { overflow-x: auto; min-width: 0; max-width: 100%; }
 table.admin-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 table.admin-table th {
   text-align: left; padding: 12px 14px; font-size: 11.5px; letter-spacing: 0.5px; text-transform: uppercase;
@@ -93,9 +94,14 @@ table.admin-table tr:hover td { background: var(--cream-soft); }
 .admin-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 @media (max-width: 800px) { .admin-form-grid { grid-template-columns: 1fr; } }
 
-.notif-item { display: flex; gap: 14px; padding: 16px; border-radius: var(--radius-sm); align-items: flex-start; }
+.notif-item { display: flex; gap: 14px; padding: 16px; border-radius: var(--radius-sm); align-items: flex-start; flex-wrap: wrap; }
 .notif-item.unread { background: var(--pink-light); }
+.notif-item > div { min-width: 0; overflow-wrap: anywhere; }
 .notif-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--coral); margin-top: 6px; flex-shrink: 0; }
+@media (max-width: 560px) {
+  .notif-item { gap: 10px; padding: 14px 12px; }
+  .notif-item > div { flex: 1 1 100%; }
+}
 
 .thumb-strip { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
 .thumb-strip img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; }

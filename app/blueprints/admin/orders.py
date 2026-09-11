@@ -29,6 +29,15 @@ def order_update_status(order_id):
     new_status = request.form.get("status")
     if new_status in ORDER_STATUSES:
         order.status = new_status
+
+        # Al cancelar, las unidades vuelven al inventario (una sola vez).
+        if new_status == "cancelado" and not order.stock_restored:
+            for item in order.items:
+                if item.product:
+                    item.product.stock = (item.product.stock or 0) + item.quantity
+            order.stock_restored = True
+            flash("Pedido cancelado: las unidades volvieron al inventario.", "info")
+
         db.session.commit()
         get_email_provider().send(
             order.customer_email, f"Actualización de tu pedido {order.number}", order_status_update_email(order)

@@ -16,8 +16,10 @@ document.addEventListener("DOMContentLoaded", () => {
     closeBtn?.addEventListener("click", () => mobileMenu.classList.remove("is-open"));
   }
 
-  // Scroll reveal
+  // Aparición progresiva al hacer scroll
   const revealEls = document.querySelectorAll(".reveal");
+  const mostrarTodo = () => revealEls.forEach((el) => el.classList.add("is-visible"));
+
   if ("IntersectionObserver" in window && revealEls.length) {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -28,11 +30,15 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         });
       },
-      { threshold: 0.15 }
+      // Se activan un poco antes de entrar en pantalla: la transición se
+      // completa justo cuando el usuario llega al elemento.
+      { threshold: 0.1, rootMargin: "0px 0px 120px 0px" }
     );
     revealEls.forEach((el) => observer.observe(el));
+    // Red de seguridad: si algo impide que el observador actúe, nada queda oculto.
+    setTimeout(mostrarTodo, 3000);
   } else {
-    revealEls.forEach((el) => el.classList.add("is-visible"));
+    mostrarTodo();
   }
 
   // Confirmación antes de enviar formularios destructivos

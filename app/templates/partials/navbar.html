@@ -4,7 +4,7 @@
     <a href="{{ url_for('storefront.home') }}" class="brand">
       <span class="brand-mark">
         {% if logo_url %}
-          <img src="{{ logo_url }}" alt="{{ store_name }}">
+          <img src="{{ logo_url }}" alt="{{ store_name }}" width="54" height="54" fetchpriority="high" decoding="async">
         {% else %}
           <span class="script">Digalo</span>
         {% endif %}

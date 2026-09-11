@@ -30,7 +30,7 @@
     <div class="field">
       <label>Imagen del hero</label>
       <input type="file" name="hero_image" accept="image/*">
-      {% if values.hero_image %}<div class="thumb-strip"><img src="{{ values.hero_image }}"></div>{% endif %}
+      {% if values.hero_image %}<div class="thumb-strip"><img src="{{ values.hero_image }}" loading="lazy" decoding="async"></div>{% endif %}
     </div>
     <button type="submit" class="btn btn-primary">Guardar cambios</button>
   </form>

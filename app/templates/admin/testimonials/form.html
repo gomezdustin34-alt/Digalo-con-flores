@@ -14,7 +14,7 @@
     </div>
     <div class="field">
       {{ form.photo.label }}{{ form.photo() }}
-      {% if testimonial and testimonial.photo_url %}<div class="thumb-strip"><img src="{{ testimonial.photo_url }}" style="border-radius:50%;"></div>{% endif %}
+      {% if testimonial and testimonial.photo_url %}<div class="thumb-strip"><img src="{{ testimonial.photo_url }}" style="border-radius:50%;" loading="lazy" decoding="async"></div>{% endif %}
     </div>
     <button type="submit" class="btn btn-primary">Guardar testimonio</button>
     <a href="{{ url_for('admin.testimonials_list') }}" class="btn btn-outline">Cancelar</a>

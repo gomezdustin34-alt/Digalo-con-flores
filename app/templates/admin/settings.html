@@ -22,12 +22,12 @@
       <div class="field">
         <label>Logo</label>
         <input type="file" name="logo" accept="image/*">
-        {% if values.logo_url %}<div class="thumb-strip"><img src="{{ values.logo_url }}"></div>{% endif %}
+        {% if values.logo_url %}<div class="thumb-strip"><img src="{{ values.logo_url }}" loading="lazy" decoding="async"></div>{% endif %}
       </div>
       <div class="field">
         <label>Favicon</label>
         <input type="file" name="favicon" accept="image/*">
-        {% if values.favicon_url %}<div class="thumb-strip"><img src="{{ values.favicon_url }}"></div>{% endif %}
+        {% if values.favicon_url %}<div class="thumb-strip"><img src="{{ values.favicon_url }}" loading="lazy" decoding="async"></div>{% endif %}
       </div>
     </div>
 

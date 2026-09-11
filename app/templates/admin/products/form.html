@@ -42,7 +42,7 @@
     <div class="field">
       {{ form.image.label }}{{ form.image() }}
       {% if product and product.images %}
-        <div class="thumb-strip">{% for img in product.images %}<img src="{{ img.url }}">{% endfor %}</div>
+        <div class="thumb-strip">{% for img in product.images %}<img src="{{ img.url }}" loading="lazy" decoding="async">{% endfor %}</div>
       {% endif %}
     </div>
 

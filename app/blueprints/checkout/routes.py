@@ -26,6 +26,19 @@ def checkout():
         form.phone.data = current_user.phone
 
     if form.validate_on_submit():
+        faltantes = order_service.check_stock(cart)
+        if faltantes:
+            for producto, disponible, pedido in faltantes:
+                if disponible == 0:
+                    flash(f"“{producto.name}” se agotó. Quítalo del carrito para continuar.", "danger")
+                else:
+                    flash(
+                        f"Solo quedan {disponible} unidades de “{producto.name}” "
+                        f"(pediste {pedido}). Ajusta la cantidad para continuar.",
+                        "danger",
+                    )
+            return redirect(url_for("cart.view_cart"))
+
         order = order_service.create_order_from_cart(form)
         if not order:
             flash("Tu carrito está vacío.", "info")

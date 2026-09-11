@@ -21,6 +21,16 @@ def _subscribe_email(email):
         subscriber.unsubscribed_at = None
 
 
+def check_stock(cart):
+    """Devuelve la lista de productos del carrito sin unidades suficientes."""
+    faltantes = []
+    for line in cart["lines"]:
+        producto = line["product"]
+        if (producto.stock or 0) < line["quantity"]:
+            faltantes.append((producto, producto.stock or 0, line["quantity"]))
+    return faltantes
+
+
 def create_order_from_cart(form):
     cart = cart_service.get_cart()
     if not cart["lines"]:
@@ -54,8 +64,8 @@ def create_order_from_cart(form):
             dedication_message=line["dedication_message"],
             recipient_name=line["recipient_name"],
         ))
-        if line["product"].stock >= line["quantity"]:
-            line["product"].stock -= line["quantity"]
+        # Descuenta inventario sin dejarlo nunca en negativo
+        line["product"].stock = max(0, (line["product"].stock or 0) - line["quantity"])
 
     if cart["coupon"]:
         cart["coupon"].used_count = (cart["coupon"].used_count or 0) + 1

@@ -11,6 +11,11 @@ def create_app(config_class=Config):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(config_class)
 
+    # Detrás del proxy de Vercel/Render: respeta el host y el esquema https
+    # reales, necesarios para generar enlaces correctos (WhatsApp, emails).
+    from werkzeug.middleware.proxy_fix import ProxyFix
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
+
     db.init_app(app)
     migrate.init_app(app, db)
     login_manager.init_app(app)
@@ -30,7 +35,9 @@ def create_app(config_class=Config):
     from app.blueprints.checkout import bp as checkout_bp
     from app.blueprints.account import bp as account_bp
     from app.blueprints.admin import bp as admin_bp
+    from app.blueprints.media import bp as media_bp
 
+    app.register_blueprint(media_bp)
     app.register_blueprint(storefront_bp)
     app.register_blueprint(auth_bp, url_prefix="/cuenta")
     app.register_blueprint(cart_bp, url_prefix="/carrito")
@@ -50,8 +57,7 @@ def register_context_processors(app):
     from flask import request, url_for
     from app.utils.helpers import format_currency, get_setting
     from app.utils.content import get_content, is_section_visible
-    from app.models.category import Category
-    from app.blueprints.cart.cart_service import get_cart
+    from app.blueprints.cart.cart_service import cart_count
 
     def pagination_url(page):
         args = {**request.view_args, **request.args.to_dict(), "page": page}
@@ -61,21 +67,25 @@ def register_context_processors(app):
         from app.models.notification import Notification
         return Notification.query.filter_by(is_read=False).count()
 
+    from app.utils.assets import asset_urls
+
+    def assets(nombre):
+        return asset_urls(nombre, app.static_folder)
+
     @app.context_processor
     def inject_globals():
-        nav_categories = Category.query.filter_by(is_active=True).order_by(Category.sort_order).limit(6).all()
-        cart = get_cart()
         return dict(
             format_currency=format_currency,
             get_setting=get_setting,
             get_content=get_content,
             is_section_visible=is_section_visible,
-            nav_categories=nav_categories,
-            cart_count=cart["count"],
+            # Se lee de la sesión, sin tocar la base de datos
+            cart_count=cart_count(),
             store_name=get_setting("store_name", "Dígalo con Flores"),
             now_year=datetime.now(timezone.utc).year,
             unread_notifications_count=unread_notifications_count,
             pagination_url=pagination_url,
+            assets=assets,
         )
 
 

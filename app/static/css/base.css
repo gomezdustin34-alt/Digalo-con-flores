@@ -168,12 +168,22 @@ img { max-width: 100%; display: block; }
 .section-header { text-align: center; margin-bottom: 44px; }
 .section-header h2 { font-size: 34px; margin-top: 8px; }
 
-/* Scroll reveal */
-.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); }
-.reveal.is-visible { opacity: 1; transform: translateY(0); }
+/* Aparición progresiva al hacer scroll.
+   Solo se oculta el contenido cuando hay JavaScript capaz de volver a mostrarlo
+   (clase .js en <html>): si el JS falla o está desactivado, todo se ve igual. */
+.js .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); }
+.js .reveal.is-visible { opacity: 1; transform: translateY(0); }
 @media (prefers-reduced-motion: reduce) {
-  .reveal { opacity: 1; transform: none; transition: none; }
+  .js .reveal { opacity: 1; transform: none; transition: none; }
   html { scroll-behavior: auto; }
+}
+
+/* Icono de las páginas de error (404/403/500) */
+.error-icon {
+  width: 76px; height: 76px; border-radius: 50%;
+  background: var(--blush); color: var(--gold);
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-bottom: 22px;
 }
 
 .skip-link {

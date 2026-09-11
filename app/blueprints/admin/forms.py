@@ -6,6 +6,8 @@ from wtforms import (
 )
 from wtforms.validators import DataRequired, Optional, Length, NumberRange
 
+from app.utils.icons import ICONOS
+
 
 class ProductForm(FlaskForm):
     name = StringField("Nombre", validators=[DataRequired(), Length(max=200)])
@@ -38,7 +40,7 @@ class ProductForm(FlaskForm):
 class CategoryForm(FlaskForm):
     name = StringField("Nombre", validators=[DataRequired(), Length(max=100)])
     description = TextAreaField("Descripción", validators=[Optional()])
-    icon = StringField("Ícono (emoji)", validators=[Optional(), Length(max=10)])
+    icon = SelectField("Ícono", choices=ICONOS, validators=[Optional()])
     sort_order = IntegerField("Orden", validators=[Optional()], default=0)
     is_active = BooleanField("Activa", default=True)
     image = FileField("Imagen", validators=[Optional(), FileAllowed(["jpg", "jpeg", "png", "webp"], "Solo imágenes.")])

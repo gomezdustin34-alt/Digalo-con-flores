@@ -15,7 +15,7 @@
       <tbody>
         {% for t in testimonials %}
         <tr>
-          <td><img class="table-thumb" src="{{ t.photo_url or url_for('static', filename='img/seed/testi1.jpg') }}" alt="" style="border-radius:50%;"></td>
+          <td><img class="table-thumb" src="{{ t.photo_url or url_for('static', filename='img/seed/testi1.jpg') }}" alt="" style="border-radius:50%;" width="44" height="44" loading="lazy" decoding="async"></td>
           <td>{{ t.name }}</td>
           <td style="max-width:320px;">{{ t.comment[:80] }}{{ '…' if t.comment|length > 80 }}</td>
           <td>{{ '★' * t.rating }}</td>

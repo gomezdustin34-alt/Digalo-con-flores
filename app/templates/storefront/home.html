@@ -1,5 +1,12 @@
 {% extends "base.html" %}
+{% set hero_image = get_content('hero_image') or url_for('static', filename='img/seed/hero.jpg') %}
 {% block title %}{{ store_name }} — Hay cosas que las palabras no pueden decir{% endblock %}
+
+{% block preload %}
+  {# La imagen del hero es el elemento más grande de la pantalla inicial (LCP):
+     se precarga con prioridad alta para que aparezca cuanto antes. #}
+  <link rel="preload" as="image" href="{{ hero_image }}" fetchpriority="high">
+{% endblock %}
 
 {% block content %}
 <section class="hero">
@@ -28,8 +35,8 @@
 
     <div class="hero-media reveal">
       <div class="frame">
-        {% set hero_image = get_content('hero_image') %}
-        <img src="{{ hero_image if hero_image else url_for('static', filename='img/seed/hero.jpg') }}" alt="Arreglo floral de Dígalo con Flores">
+        <img src="{{ hero_image }}" alt="Arreglo floral de {{ store_name }}"
+             width="900" height="1100" fetchpriority="high" decoding="async">
       </div>
     </div>
   </div>

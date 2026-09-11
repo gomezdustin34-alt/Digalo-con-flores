@@ -13,14 +13,14 @@ from app.models.content import SiteSection, Setting
 IMG = lambda name: f"/static/img/seed/{name}"
 
 CATEGORIES = [
-    dict(name="Rosas", slug="rosas", icon="🌹", image_url=IMG("cat-rosas.jpg")),
-    dict(name="Ramos", slug="ramos", icon="💐", image_url=IMG("cat-ramos.jpg")),
-    dict(name="Arreglos Florales", slug="arreglos-florales", icon="🌸", image_url=IMG("cat-arreglos.jpg")),
-    dict(name="Plantas", slug="plantas", icon="🌿", image_url=IMG("cat-plantas.jpg")),
-    dict(name="Cumpleaños", slug="cumpleanos", icon="🎂", image_url=IMG("prod1.jpg")),
-    dict(name="Aniversarios", slug="aniversarios", icon="💍", image_url=IMG("prod3.jpg")),
-    dict(name="Amor", slug="amor", icon="❤️", image_url=IMG("prod2.jpg")),
-    dict(name="Ocasiones Especiales", slug="ocasiones-especiales", icon="✨", image_url=IMG("prod4.jpg")),
+    dict(name="Rosas", slug="rosas", icon="rosa", image_url=IMG("cat-rosas.jpg")),
+    dict(name="Ramos", slug="ramos", icon="ramo", image_url=IMG("cat-ramos.jpg")),
+    dict(name="Arreglos Florales", slug="arreglos-florales", icon="arreglo", image_url=IMG("cat-arreglos.jpg")),
+    dict(name="Plantas", slug="plantas", icon="planta", image_url=IMG("cat-plantas.jpg")),
+    dict(name="Cumpleaños", slug="cumpleanos", icon="cumpleanos", image_url=IMG("prod1.jpg")),
+    dict(name="Aniversarios", slug="aniversarios", icon="aniversario", image_url=IMG("prod3.jpg")),
+    dict(name="Amor", slug="amor", icon="amor", image_url=IMG("prod2.jpg")),
+    dict(name="Ocasiones Especiales", slug="ocasiones-especiales", icon="especial", image_url=IMG("prod4.jpg")),
 ]
 
 PRODUCTS = [

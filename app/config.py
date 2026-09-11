@@ -3,11 +3,18 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Vercel (y otros entornos serverless) exponen esta variable. Allí el sistema de
+# archivos es de solo lectura salvo /tmp, y cada petición puede ejecutarse en una
+# instancia distinta.
+EN_SERVERLESS = bool(os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"))
+
 
 def _normalized_database_url():
     url = os.environ.get("DATABASE_URL")
     if not url:
-        return f"sqlite:///{BASE_DIR / 'instance' / 'digaloconflores.db'}"
+        # Sin base de datos configurada: en serverless solo /tmp es escribible.
+        destino = Path("/tmp") if EN_SERVERLESS else (BASE_DIR / "instance")
+        return f"sqlite:///{destino / 'digaloconflores.db'}"
     # Render/Heroku entregan "postgres://", SQLAlchemy 2.x exige "postgresql://"
     if url.startswith("postgres://"):
         url = url.replace("postgres://", "postgresql://", 1)
@@ -20,7 +27,20 @@ class Config:
     SQLALCHEMY_DATABASE_URI = _normalized_database_url()
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
+    # En serverless conviene no reutilizar conexiones entre invocaciones: se
+    # comprueban antes de usarlas y se reciclan pronto para no agotar el límite
+    # de conexiones de la base de datos.
+    SQLALCHEMY_ENGINE_OPTIONS = (
+        {"pool_pre_ping": True, "pool_recycle": 280, "pool_size": 1, "max_overflow": 2}
+        if not SQLALCHEMY_DATABASE_URI.startswith("sqlite")
+        else {"pool_pre_ping": True}
+    )
+
     WTF_CSRF_ENABLED = True
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = "Lax"
+    # Cookies solo por HTTPS en producción (en local seguirían sin funcionar)
+    SESSION_COOKIE_SECURE = EN_SERVERLESS or os.environ.get("FORCE_HTTPS") == "1"
 
     MAIL_SERVER = os.environ.get("MAIL_SERVER", "localhost")
     MAIL_PORT = int(os.environ.get("MAIL_PORT", 587))
@@ -34,7 +54,11 @@ class Config:
 
     RATELIMIT_STORAGE_URI = os.environ.get("RATELIMIT_STORAGE_URI", "memory://")
 
-    UPLOAD_FOLDER = str(BASE_DIR / "app" / "static" / "uploads")
+    # Los archivos subidos se guardan en la base de datos (ver app/utils/uploads.py),
+    # no en disco, para que funcionen en hosting serverless.
     MAX_CONTENT_LENGTH = 8 * 1024 * 1024  # 8 MB por subida
+
+    # Caché de los archivos estáticos servidos por Flask (en Vercel los sirve el CDN)
+    SEND_FILE_MAX_AGE_DEFAULT = 60 * 60 * 24 * 7
 
     DEBUG = os.environ.get("FLASK_DEBUG", "0") == "1"

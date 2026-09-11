@@ -31,15 +31,46 @@ def _raw_cart():
     return session.setdefault("cart", [])
 
 
-def add_to_cart(product_id, quantity=1, variation_label=None, price_delta=0,
+def cart_count():
+    """Número de unidades en el carrito, leído solo de la sesión.
+
+    No consulta la base de datos: se usa en el ícono del carrito que aparece en
+    todas las páginas, así que debe ser lo más barato posible.
+    """
+    try:
+        return sum(int(linea.get("quantity", 0)) for linea in session.get("cart", []))
+    except (TypeError, ValueError):
+        return 0
+
+
+MAX_QUANTITY = 99
+
+
+def add_to_cart(product_id, quantity=1, variation_id=None,
                  recipient_name=None, dedication_message=None, delivery_date=None, delivery_time=None):
+    """Agrega una línea al carrito.
+
+    El precio se calcula SIEMPRE en el servidor a partir del producto y —si
+    aplica— de la variación guardada en la base de datos. Nunca se acepta un
+    precio ni un ajuste de precio enviado por el navegador.
+    """
     product = Product.query.get_or_404(product_id)
+
+    variation_label = None
+    price_delta = 0
+    if variation_id is not None:
+        variation = next((v for v in product.variations if v.id == variation_id), None)
+        if variation is not None:
+            variation_label = f"{variation.kind}: {variation.value}"
+            price_delta = float(variation.price_delta or 0)
+
+    quantity = max(1, min(MAX_QUANTITY, int(quantity)))
     key = _line_key(product_id, variation_label, recipient_name, dedication_message, delivery_date, delivery_time)
 
     cart = _raw_cart()
     for line in cart:
         if line["key"] == key:
-            line["quantity"] += quantity
+            line["quantity"] = min(MAX_QUANTITY, line["quantity"] + quantity)
             session.modified = True
             return
 
@@ -47,7 +78,8 @@ def add_to_cart(product_id, quantity=1, variation_label=None, price_delta=0,
         "key": key,
         "product_id": product.id,
         "quantity": quantity,
-        "unit_price": float(product.price) + float(price_delta or 0),
+        "unit_price": float(product.price) + price_delta,
+        "variation_id": variation_id,
         "variation_label": variation_label,
         "recipient_name": recipient_name,
         "dedication_message": dedication_message,
@@ -61,7 +93,7 @@ def update_quantity(key, quantity):
     cart = _raw_cart()
     for line in cart:
         if line["key"] == key:
-            line["quantity"] = max(1, quantity)
+            line["quantity"] = max(1, min(MAX_QUANTITY, int(quantity)))
             break
     session.modified = True
 
@@ -105,11 +137,24 @@ def get_cart():
         product = Product.query.get(line["product_id"])
         if not product:
             continue
-        line_total = line["unit_price"] * line["quantity"]
+
+        # El precio se recalcula desde la base de datos en cada lectura, para que
+        # siempre refleje el precio vigente del producto y de su variación.
+        unit_price = float(product.price)
+        variation_id = line.get("variation_id")
+        if variation_id is not None:
+            variation = next((v for v in product.variations if v.id == variation_id), None)
+            if variation is not None:
+                unit_price += float(variation.price_delta or 0)
+
+        quantity = max(1, min(MAX_QUANTITY, int(line["quantity"])))
+        line_total = unit_price * quantity
         subtotal += line_total
-        count += line["quantity"]
+        count += quantity
         lines.append({
             **line,
+            "quantity": quantity,
+            "unit_price": unit_price,
             "product": product,
             "line_total": line_total,
         })

@@ -38,6 +38,10 @@ class Order(db.Model):
     dedication_message = db.Column(db.Text)
     recipient_name = db.Column(db.String(150))
 
+    # Marca si las unidades de este pedido ya fueron devueltas al inventario
+    # (al cancelarlo), para no devolverlas dos veces.
+    stock_restored = db.Column(db.Boolean, default=False, nullable=False)
+
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 

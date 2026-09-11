@@ -8,4 +8,14 @@ venv/
 _mockup_assets/
 .pytest_cache/
 flask_server.log
+server.log
+test_server.log
 .claude/
+.vercel/
+
+# Los archivos subidos ahora viven en la base de datos; esta carpeta solo
+# puede contener restos de instalaciones anteriores.
+app/static/uploads/
+
+# app/static/dist/ SÍ se versiona: Vercel lo sirve tal cual desde el CDN.
+.vscode/

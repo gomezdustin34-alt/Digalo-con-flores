@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "partials/icons.html" import cat_icon %}
 {% block title %}{{ page_title }} — {{ store_name }}{% endblock %}
 
 {% block content %}
@@ -37,7 +38,9 @@
         <div class="filter-option {{ 'active' if not category }}"><a href="{{ url_for('storefront.catalog') }}">Todas</a></div>
         {% for cat in categories %}
           <div class="filter-option {{ 'active' if category and category.id == cat.id }}">
-            <a href="{{ url_for('storefront.category', slug=cat.slug) }}">{{ cat.icon or '' }} {{ cat.name }}</a>
+            <a href="{{ url_for('storefront.category', slug=cat.slug) }}">
+              {{ cat_icon(cat.icon_key, 17) }}<span>{{ cat.name }}</span>
+            </a>
           </div>
         {% endfor %}
       </div>

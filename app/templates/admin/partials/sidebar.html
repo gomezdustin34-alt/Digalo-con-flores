@@ -7,7 +7,7 @@
   <div class="brand">
     <span class="brand-mark" style="width:42px; height:42px;">
       {% set logo_url = get_setting('logo_url') %}
-      {% if logo_url %}<img src="{{ logo_url }}" alt="{{ store_name }}">{% else %}<span class="script" style="font-size:11px;">Digalo</span>{% endif %}
+      {% if logo_url %}<img src="{{ logo_url }}" alt="{{ store_name }}" width="42" height="42" decoding="async">{% else %}<span class="script" style="font-size:11px;">Digalo</span>{% endif %}
     </span>
     <span class="brand-name"><span class="title">{{ store_name }}</span><span class="subtitle" style="color:#8C7F68;">PANEL</span></span>
   </div>

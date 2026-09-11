@@ -2,8 +2,12 @@
 {% block title %}Algo salió mal — {{ store_name }}{% endblock %}
 {% block content %}
 <div class="container section text-center">
-  <span style="font-size:64px;">🌷</span>
-  <h1 style="margin-top:20px;">Algo salió mal de nuestro lado</h1>
+  <span class="error-icon">
+    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 4.5 21 20H3z"/><path d="M12 10v4"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/>
+    </svg>
+  </span>
+  <h1>Algo salió mal de nuestro lado</h1>
   <p>Ya estamos trabajando en solucionarlo. Intenta de nuevo en unos minutos.</p>
   <a href="{{ url_for('storefront.home') }}" class="btn btn-primary" style="margin-top:10px;">Volver al inicio</a>
 </div>

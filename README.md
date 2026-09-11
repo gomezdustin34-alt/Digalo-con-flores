@@ -31,12 +31,22 @@ Cámbiala o crea nuevos usuarios desde **Panel → Usuarios y roles** (solo visi
 
 ## Estructura
 
-- `app/models/` — modelos SQLAlchemy (usuarios, productos, pedidos, cupones, contenido, etc.)
-- `app/blueprints/` — storefront (tienda pública), auth, cart, checkout, account (mi cuenta), admin (panel)
+- `app/models/` — modelos SQLAlchemy (usuarios, productos, pedidos, cupones, contenido, archivos, etc.)
+- `app/blueprints/` — storefront (tienda pública), auth, cart, checkout, account (mi cuenta), admin (panel), media (archivos)
 - `app/blueprints/checkout/whatsapp.py` — arma el mensaje del pedido y el link `wa.me` que recibe el cliente al terminar el checkout
 - `app/services/email/` — envío de emails vía SMTP genérico (Flask-Mail). Sin `MAIL_USERNAME` configurado, los emails se simulan (quedan en el log) en vez de enviarse.
 - `app/templates/` — Jinja2, organizadas por blueprint
-- `app/static/` — CSS (tokens de marca, componentes, tienda, admin), JS, imágenes de ejemplo
+- `app/static/` — CSS, JS e imágenes de ejemplo. `dist/` contiene los paquetes compilados.
+- `scripts/build_assets.py` — une y minifica CSS/JS por área, con hash para caché permanente
+- `api/index.py` — punto de entrada serverless para Vercel
+- `vercel.json` — rutas y cabeceras de caché del CDN
+
+## Archivos subidos
+
+Las imágenes que se suben desde el panel **se guardan en la base de datos**, no
+en disco, para que el sitio funcione en hosting serverless (Vercel), donde el
+sistema de archivos es efímero. Se optimizan al subirlas (máximo 1400px de
+ancho, recompresión) y se sirven por `/media/<archivo>` con caché de un año.
 
 ## Cómo funciona el pedido (sin pasarela de pago)
 
@@ -46,7 +56,13 @@ El cliente arma su carrito, llena sus datos de entrega en el checkout, y al conf
 
 Define `MAIL_SERVER`, `MAIL_USERNAME`, `MAIL_PASSWORD` y `MAIL_DEFAULT_SENDER` en `.env` con tu proveedor SMTP (Gmail, Zoho, tu hosting, etc.). Con esto configurado, se envían automáticamente: bienvenida al suscribirse, confirmación de pedido, aviso al dueño de la tienda (`contact_email` en Configuración) por cada pedido nuevo, cambios de estado de pedido, recuperación de contraseña y campañas de marketing.
 
-## Despliegue en producción (Render)
+## Despliegue en producción (Vercel) — recomendado
+
+Ver la guía paso a paso en **[DESPLIEGUE-VERCEL.md](DESPLIEGUE-VERCEL.md)**.
+Resumen: base PostgreSQL externa (Neon/Supabase), `python scripts/build_assets.py`,
+`git push`, y crear el proyecto en Vercel con las variables de entorno.
+
+## Despliegue alternativo (Render)
 
 El proyecto ya incluye `render.yaml`, `Procfile` y soporte para PostgreSQL — listo para desplegar en [Render](https://render.com) con su plan gratuito:
 

@@ -6,7 +6,7 @@
   <div class="auth-card">
     <span class="brand-mark" style="width:56px; height:56px; display:flex;">
       {% set logo_url = get_setting('logo_url') %}
-      {% if logo_url %}<img src="{{ logo_url }}" alt="{{ store_name }}">{% else %}<span class="script">Digalo</span>{% endif %}
+      {% if logo_url %}<img src="{{ logo_url }}" alt="{{ store_name }}" width="56" height="56" decoding="async">{% else %}<span class="script">Digalo</span>{% endif %}
     </span>
     <h1>Bienvenido/a de nuevo</h1>
     <p class="subtitle">Inicia sesión para ver tus pedidos y favoritos.</p>

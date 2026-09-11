@@ -2,9 +2,13 @@
 {% block title %}Acceso restringido — {{ store_name }}{% endblock %}
 {% block content %}
 <div class="container section text-center">
-  <span style="font-size:64px;">🔒</span>
-  <h1 style="margin-top:20px;">No tienes acceso a esta página</h1>
-  <p>Si crees que esto es un error, contáctanos.</p>
+  <span class="error-icon">
+    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+    </svg>
+  </span>
+  <h1>No tienes acceso a esta página</h1>
+  <p>Si crees que es un error, contáctanos.</p>
   <a href="{{ url_for('storefront.home') }}" class="btn btn-primary" style="margin-top:10px;">Volver al inicio</a>
 </div>
 {% endblock %}

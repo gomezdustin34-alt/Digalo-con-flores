@@ -17,7 +17,7 @@
       <tbody>
         {% for p in products %}
         <tr>
-          <td><img class="table-thumb" src="{{ p.primary_image or url_for('static', filename='img/seed/prod1.jpg') }}" alt=""></td>
+          <td><img class="table-thumb" src="{{ p.primary_image or url_for('static', filename='img/seed/prod1.jpg') }}" alt="" width="44" height="44" loading="lazy" decoding="async"></td>
           <td>
             {{ p.name }}
             {% if p.is_featured %}<span class="badge badge-featured" style="margin-left:6px;">Destacado</span>{% endif %}

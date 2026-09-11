@@ -12,7 +12,7 @@
 <div class="container section" style="display:flex; gap:50px; align-items:center; flex-wrap:wrap;">
   <div style="flex:1; min-width:280px;">
     <div style="border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow-md); aspect-ratio:4/3.4;">
-      <img src="{{ get_content('about_image') or url_for('static', filename='img/seed/cat-ramos.jpg') }}" alt="Nuestro equipo" style="width:100%; height:100%; object-fit:cover;">
+      <img src="{{ get_content('about_image') or url_for('static', filename='img/seed/cat-ramos.jpg') }}" alt="Nuestro equipo" width="800" height="680" loading="lazy" decoding="async" style="width:100%; height:100%; object-fit:cover;">
     </div>
   </div>
   <div style="flex:1; min-width:280px;">
@@ -32,7 +32,7 @@
       {% for t in testimonials %}
         <div class="testimonial-card reveal">
           <div class="testimonial-head">
-            <img src="{{ t.photo_url or url_for('static', filename='img/seed/testi1.jpg') }}" alt="{{ t.name }}">
+            <img src="{{ t.photo_url or url_for('static', filename='img/seed/testi1.jpg') }}" alt="{{ t.name }}" width="50" height="50" loading="lazy" decoding="async">
             <div>
               <div class="testimonial-name">{{ t.name }}</div>
               <div class="stars">{{ '★' * t.rating }}{{ '☆' * (5 - t.rating) }}</div>

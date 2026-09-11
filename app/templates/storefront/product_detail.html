@@ -51,14 +51,13 @@
 
       {% if product.variations %}
         <div class="field">
-          <label for="variation_label">Variación</label>
-          <select name="variation_label" id="variation_label" onchange="document.getElementById('price_delta').value = this.selectedOptions[0].dataset.delta || 0">
+          <label for="variation_id">Variación</label>
+          <select name="variation_id" id="variation_id">
             {% for v in product.variations %}
-              <option value="{{ v.kind }}: {{ v.value }}" data-delta="{{ v.price_delta }}">{{ v.kind }}: {{ v.value }} {% if v.price_delta %}(+{{ format_currency(v.price_delta) }}){% endif %}</option>
+              <option value="{{ v.id }}">{{ v.kind }}: {{ v.value }}{% if v.price_delta %} (+{{ format_currency(v.price_delta) }}){% endif %}</option>
             {% endfor %}
           </select>
         </div>
-        <input type="hidden" name="price_delta" id="price_delta" value="0">
       {% endif %}
 
       {% if product.allow_dedication or product.allow_recipient_name or product.allow_delivery_datetime %}

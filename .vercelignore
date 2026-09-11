@@ -1,0 +1,15 @@
+.git
+.venv
+venv
+__pycache__
+*.pyc
+*.db
+instance/
+migrations/
+scripts/
+_mockup_assets/
+app/static/uploads/
+*.log
+.pytest_cache/
+.claude/
+DESPLIEGUE-VERCEL.md

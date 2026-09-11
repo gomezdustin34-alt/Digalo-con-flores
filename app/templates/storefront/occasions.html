@@ -1,24 +1,32 @@
 {% extends "base.html" %}
+{% from "partials/icons.html" import cat_icon %}
 {% block title %}Ocasiones — {{ store_name }}{% endblock %}
+{% block meta_description %}Encuentra el arreglo floral ideal para cada ocasión: aniversarios, cumpleaños, agradecimientos y momentos especiales.{% endblock %}
 
 {% block content %}
 <div class="page-header">
   <div class="container">
     <div class="breadcrumb"><a href="{{ url_for('storefront.home') }}">Inicio</a> / <span class="current">Ocasiones</span></div>
     <h1>Flores para cada ocasión</h1>
-    <p>Encuentra el arreglo perfecto para el momento que quieres celebrar.</p>
+    <p>Elige el momento que quieres celebrar y te mostramos lo que mejor le queda.</p>
   </div>
 </div>
 
 <div class="container section">
   {% if categories %}
-    <div class="category-grid">
+    <div class="category-list">
       {% for cat in categories %}
-        <a href="{{ url_for('storefront.category', slug=cat.slug) }}" class="category-card reveal">
-          <div class="category-photo">
-            <img src="{{ cat.image_url or url_for('static', filename='img/seed/cat-arreglos.jpg') }}" alt="{{ cat.name }}">
-          </div>
-          <span>{{ cat.icon or '' }} {{ cat.name }}</span>
+        <a href="{{ url_for('storefront.category', slug=cat.slug) }}" class="category-tile reveal">
+          <span class="category-tile-icon">{{ cat_icon(cat.icon_key, 26) }}</span>
+          <span class="category-tile-body">
+            <span class="category-tile-name">{{ cat.name }}</span>
+            <span class="category-tile-count">
+              {{ cat.products.filter_by(is_active=True).count() }} producto{{ 's' if cat.products.filter_by(is_active=True).count() != 1 }}
+            </span>
+          </span>
+          <span class="category-tile-arrow" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+          </span>
         </a>
       {% endfor %}
     </div>

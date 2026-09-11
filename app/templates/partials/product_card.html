@@ -1,7 +1,9 @@
 <div class="product-card reveal">
   <div class="product-media">
     <a href="{{ url_for('storefront.product_detail', slug=product.slug) }}">
-      <img src="{{ product.primary_image or url_for('static', filename='img/seed/prod1.jpg') }}" alt="{{ product.name }}" loading="lazy">
+      <img src="{{ product.primary_image or url_for('static', filename='img/seed/prod1.jpg') }}"
+           alt="{{ product.name }}" width="420" height="357"
+           loading="lazy" decoding="async">
     </a>
     {% if product.is_new %}<span class="badge badge-new">NUEVO</span>
     {% elif product.is_on_sale %}<span class="badge badge-sale">-{{ product.discount_percent }}%</span>

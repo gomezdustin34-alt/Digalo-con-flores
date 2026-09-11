@@ -3,6 +3,24 @@ from flask import render_template, request, redirect, url_for, flash, jsonify
 from app.blueprints.cart import bp
 from app.blueprints.cart import cart_service
 
+MAX_QUANTITY = 99
+
+
+def _safe_quantity(raw, default=1):
+    """Convierte la cantidad recibida del formulario a un entero seguro (1..99)."""
+    try:
+        value = int(str(raw).strip())
+    except (TypeError, ValueError):
+        value = default
+    return max(1, min(MAX_QUANTITY, value))
+
+
+def _safe_int(raw):
+    try:
+        return int(str(raw).strip())
+    except (TypeError, ValueError):
+        return None
+
 
 @bp.route("/")
 def view_cart():
@@ -12,16 +30,17 @@ def view_cart():
 
 @bp.route("/agregar/<int:product_id>", methods=["POST"])
 def add(product_id):
-    quantity = int(request.form.get("quantity", 1))
-    variation_label = request.form.get("variation_label") or None
-    price_delta = request.form.get("price_delta", 0) or 0
+    quantity = _safe_quantity(request.form.get("quantity", 1))
+    # El precio NUNCA viene del formulario: se resuelve en el servidor a partir
+    # del id de la variación guardada en la base de datos.
+    variation_id = _safe_int(request.form.get("variation_id"))
     recipient_name = request.form.get("recipient_name") or None
     dedication_message = request.form.get("dedication_message") or None
     delivery_date = request.form.get("delivery_date") or None
     delivery_time = request.form.get("delivery_time") or None
 
     cart_service.add_to_cart(
-        product_id, quantity, variation_label, price_delta,
+        product_id, quantity, variation_id,
         recipient_name, dedication_message, delivery_date, delivery_time,
     )
 
@@ -35,7 +54,7 @@ def add(product_id):
 
 @bp.route("/actualizar/<key>", methods=["POST"])
 def update(key):
-    quantity = int(request.form.get("quantity", 1))
+    quantity = _safe_quantity(request.form.get("quantity", 1))
     cart_service.update_quantity(key, quantity)
     return redirect(url_for("cart.view_cart"))
 

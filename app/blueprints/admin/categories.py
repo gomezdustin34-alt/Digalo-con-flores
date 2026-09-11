@@ -21,6 +21,11 @@ def category_new():
         category = Category(slug=unique_slug(Category, form.name.data))
         form.populate_obj(category)
         category.slug = unique_slug(Category, form.name.data)
+        # Sin un orden explícito, la categoría nueva va al final de la lista
+        # (si todas quedaran en 0, el orden sería impredecible).
+        if not form.sort_order.data:
+            ultimo = db.session.query(db.func.max(Category.sort_order)).scalar()
+            category.sort_order = (ultimo or 0) + 1
         image_url = save_upload(form.image.data, "categories")
         if image_url:
             category.image_url = image_url

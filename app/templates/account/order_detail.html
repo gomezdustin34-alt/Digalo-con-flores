@@ -17,7 +17,7 @@
 
     {% for item in order.items %}
       <div class="cart-line">
-        <img src="{{ item.product.primary_image if item.product else url_for('static', filename='img/seed/prod1.jpg') }}" alt="{{ item.product_name }}">
+        <img src="{{ item.product.primary_image if item.product else url_for('static', filename='img/seed/prod1.jpg') }}" alt="{{ item.product_name }}" width="84" height="84" loading="lazy" decoding="async">
         <div class="cart-line-info">
           <h4>{{ item.product_name }}</h4>
           <div class="meta">

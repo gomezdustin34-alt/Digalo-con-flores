@@ -11,6 +11,7 @@ from app.models.notification import Notification
 from app.models.contact import ContactMessage
 from app.models.review import Testimonial
 from app.models.favorite import Favorite
+from app.models.media import MediaFile
 
 __all__ = [
     "User", "Address",
@@ -26,4 +27,5 @@ __all__ = [
     "ContactMessage",
     "Testimonial",
     "Favorite",
+    "MediaFile",
 ]
