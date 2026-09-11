@@ -1,14 +1,21 @@
+import os
+import tempfile
+
 from flask import Flask, render_template
 from dotenv import load_dotenv
 
 load_dotenv()
 
-from app.config import Config
+from app.config import EN_SERVERLESS, Config
 from app.extensions import db, migrate, login_manager, csrf, mail, limiter
 
 
 def create_app(config_class=Config):
-    app = Flask(__name__, instance_relative_config=True)
+    # En serverless el disco de la aplicacion es de solo lectura: Flask-SQLAlchemy
+    # intenta crear la carpeta "instance" al arrancar y eso tumbaria la funcion
+    # entera. /tmp es lo unico escribible, asi que la instancia vive ahi.
+    instance_path = os.path.join(tempfile.gettempdir(), "instance") if EN_SERVERLESS else None
+    app = Flask(__name__, instance_relative_config=True, instance_path=instance_path)
     app.config.from_object(config_class)
 
     # Detrás del proxy de Vercel/Render: respeta el host y el esquema https
