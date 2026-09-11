@@ -1,7 +1,7 @@
 import os
 import tempfile
 
-from flask import Flask, render_template
+from flask import Flask, flash, jsonify, redirect, render_template, request, url_for
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -31,6 +31,19 @@ def create_app(config_class=Config):
     limiter.init_app(app)
 
     from app.models.user import User
+
+    @login_manager.unauthorized_handler
+    def no_autorizado():
+        """Sin sesion iniciada.
+
+        A una peticion AJAX hay que responderle 401: si le devolvemos el
+        redirect a la pagina de login, `fetch` lo sigue en silencio, recibe
+        HTML donde esperaba JSON y el boton parece no hacer nada.
+        """
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return jsonify(ok=False, error="login_required", login_url=url_for("auth.login")), 401
+        flash(login_manager.login_message, login_manager.login_message_category)
+        return redirect(url_for("auth.login", next=request.path))
 
     @login_manager.user_loader
     def load_user(user_id):

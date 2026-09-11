@@ -16,6 +16,18 @@ def _post_login_redirect(user):
     return url_for("storefront.home")
 
 
+def _destino_seguro():
+    """Devuelve el `next` solo si es una ruta interna.
+
+    Sin esta comprobacion, un enlace con ?next=https://sitio-falso.com llevaria
+    al usuario fuera del sitio justo despues de iniciar sesion.
+    """
+    destino = request.args.get("next")
+    if destino and destino.startswith("/") and not destino.startswith("//"):
+        return destino
+    return None
+
+
 @bp.route("/iniciar-sesion", methods=["GET", "POST"])
 @limiter.limit("10 per minute")
 def login():
@@ -30,8 +42,7 @@ def login():
                 flash("Tu cuenta ha sido bloqueada. Contáctanos para más información.", "danger")
                 return render_template("auth/login.html", form=form)
             login_user(user, remember=form.remember.data)
-            next_url = request.args.get("next")
-            return redirect(next_url or _post_login_redirect(user))
+            return redirect(_destino_seguro() or _post_login_redirect(user))
         flash("Email o contraseña incorrectos.", "danger")
 
     return render_template("auth/login.html", form=form)

@@ -149,19 +149,28 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".fav-toggle").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const productId = btn.dataset.productId;
+      if (btn.dataset.enviando === "1") return;
+      btn.dataset.enviando = "1";
+
       try {
         const response = await fetch(`/mi-cuenta/favoritos/${productId}/alternar`, {
           method: "POST",
           headers: { "X-Requested-With": "XMLHttpRequest", "X-CSRFToken": getCsrfToken() },
         });
-        if (response.status === 401) {
-          window.location.href = "/cuenta/iniciar-sesion";
+
+        // Sin sesion: al login, y de vuelta a donde estaba al terminar.
+        if (response.status === 401 || response.redirected) {
+          const volverA = window.location.pathname + window.location.search;
+          window.location.href = "/cuenta/iniciar-sesion?next=" + encodeURIComponent(volverA);
           return;
         }
+
         const data = await response.json();
         btn.classList.toggle("is-active", data.is_favorite);
       } catch (err) {
         /* silencioso */
+      } finally {
+        delete btn.dataset.enviando;
       }
     });
   });
