@@ -7,6 +7,8 @@ from app.utils.uploads import save_upload
 
 SETTING_FIELDS = [
     "store_name", "contact_email", "contact_phone", "whatsapp",
+    # A donde llegan los avisos de pedido nuevo (privado, no se publica)
+    "order_notification_email",
     "address", "hours", "currency",
     # Identificacion legal: aparece en las paginas de privacidad y terminos
     "legal_name", "legal_id",

@@ -44,7 +44,10 @@ def notify_new_order(order):
     """Avisa del pedido por los canales configurados. Devuelve qué se logró enviar."""
     resultado = {"email": False, "whatsapp": False}
 
-    destino = get_setting("contact_email")
+    # El correo de avisos puede ser distinto del que se publica en la web:
+    # el publico lo ve cualquiera, este es donde la floristeria quiere que le
+    # suene el telefono cuando entra un pedido.
+    destino = get_setting("order_notification_email") or get_setting("contact_email")
     if destino:
         try:
             get_email_provider().send(
