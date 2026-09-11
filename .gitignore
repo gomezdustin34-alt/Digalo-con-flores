@@ -19,3 +19,10 @@ app/static/uploads/
 
 # app/static/dist/ SÍ se versiona: Vercel lo sirve tal cual desde el CDN.
 .vscode/
+
+.vercel
+.env.local
+
+# Skills que instala la integracion de Neon en Vercel
+.agents/
+skills-lock.json
