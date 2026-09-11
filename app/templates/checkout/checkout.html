@@ -30,17 +30,36 @@
       <div class="field">{{ form.address.label }}{{ form.address() }}{% for e in form.address.errors %}<div class="error">{{ e }}</div>{% endfor %}</div>
       <div class="field">{{ form.city.label }}{{ form.city() }}{% for e in form.city.errors %}<div class="error">{{ e }}</div>{% endfor %}</div>
       <div class="field">{{ form.additional_info.label }}{{ form.additional_info(rows=2, placeholder="Referencias, apto, portería, etc.") }}</div>
+      {% if not regalo.delivery_date or not regalo.delivery_time %}
       <div class="form-row">
-        <div class="field">{{ form.delivery_date.label }}{{ form.delivery_date() }}</div>
-        <div class="field">{{ form.delivery_time.label }}{{ form.delivery_time() }}</div>
+        {% if not regalo.delivery_date %}<div class="field">{{ form.delivery_date.label }}{{ form.delivery_date() }}</div>{% endif %}
+        {% if not regalo.delivery_time %}<div class="field">{{ form.delivery_time.label }}{{ form.delivery_time() }}</div>{% endif %}
       </div>
+      {% endif %}
     </fieldset>
 
+    {% if regalo.recipient_name or regalo.dedication_message or regalo.delivery_date or regalo.delivery_time %}
+    {# Ya lo escribio al elegir el producto: se lo mostramos en vez de volver a preguntar. #}
+    <fieldset>
+      <legend>Datos del regalo</legend>
+      <div class="gift-summary">
+        <dl>
+          {% if regalo.recipient_name %}<div><dt>Para</dt><dd>{{ regalo.recipient_name }}</dd></div>{% endif %}
+          {% if regalo.delivery_date %}<div><dt>Fecha de entrega</dt><dd>{{ regalo.delivery_date }}{% if regalo.delivery_time %} · {{ regalo.delivery_time }}{% endif %}</dd></div>{% endif %}
+          {% if regalo.dedication_message %}<div><dt>Dedicatoria</dt><dd>{{ regalo.dedication_message }}</dd></div>{% endif %}
+        </dl>
+        <a href="{{ url_for('cart.view_cart') }}" class="gift-summary-edit">Cambiar</a>
+      </div>
+    </fieldset>
+    {% endif %}
+
+    {% if not regalo.recipient_name or not regalo.dedication_message %}
     <fieldset>
       <legend>Dedicatoria (opcional)</legend>
-      <div class="field">{{ form.recipient_name.label }}{{ form.recipient_name(placeholder="Nombre de quien recibe") }}</div>
-      <div class="field">{{ form.dedication_message.label }}{{ form.dedication_message(rows=3, placeholder="Escribe tu mensaje...") }}</div>
+      {% if not regalo.recipient_name %}<div class="field">{{ form.recipient_name.label }}{{ form.recipient_name(placeholder="Nombre de quien recibe") }}</div>{% endif %}
+      {% if not regalo.dedication_message %}<div class="field">{{ form.dedication_message.label }}{{ form.dedication_message(rows=3, placeholder="Escribe tu mensaje...") }}</div>{% endif %}
     </fieldset>
+    {% endif %}
 
     <button type="submit" class="btn btn-primary btn-block">Enviar pedido por WhatsApp</button>
     <p class="field help" style="text-align:center; margin-top:10px;">Después de enviar tus datos, te llevamos a WhatsApp para confirmar el pedido y coordinar el pago.</p>

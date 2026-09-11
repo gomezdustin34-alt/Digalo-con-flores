@@ -89,6 +89,23 @@ def add_to_cart(product_id, quantity=1, variation_id=None,
     session.modified = True
 
 
+CAMPOS_REGALO = ("recipient_name", "dedication_message", "delivery_date", "delivery_time")
+
+
+def gift_details():
+    """Datos del regalo que el cliente ya escribio en la pagina del producto.
+
+    Devuelve el primer valor no vacio de cada campo entre todas las lineas, para
+    que el checkout no vuelva a preguntar lo que ya sabe.
+    """
+    datos = {campo: None for campo in CAMPOS_REGALO}
+    for line in _raw_cart():
+        for campo in CAMPOS_REGALO:
+            if not datos[campo] and line.get(campo):
+                datos[campo] = line[campo]
+    return datos
+
+
 def update_quantity(key, quantity):
     cart = _raw_cart()
     for line in cart:

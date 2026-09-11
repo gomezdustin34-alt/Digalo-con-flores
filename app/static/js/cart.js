@@ -4,9 +4,23 @@ function getCsrfToken() {
 
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".add-to-cart-form").forEach((form) => {
+    // "Comprar ahora" debe viajar como envio normal: el servidor agrega al
+    // carrito y redirige al checkout. Si lo interceptaramos por AJAX, el
+    // navegador se quedaria en la pagina del producto.
+    const botonComprar = form.querySelector(".btn-comprar");
+    if (botonComprar) {
+      botonComprar.addEventListener("click", () => {
+        form.dataset.comprar = "1";
+      });
+    }
+
     form.addEventListener("submit", async (e) => {
+      if (form.dataset.comprar === "1") {
+        delete form.dataset.comprar;
+        return;
+      }
       e.preventDefault();
-      const button = form.querySelector("button[type=submit]");
+      const button = form.querySelector("button[type=submit]:not(.btn-comprar)");
       const originalText = button ? button.textContent : "";
       if (button) {
         button.disabled = true;

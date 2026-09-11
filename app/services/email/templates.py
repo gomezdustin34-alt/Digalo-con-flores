@@ -32,19 +32,54 @@ def order_confirmation_email(order):
     return _wrapper(inner)
 
 
-def admin_new_order_email(order):
+def admin_new_order_email(order, panel_url=None):
+    """Aviso para la floristeria. `panel_url` es el enlace directo al pedido."""
     items_html = "".join(
         f"<tr><td style='padding:6px 0;'>{i.product_name} x{i.quantity}</td>"
         f"<td style='padding:6px 0; text-align:right;'>${i.line_total:,.0f}</td></tr>"
         for i in order.items
     )
+
+    def fila(etiqueta, valor):
+        if not valor:
+            return ""
+        return (
+            f"<tr><td style='padding:4px 0; color:#9A8D80; font-size:13px; width:38%;'>{etiqueta}</td>"
+            f"<td style='padding:4px 0; color:#3A332C; font-size:13px;'>{valor}</td></tr>"
+        )
+
+    fecha = order.delivery_date.strftime("%d/%m/%Y") if order.delivery_date else ""
+    if fecha and order.delivery_time:
+        fecha = f"{fecha} · {order.delivery_time}"
+
+    detalles = (
+        fila("Cliente", order.customer_name)
+        + fila("Teléfono", order.customer_phone)
+        + fila("Email", order.customer_email)
+        + fila("Destinatario", order.recipient_name)
+        + fila("Entrega", order.delivery_address)
+        + fila("Fecha", fecha)
+        + fila("Dedicatoria", order.dedication_message)
+    )
+
+    boton = ""
+    if panel_url:
+        boton = f"""
+      <table role="presentation" style="margin:24px 0;"><tr><td style="background:#8A6A3A; border-radius:999px;">
+        <a href="{panel_url}" style="display:inline-block; padding:14px 30px; color:#FFFDF8; font-size:15px; font-weight:bold; text-decoration:none;">
+          Ver y recibir el pedido
+        </a>
+      </td></tr></table>
+      <p style="color:#9A8D80; font-size:12px;">Si el botón no funciona, copia este enlace: {panel_url}</p>
+    """
+
     inner = f"""
       <h2 style="color:#3A332C; margin-top:0;">🌸 ¡Nuevo pedido recibido!</h2>
-      <p style="color:#6B6058;">Pedido <strong>{order.number}</strong> de <strong>{order.customer_name}</strong> ({order.customer_email}).</p>
-      <table style="width:100%; border-collapse:collapse; margin:16px 0;">{items_html}</table>
+      <p style="color:#6B6058;">Pedido <strong>{order.number}</strong> por <strong>${order.total:,.0f}</strong>.</p>
+      <table style="width:100%; border-collapse:collapse; margin:16px 0;">{detalles}</table>
+      <table style="width:100%; border-collapse:collapse; margin:16px 0; border-top:1px solid #F0DCE3;">{items_html}</table>
       <p style="color:#3A332C; font-size:16px;"><strong>Total: ${order.total:,.0f}</strong></p>
-      <p style="color:#6B6058;">Entrega: {order.delivery_address or '—'}{' · ' + order.delivery_date.strftime('%d/%m/%Y') if order.delivery_date else ''}</p>
-      <p style="color:#6B6058; font-size:13px;">Ingresa al panel administrativo para ver el detalle completo y gestionar el pedido.</p>
+      {boton}
     """
     return _wrapper(inner)
 

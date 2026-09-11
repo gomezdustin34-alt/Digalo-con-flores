@@ -50,6 +50,14 @@ class Config:
     MAIL_DEFAULT_SENDER = os.environ.get("MAIL_DEFAULT_SENDER", "no-reply@digaloconflores.com")
 
     SITE_URL = os.environ.get("SITE_URL", "http://127.0.0.1:5000")
+
+    # Aviso de pedidos nuevos por WhatsApp (API oficial de Meta). Si faltan,
+    # simplemente no se envia el aviso; ver app/services/whatsapp.py.
+    WHATSAPP_TOKEN = os.environ.get("WHATSAPP_TOKEN")
+    WHATSAPP_PHONE_ID = os.environ.get("WHATSAPP_PHONE_ID")
+    WHATSAPP_TO = os.environ.get("WHATSAPP_TO")
+    WHATSAPP_TEMPLATE = os.environ.get("WHATSAPP_TEMPLATE")
+    WHATSAPP_LANG = os.environ.get("WHATSAPP_LANG", "es")
     CURRENCY = os.environ.get("CURRENCY", "COP")
 
     RATELIMIT_STORAGE_URI = os.environ.get("RATELIMIT_STORAGE_URI", "memory://")

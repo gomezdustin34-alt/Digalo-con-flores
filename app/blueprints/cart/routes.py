@@ -44,6 +44,10 @@ def add(product_id):
         recipient_name, dedication_message, delivery_date, delivery_time,
     )
 
+    # "Comprar ahora": se agrega al carrito y se va derecho a pagar
+    if request.form.get("accion") == "comprar":
+        return redirect(url_for("checkout.checkout"))
+
     if request.headers.get("X-Requested-With") == "XMLHttpRequest":
         cart = cart_service.get_cart()
         return jsonify(ok=True, count=cart["count"])
