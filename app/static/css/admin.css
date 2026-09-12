@@ -144,3 +144,17 @@ table.admin-table tr:hover td { background: var(--cream-soft); }
 .bulk-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .bulk-danger { color: var(--danger); border-color: var(--danger); }
 .bulk-danger:hover { background: var(--danger); color: var(--cream); }
+
+/* "Seleccionar todos" con letras, encima de la tabla */
+.select-all-bar {
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  padding: 0 2px 12px;
+}
+.select-all {
+  display: inline-flex; align-items: center; gap: 9px; cursor: pointer;
+  font-size: 13.5px; color: var(--ink-soft); user-select: none;
+}
+.select-all input[type="checkbox"] { width: 17px; height: 17px; cursor: pointer; accent-color: var(--gold); }
+.select-all:hover { color: var(--gold-dark); }
+.select-all-count { color: var(--ink-faint); }
+.select-all-global span { color: var(--gold-dark); font-weight: 500; }

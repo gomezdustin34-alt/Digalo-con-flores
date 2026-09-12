@@ -28,6 +28,25 @@
 <form action="{{ url_for('admin.orders_bulk') }}" method="post" id="lote-pedidos">
   <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
   <input type="hidden" name="volver" value="{{ request.full_path }}">
+  <input type="hidden" name="vista" value="{{ vista }}">
+  <input type="hidden" name="estado" value="{{ status }}">
+
+  {# Un "seleccionar todos" con letras y siempre visible: la casilla suelta del
+     encabezado de la tabla pasaba desapercibida. #}
+  {% if orders %}
+  <div class="select-all-bar">
+    <label class="select-all">
+      <input type="checkbox" id="marcar-todos-visible">
+      <span>Seleccionar todos<span class="select-all-count"> ({{ orders|length }} en esta página)</span></span>
+    </label>
+    {% if page_obj.pages > 1 %}
+      <label class="select-all select-all-global" id="marcar-global" hidden>
+        <input type="checkbox" name="todos" value="1" id="marcar-todas-paginas" data-total="{{ page_obj.total }}">
+        <span>Incluir los {{ page_obj.total }} de todas las páginas</span>
+      </label>
+    {% endif %}
+  </div>
+  {% endif %}
 
   {# Barra de acciones: aparece sola en cuanto se marca la primera casilla. #}
   <div class="bulk-bar" id="barra-lote" hidden>
@@ -100,7 +119,6 @@
       </div>
       <p class="admin-hint" style="text-align:center; margin-top:10px;">
         {{ page_obj.total }} pedidos en total · página {{ page_obj.page }} de {{ page_obj.pages }}
-        · «Seleccionar todos» marca los de esta página
       </p>
     {% endif %}
   </div>

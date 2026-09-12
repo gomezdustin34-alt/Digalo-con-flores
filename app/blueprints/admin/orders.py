@@ -15,12 +15,8 @@ POR_PAGINA = 25
 ESTADOS_TERMINADOS = ("entregado", "cancelado")
 
 
-@bp.route("/pedidos")
-def orders_list():
-    status = request.args.get("status", "")
-    vista = request.args.get("vista", "activos")  # activos | archivados | todos
-    page = request.args.get("page", 1, type=int)
-
+def _query_de_la_vista(vista, status):
+    """La consulta que corresponde a la pestaña y al estado elegidos."""
     query = Order.query
     if vista == "activos":
         query = query.filter(Order.archived_at.is_(None))
@@ -28,8 +24,16 @@ def orders_list():
         query = query.filter(Order.archived_at.isnot(None))
     if status:
         query = query.filter_by(status=status)
+    return query
 
-    page_obj = query.order_by(Order.created_at.desc()).paginate(
+
+@bp.route("/pedidos")
+def orders_list():
+    status = request.args.get("status", "")
+    vista = request.args.get("vista", "activos")  # activos | archivados | todos
+    page = request.args.get("page", 1, type=int)
+
+    page_obj = _query_de_la_vista(vista, status).order_by(Order.created_at.desc()).paginate(
         page=page, per_page=POR_PAGINA, error_out=False
     )
 
@@ -136,11 +140,21 @@ def orders_bulk():
     if not volver.startswith("/admin/") or volver.startswith("//"):
         volver = url_for("admin.orders_list")
 
-    if not ids:
+    # "Incluir los N de todas las páginas": la accion se aplica a todo lo que
+    # cumple el filtro actual, no solo a lo que se ve en pantalla.
+    if request.form.get("todos") == "1":
+        pedidos = _query_de_la_vista(
+            request.form.get("vista", "activos"), request.form.get("estado", "")
+        ).all()
+    elif ids:
+        pedidos = Order.query.filter(Order.id.in_(ids)).all()
+    else:
         flash("No marcaste ningún pedido.", "info")
         return redirect(volver)
 
-    pedidos = Order.query.filter(Order.id.in_(ids)).all()
+    if not pedidos:
+        flash("No había pedidos que coincidieran.", "info")
+        return redirect(volver)
 
     if accion == "archivar":
         ahora = datetime.now(timezone.utc)

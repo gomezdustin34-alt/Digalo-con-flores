@@ -104,37 +104,63 @@ document.addEventListener("DOMContentLoaded", () => {
 // La casilla del encabezado marca todas las de la página; la barra de acciones
 // aparece sola en cuanto hay algo marcado y dice cuántos son.
 document.addEventListener("DOMContentLoaded", () => {
-  const todas = document.getElementById("marcar-todos");
   const barra = document.getElementById("barra-lote");
   const casillas = Array.from(document.querySelectorAll(".marca-pedido"));
   if (!casillas.length) return;
 
+  // Hay dos "seleccionar todos": el de la cabecera de la tabla y el rotulado
+  // de arriba. Van sincronizados, marque el que marque.
+  const maestras = ["marcar-todos", "marcar-todos-visible"]
+    .map((id) => document.getElementById(id))
+    .filter(Boolean);
+  const bloqueGlobal = document.getElementById("marcar-global");
+  const todasLasPaginas = document.getElementById("marcar-todas-paginas");
+
   function refrescar() {
     const marcadas = casillas.filter((c) => c.checked);
+    const todasMarcadas = marcadas.length === casillas.length && casillas.length > 0;
+
     if (barra) {
       barra.hidden = marcadas.length === 0;
       const contador = barra.querySelector("[data-seleccionados]");
-      if (contador) contador.textContent = marcadas.length;
+      if (contador) {
+        contador.textContent = todasLasPaginas?.checked
+          ? todasLasPaginas.dataset.total || marcadas.length
+          : marcadas.length;
+      }
     }
-    if (todas) {
-      todas.checked = marcadas.length === casillas.length && casillas.length > 0;
-      todas.indeterminate = marcadas.length > 0 && marcadas.length < casillas.length;
+    maestras.forEach((m) => {
+      m.checked = todasMarcadas;
+      m.indeterminate = marcadas.length > 0 && !todasMarcadas;
+    });
+
+    // La opcion de abarcar todas las paginas solo tiene sentido cuando ya
+    // marcaste todo lo de esta.
+    if (bloqueGlobal) {
+      bloqueGlobal.hidden = !todasMarcadas;
+      if (!todasMarcadas && todasLasPaginas) todasLasPaginas.checked = false;
     }
   }
 
-  todas?.addEventListener("change", () => {
-    casillas.forEach((c) => {
-      c.checked = todas.checked;
-    });
-    refrescar();
-  });
+  maestras.forEach((m) =>
+    m.addEventListener("change", () => {
+      casillas.forEach((c) => {
+        c.checked = m.checked;
+      });
+      refrescar();
+    })
+  );
   casillas.forEach((c) => c.addEventListener("change", refrescar));
+  todasLasPaginas?.addEventListener("change", refrescar);
   refrescar();
 
   // Confirmación antes de un borrado en lote, diciendo cuántos son.
   document.querySelectorAll("[data-confirm-lote]").forEach((boton) => {
     boton.addEventListener("click", (e) => {
-      const cuantos = casillas.filter((c) => c.checked).length;
+      const global = document.getElementById("marcar-todas-paginas");
+      const cuantos = global?.checked
+        ? parseInt(global.dataset.total || "0", 10) || casillas.filter((c) => c.checked).length
+        : casillas.filter((c) => c.checked).length;
       if (!cuantos) {
         e.preventDefault();
         return;
