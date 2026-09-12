@@ -12,10 +12,11 @@
         <div class="count">{{ page_obj.total }} producto{{ 's' if page_obj.total != 1 }}{% if category %} · flores frescas seleccionadas a mano{% endif %}</div>
       </div>
       <form class="toolbar" method="get">
+        {# La busqueda se hace desde la lupa del menu; aqui solo se ordena.
+           El termino buscado viaja escondido para no perderlo al reordenar. #}
         {% for key in ['q', 'price_min', 'price_max', 'in_stock', 'is_new', 'on_sale'] %}
           {% if request.args.get(key) %}<input type="hidden" name="{{ key }}" value="{{ request.args.get(key) }}">{% endif %}
         {% endfor %}
-        <input type="text" name="q" value="{{ request.args.get('q', '') }}" placeholder="Buscar en {{ page_title }}">
         <select name="sort" onchange="this.form.submit()">
           <option value="mas_vendidos" {{ 'selected' if request.args.get('sort', 'mas_vendidos') == 'mas_vendidos' }}>Más vendidos</option>
           <option value="nuevos" {{ 'selected' if request.args.get('sort') == 'nuevos' }}>Nuevos</option>

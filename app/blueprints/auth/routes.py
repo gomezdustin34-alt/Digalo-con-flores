@@ -16,16 +16,22 @@ def _post_login_redirect(user):
     return url_for("storefront.home")
 
 
-def _destino_seguro():
+def _destino_seguro(user=None):
     """Devuelve el `next` solo si es una ruta interna.
 
     Sin esta comprobacion, un enlace con ?next=https://sitio-falso.com llevaria
     al usuario fuera del sitio justo despues de iniciar sesion.
+
+    Ademas, a quien trabaja en el panel no se le manda a la tienda: si entra
+    con sus credenciales, quiere administrar, no comprar. Para ver la tienda
+    esta el boton "Ver tienda", que la abre aparte.
     """
     destino = request.args.get("next")
-    if destino and destino.startswith("/") and not destino.startswith("//"):
-        return destino
-    return None
+    if not destino or not destino.startswith("/") or destino.startswith("//"):
+        return None
+    if user is not None and user.role != "customer" and not destino.startswith("/admin"):
+        return None
+    return destino
 
 
 @bp.route("/iniciar-sesion", methods=["GET", "POST"])
@@ -42,7 +48,7 @@ def login():
                 flash("Tu cuenta ha sido bloqueada. Contáctanos para más información.", "danger")
                 return render_template("auth/login.html", form=form)
             login_user(user, remember=form.remember.data)
-            return redirect(_destino_seguro() or _post_login_redirect(user))
+            return redirect(_destino_seguro(user) or _post_login_redirect(user))
         flash("Email o contraseña incorrectos.", "danger")
 
     return render_template("auth/login.html", form=form)
