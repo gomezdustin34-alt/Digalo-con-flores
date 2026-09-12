@@ -43,6 +43,27 @@ def _fecha(valor):
         return None
 
 
+def vincular_pedidos_invitado(user):
+    """Asocia a la cuenta los pedidos que se hicieron como invitado con su correo.
+
+    Mucha gente compra sin cuenta y la crea despues. Sin esto, esos pedidos
+    quedaban con user_id vacio y "Mis pedidos" salia vacio aunque el correo
+    coincidiera. Se llama al iniciar sesion y al registrarse.
+    """
+    correo = (user.email or "").lower().strip()
+    if not correo:
+        return 0
+    pedidos = Order.query.filter(
+        Order.user_id.is_(None),
+        db.func.lower(Order.guest_email) == correo,
+    ).all()
+    for pedido in pedidos:
+        pedido.user_id = user.id
+    if pedidos:
+        db.session.commit()
+    return len(pedidos)
+
+
 def create_order_from_cart(form):
     cart = cart_service.get_cart()
     if not cart["lines"]:

@@ -9,6 +9,7 @@ from app.models.user import User
 from app.services.email import get_email_provider
 from app.utils.content import notify
 from app.utils.urls import url_absoluta
+from app.blueprints.checkout.order_service import vincular_pedidos_invitado
 from app.utils.auditoria import seguridad
 
 
@@ -52,6 +53,7 @@ def login():
                 return render_template("auth/login.html", form=form)
             login_user(user, remember=form.remember.data)
             seguridad("inicio de sesión", email=user.email)
+            vincular_pedidos_invitado(user)
             return redirect(_destino_seguro(user) or _post_login_redirect(user))
         # Se registra el intento fallido, pero el mensaje sigue siendo el mismo
         # para todos: decir "ese correo no existe" permitiria averiguar quien
@@ -88,6 +90,7 @@ def register():
             db.session.commit()
             seguridad("cuenta creada", email=user.email)
             login_user(user)
+            vincular_pedidos_invitado(user)
             flash("¡Cuenta creada! Bienvenido/a a Dígalo con Flores.", "success")
             return redirect(url_for("storefront.home"))
 

@@ -4,11 +4,22 @@ from flask_login import login_required, login_user, current_user
 from app.blueprints.account import bp
 from app.blueprints.account.forms import ProfileForm, ChangePasswordForm, AddressForm
 from app.extensions import db
+from sqlalchemy import or_, func
+
 from app.models.order import Order
 from app.models.user import Address
 from app.models.favorite import Favorite
 from app.models.product import Product
 from app.utils.auditoria import seguridad
+
+
+def _mios():
+    """Pedidos del usuario: los suyos por cuenta o los que hizo como invitado
+    con su mismo correo (aún no vinculados)."""
+    return or_(
+        Order.user_id == current_user.id,
+        func.lower(Order.guest_email) == (current_user.email or "").lower(),
+    )
 
 
 @bp.before_request
@@ -20,19 +31,19 @@ def require_login():
 
 @bp.route("/")
 def dashboard():
-    orders = Order.query.filter_by(user_id=current_user.id).order_by(Order.created_at.desc()).limit(5).all()
+    orders = Order.query.filter(_mios()).order_by(Order.created_at.desc()).limit(5).all()
     return render_template("account/dashboard.html", orders=orders)
 
 
 @bp.route("/pedidos")
 def orders():
-    all_orders = Order.query.filter_by(user_id=current_user.id).order_by(Order.created_at.desc()).all()
+    all_orders = Order.query.filter(_mios()).order_by(Order.created_at.desc()).all()
     return render_template("account/orders.html", orders=all_orders)
 
 
 @bp.route("/pedidos/<number>")
 def order_detail(number):
-    order = Order.query.filter_by(number=number, user_id=current_user.id).first_or_404()
+    order = Order.query.filter(Order.number == number).filter(_mios()).first_or_404()
     return render_template("account/order_detail.html", order=order)
 
 
