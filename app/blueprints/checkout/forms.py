@@ -1,6 +1,8 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField, DateField, SelectField
-from wtforms.validators import DataRequired, Email, Optional, Length
+from wtforms.validators import DataRequired, Email, Optional, Length, ValidationError
+
+from app.utils.fechas import hoy
 
 
 class CheckoutForm(FlaskForm):
@@ -21,3 +23,8 @@ class CheckoutForm(FlaskForm):
     )
     recipient_name = StringField("Nombre del destinatario", validators=[Optional(), Length(max=150)])
     dedication_message = TextAreaField("Mensaje de dedicatoria", validators=[Optional(), Length(max=500)])
+
+    def validate_delivery_date(self, campo):
+        """Las flores se preparan el mismo dia: una fecha pasada no tiene sentido."""
+        if campo.data and campo.data < hoy():
+            raise ValidationError("La fecha de entrega no puede ser anterior a hoy.")

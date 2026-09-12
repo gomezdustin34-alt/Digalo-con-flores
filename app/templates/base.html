@@ -18,8 +18,12 @@
   <meta property="og:site_name" content="{{ store_name }}">
   {% block og_extra %}{% endblock %}
 
-  {% if get_setting('favicon_url') %}
-    <link rel="icon" href="{{ get_setting('favicon_url') }}">
+  {# El icono de la pestaña: el favicon propio si lo hay; si no, el logo de la
+     marca; y solo como ultimo recurso la flor que trae el proyecto. #}
+  {% set icono = get_setting('favicon_url') or get_setting('logo_url') %}
+  {% if icono %}
+    <link rel="icon" href="{{ icono }}">
+    <link rel="apple-touch-icon" href="{{ icono }}">
   {% else %}
     <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/favicon.svg') }}">
   {% endif %}

@@ -59,6 +59,7 @@ class Config:
     WHATSAPP_TEMPLATE = os.environ.get("WHATSAPP_TEMPLATE")
     WHATSAPP_LANG = os.environ.get("WHATSAPP_LANG", "es")
     CURRENCY = os.environ.get("CURRENCY", "COP")
+    TIMEZONE = os.environ.get("TIMEZONE", "America/Bogota")
 
     RATELIMIT_STORAGE_URI = os.environ.get("RATELIMIT_STORAGE_URI", "memory://")
 

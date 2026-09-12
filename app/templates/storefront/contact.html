@@ -41,7 +41,8 @@
         {{ form.message(placeholder="Cuéntanos más...", rows=5) }}
         {% for e in form.message.errors %}<div class="error">{{ e }}</div>{% endfor %}
       </div>
-<p class="form-legal-note">Al enviar este formulario aceptas nuestra <a href="{{ url_for('storefront.privacy') }}">Política de Privacidad</a> y el tratamiento de tus datos para atender tu solicitud.</p>
+<p class="form-required-note">Los campos con <b>*</b> son obligatorios.</p>
+      <p class="form-legal-note">Al enviar este formulario aceptas nuestra <a href="{{ url_for('storefront.privacy') }}">Política de Privacidad</a> y el tratamiento de tus datos para atender tu solicitud.</p>
       <button type="submit" class="btn btn-primary">Enviar mensaje</button>
     </form>
   </div>

@@ -9,13 +9,15 @@ from app.models.order import Order
 from app.models.product import Product
 from app.models.user import User
 from app.models.subscriber import Subscriber
+from app.utils.fechas import ahora as ahora_local, hoy as hoy_local, inicio_del_dia, inicio_del_mes
 
 
 @bp.route("/")
 def dashboard():
-    now = datetime.now(timezone.utc)
-    today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
-    month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    # Los cortes de dia y de mes son los de la floristeria, no los del servidor
+    now = ahora_local()
+    today_start = inicio_del_dia()
+    month_start = inicio_del_mes()
 
     total_sales = db.session.query(func.coalesce(func.sum(Order.total), 0)).filter(Order.status != "cancelado").scalar()
     sales_today = db.session.query(func.coalesce(func.sum(Order.total), 0)).filter(
@@ -50,10 +52,13 @@ def dashboard():
     days = []
     sales_series = []
     for i in range(6, -1, -1):
-        day = (now - timedelta(days=i)).date()
+        day = hoy_local() - timedelta(days=i)
+        desde = inicio_del_dia(day)
+        hasta = inicio_del_dia(day + timedelta(days=1))
         day_total = db.session.query(func.coalesce(func.sum(Order.total), 0)).filter(
             Order.status != "cancelado",
-            func.date(Order.created_at) == day.isoformat(),
+            Order.created_at >= desde,
+            Order.created_at < hasta,
         ).scalar()
         days.append(day.strftime("%d/%m"))
         sales_series.append(float(day_total or 0))

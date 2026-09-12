@@ -53,7 +53,8 @@ def checkout():
         return redirect(url_for("checkout.whatsapp_redirect", order_number=order.number))
 
     return render_template(
-        "checkout/checkout.html", form=form, cart=cart, regalo=cart_service.gift_details()
+        "checkout/checkout.html", form=form, cart=cart,
+        regalo=cart_service.gift_details(),
     )
 
 

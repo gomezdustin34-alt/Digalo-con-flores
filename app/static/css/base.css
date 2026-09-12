@@ -191,3 +191,33 @@ img { max-width: 100%; display: block; }
   padding: 10px 16px; z-index: 1000; border-radius: 0 0 8px 0;
 }
 .skip-link:focus { left: 0; }
+
+/* Campos obligatorios: la etiqueta del campo lleva un asterisco.
+   Se apoya en el atributo `required` que ya ponen los formularios, asi no hay
+   que marcar a mano cada etiqueta de cada plantilla. */
+.field:has(> input[required]) > label::after,
+.field:has(> select[required]) > label::after,
+.field:has(> textarea[required]) > label::after,
+.field:has(input[required]) label::after {
+  content: " *";
+  color: var(--danger);
+  font-weight: 600;
+}
+.form-required-note {
+  font-size: 12.5px; color: var(--ink-faint); margin-bottom: 14px;
+}
+.form-required-note b { color: var(--danger); }
+
+/* Aviso flotante (por ejemplo, al intentar guardar un favorito sin sesion) */
+.toast {
+  position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%);
+  z-index: 80; max-width: min(92vw, 420px);
+  display: flex; align-items: center; gap: 10px;
+  background: var(--ink); color: var(--cream);
+  padding: 14px 20px; border-radius: var(--radius-full);
+  box-shadow: var(--shadow-lg); font-size: 14px; line-height: 1.4;
+  animation: toast-in 0.3s var(--ease) both;
+}
+.toast svg { flex-shrink: 0; }
+@keyframes toast-in { from { opacity: 0; transform: translate(-50%, 12px); } to { opacity: 1; transform: translate(-50%, 0); } }
+@media (prefers-reduced-motion: reduce) { .toast { animation: none; } }

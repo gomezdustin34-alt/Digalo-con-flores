@@ -1,3 +1,16 @@
+function mostrarAviso(texto) {
+  document.querySelector(".toast")?.remove();
+  const aviso = document.createElement("div");
+  aviso.className = "toast";
+  aviso.setAttribute("role", "status");
+  aviso.innerHTML =
+    '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">' +
+    '<circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>';
+  aviso.appendChild(document.createTextNode(texto));
+  document.body.appendChild(aviso);
+  setTimeout(() => aviso.remove(), 5000);
+}
+
 function getCsrfToken() {
   return document.querySelector('meta[name="csrf-token"]')?.content || "";
 }
@@ -68,10 +81,14 @@ document.addEventListener("DOMContentLoaded", () => {
           headers: { "X-Requested-With": "XMLHttpRequest", "X-CSRFToken": getCsrfToken() },
         });
 
-        // Sin sesion: al login, y de vuelta a donde estaba al terminar.
+        // Sin sesion: se avisa y despues se lleva al login, de donde volvera
+        // a esta misma pagina.
         if (response.status === 401 || response.redirected) {
           const volverA = window.location.pathname + window.location.search;
-          window.location.href = "/cuenta/iniciar-sesion?next=" + encodeURIComponent(volverA);
+          mostrarAviso("Inicia sesión para guardar tus favoritos.");
+          setTimeout(() => {
+            window.location.href = "/cuenta/iniciar-sesion?next=" + encodeURIComponent(volverA);
+          }, 1600);
           return;
         }
 

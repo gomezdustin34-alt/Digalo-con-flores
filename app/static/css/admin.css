@@ -111,3 +111,12 @@ table.admin-table tr:hover td { background: var(--cream-soft); }
   font-size: 12.5px; line-height: 1.6; color: var(--ink-faint); max-width: 620px;
 }
 .admin-hint a { color: var(--coral); text-decoration: underline; text-underline-offset: 2px; }
+
+/* La campana se mueve un momento cuando entra una notificacion nueva */
+.admin-topbar-right a.suena { animation: campanita 0.6s ease 2; }
+@keyframes campanita {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(-12deg); }
+  75% { transform: rotate(12deg); }
+}
+@media (prefers-reduced-motion: reduce) { .admin-topbar-right a.suena { animation: none; } }

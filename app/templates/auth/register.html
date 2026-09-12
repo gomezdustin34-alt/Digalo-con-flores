@@ -19,7 +19,8 @@
         <div class="field">{{ form.password.label }}{{ form.password() }}{% for e in form.password.errors %}<div class="error">{{ e }}</div>{% endfor %}</div>
         <div class="field">{{ form.confirm_password.label }}{{ form.confirm_password() }}{% for e in form.confirm_password.errors %}<div class="error">{{ e }}</div>{% endfor %}</div>
       </div>
-<p class="form-legal-note">Al crear tu cuenta aceptas los <a href="{{ url_for('storefront.terms') }}">Términos y Condiciones</a> y la <a href="{{ url_for('storefront.privacy') }}">Política de Privacidad</a>.</p>
+<p class="form-required-note">Los campos con <b>*</b> son obligatorios.</p>
+      <p class="form-legal-note">Al crear tu cuenta aceptas los <a href="{{ url_for('storefront.terms') }}">Términos y Condiciones</a> y la <a href="{{ url_for('storefront.privacy') }}">Política de Privacidad</a>.</p>
       <button type="submit" class="btn btn-primary btn-block">Crear cuenta</button>
     </form>
     <div class="auth-footer-link">¿Ya tienes cuenta? <a href="{{ url_for('auth.login') }}">Inicia sesión</a></div>

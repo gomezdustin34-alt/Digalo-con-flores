@@ -39,9 +39,9 @@
     {% if product.is_out_of_stock %}
       <span class="stock-pill out-stock">Agotado</span>
     {% elif product.is_low_stock %}
-      <span class="stock-pill low-stock">¡Últimas unidades!</span>
+      <span class="stock-pill low-stock">¡Últimas {{ product.stock }} {{ 'unidad' if product.stock == 1 else 'unidades' }}!</span>
     {% else %}
-      <span class="stock-pill in-stock">Disponible</span>
+      <span class="stock-pill in-stock">Disponible — {{ product.stock }} unidades</span>
     {% endif %}
 
     <p style="margin-top:18px;">{{ product.short_description or '' }}</p>
@@ -79,7 +79,7 @@
         <div class="form-row">
           <div class="field">
             <label for="delivery_date">Fecha de entrega</label>
-            <input type="date" name="delivery_date" id="delivery_date">
+            <input type="date" name="delivery_date" id="delivery_date" min="{{ hoy }}">
           </div>
           <div class="field">
             <label for="delivery_time">Hora aproximada</label>
@@ -98,7 +98,8 @@
       <div style="display:flex; align-items:center; gap:16px; margin-top:20px;">
         <div class="qty-stepper">
           <button type="button" class="qty-minus" aria-label="Restar">−</button>
-          <input type="number" name="quantity" value="1" min="1">
+          <input type="number" name="quantity" value="1" min="1"
+                 {% if not product.is_out_of_stock %}max="{{ product.stock }}"{% endif %}>
           <button type="button" class="qty-plus" aria-label="Sumar">+</button>
         </div>
         <button type="submit" name="accion" value="comprar" class="btn btn-primary btn-comprar" {{ 'disabled' if product.is_out_of_stock }}>

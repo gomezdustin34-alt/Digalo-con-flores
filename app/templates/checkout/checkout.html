@@ -13,6 +13,8 @@
   <form class="checkout-form" method="post" novalidate>
     {{ form.hidden_tag() }}
 
+    <p class="form-required-note">Los campos con <b>*</b> son obligatorios.</p>
+
     <fieldset>
       <legend>Datos de contacto</legend>
       <div class="form-row">
@@ -32,7 +34,7 @@
       <div class="field">{{ form.additional_info.label }}{{ form.additional_info(rows=2, placeholder="Referencias, apto, portería, etc.") }}</div>
       {% if not regalo.delivery_date or not regalo.delivery_time %}
       <div class="form-row">
-        {% if not regalo.delivery_date %}<div class="field">{{ form.delivery_date.label }}{{ form.delivery_date() }}</div>{% endif %}
+        {% if not regalo.delivery_date %}<div class="field">{{ form.delivery_date.label }}{{ form.delivery_date(min=hoy) }}{% for e in form.delivery_date.errors %}<div class="error">{{ e }}</div>{% endfor %}</div>{% endif %}
         {% if not regalo.delivery_time %}<div class="field">{{ form.delivery_time.label }}{{ form.delivery_time() }}</div>{% endif %}
       </div>
       {% endif %}

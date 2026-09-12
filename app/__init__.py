@@ -77,6 +77,7 @@ def register_context_processors(app):
     from flask import request, url_for
     from app.utils.helpers import format_currency, get_setting
     from app.utils.content import get_content, is_section_visible
+    from app.utils.fechas import hoy as hoy_local
     from app.blueprints.cart.cart_service import cart_count
 
     def pagination_url(page):
@@ -103,6 +104,7 @@ def register_context_processors(app):
             cart_count=cart_count(),
             store_name=get_setting("store_name", "Dígalo con Flores"),
             now_year=datetime.now(timezone.utc).year,
+            hoy=hoy_local().isoformat(),
             unread_notifications_count=unread_notifications_count,
             pagination_url=pagination_url,
             assets=assets,
