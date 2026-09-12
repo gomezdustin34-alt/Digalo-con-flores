@@ -83,5 +83,19 @@ class StaffUserForm(FlaskForm):
     ])
     # PasswordField y no StringField: antes la clave se escribia a la vista de
     # cualquiera que estuviera mirando la pantalla.
-    password = PasswordField("Contraseña (dejar en blanco para no cambiar)",
-                             validators=[Optional(), Length(min=10)])
+    password = PasswordField("Contraseña", validators=[Optional(), Length(min=10)])
+
+    def __init__(self, *args, es_nuevo=False, **kwargs):
+        """`es_nuevo` hace obligatoria la contraseña al crear la cuenta.
+
+        Al editar se deja vacia para no cambiarla, pero al crear no puede
+        faltar: antes se generaba una aleatoria que nadie conocia y la cuenta
+        nacia inaccesible.
+        """
+        super().__init__(*args, **kwargs)
+        if es_nuevo:
+            self.password.label.text = "Contraseña para esta persona"
+            self.password.validators = [DataRequired(message="Defínele una contraseña."),
+                                        Length(min=10, message="Mínimo 10 caracteres.")]
+        else:
+            self.password.label.text = "Contraseña (dejar en blanco para no cambiarla)"

@@ -1,5 +1,3 @@
-import secrets
-
 from flask import render_template, redirect, url_for, flash
 from flask_login import current_user
 
@@ -20,7 +18,7 @@ def staff_list():
 @bp.route("/usuarios/nuevo", methods=["GET", "POST"])
 @roles_required("super_admin")
 def staff_new():
-    form = StaffUserForm()
+    form = StaffUserForm(es_nuevo=True)
     if form.validate_on_submit():
         existing = User.query.filter_by(email=form.email.data.lower().strip()).first()
         if existing:
@@ -32,7 +30,7 @@ def staff_new():
                 email=form.email.data.lower().strip(),
                 role=form.role.data,
             )
-            user.set_password(form.password.data or secrets.token_urlsafe(12))
+            user.set_password(form.password.data)
             db.session.add(user)
             db.session.commit()
             flash("Usuario del panel creado.", "success")
