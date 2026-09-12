@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Seguir mi pedido — {{ store_name }}{% endblock %}
+{% block meta_description %}Consulta el estado de tu pedido con el número y el correo con el que lo hiciste.{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="{{ url_for('storefront.home') }}">Inicio</a> / <span class="current">Seguir mi pedido</span></div>
+    <h1>Seguir mi pedido</h1>
+  </div>
+</div>
+
+<div class="container section">
+  <div class="auth-card" style="max-width:480px; margin:0 auto;">
+    <p style="color:var(--ink-soft); font-size:14.5px; margin-bottom:20px;">
+      Escribe el número que te dimos al hacer el pedido (empieza por <strong>DCF-</strong>) y el correo
+      que usaste. Te mostramos en qué va.
+    </p>
+    <form method="post" novalidate>
+      {{ form.hidden_tag() }}
+      <p class="form-required-note">Los campos con <b>*</b> son obligatorios.</p>
+      <div class="field">
+        {{ form.number.label }}
+        {{ form.number(placeholder="DCF-XXXXXXXX") }}
+        {% for e in form.number.errors %}<div class="error">{{ e }}</div>{% endfor %}
+      </div>
+      <div class="field">
+        {{ form.email.label }}
+        {{ form.email(placeholder="tu@correo.com") }}
+        {% for e in form.email.errors %}<div class="error">{{ e }}</div>{% endfor %}
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Ver mi pedido</button>
+    </form>
+
+    <p style="margin-top:22px; font-size:13.5px; color:var(--ink-faint);">
+      {% if current_user.is_authenticated %}
+        También puedes verlos todos en <a href="{{ url_for('account.orders') }}">Mis pedidos</a>.
+      {% else %}
+        ¿Perdiste el número? Escríbenos por
+        <a href="{{ url_for('storefront.contact') }}">el formulario de contacto</a> y lo buscamos.
+      {% endif %}
+    </p>
+  </div>
+</div>
+{% endblock %}

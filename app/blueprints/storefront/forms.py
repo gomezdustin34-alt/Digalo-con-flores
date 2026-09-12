@@ -13,3 +13,9 @@ class ContactForm(FlaskForm):
 
 class NewsletterForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired(), Email()])
+
+
+class SeguimientoForm(FlaskForm):
+    """Consulta del estado de un pedido sin necesidad de tener cuenta."""
+    number = StringField("Número de pedido", validators=[DataRequired(), Length(max=20)])
+    email = StringField("Correo con el que hiciste el pedido", validators=[DataRequired(), Email()])

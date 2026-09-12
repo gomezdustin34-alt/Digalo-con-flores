@@ -45,6 +45,32 @@
         </div>
         <button type="submit" class="btn btn-primary btn-block">Actualizar estado</button>
       </form>
+      <p class="admin-hint" style="margin-top:12px;">
+        Al marcarlo <b>entregado</b> o <b>cancelado</b> el pedido se archiva solo: sale de la lista
+        de pendientes y queda guardado en «Archivados».
+      </p>
+
+      {% if order.is_archived %}
+        <p class="admin-hint" style="margin-top:14px;">
+          Archivado el {{ order.archived_at.strftime('%d/%m/%Y') }}.
+        </p>
+        <form action="{{ url_for('admin.order_unarchive', order_id=order.id) }}" method="post" style="margin-top:10px;">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn btn-outline btn-block">Devolver a la lista</button>
+        </form>
+        <form action="{{ url_for('admin.order_delete', order_id=order.id) }}" method="post" style="margin-top:10px;"
+              data-confirm="¿Eliminar el pedido {{ order.number }} para siempre? No se puede deshacer y dejará de contar en las ventas.">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn btn-outline btn-block" style="color:var(--danger); border-color:var(--danger);">
+            Eliminar definitivamente
+          </button>
+        </form>
+      {% else %}
+        <form action="{{ url_for('admin.order_archive', order_id=order.id) }}" method="post" style="margin-top:10px;">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button type="submit" class="btn btn-outline btn-block">Archivar</button>
+        </form>
+      {% endif %}
     </div>
 
     <div class="admin-panel">

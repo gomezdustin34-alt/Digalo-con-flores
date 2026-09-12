@@ -27,6 +27,30 @@
     </div>
   {% endif %}
 
+  {# Si no llegan a enviar el WhatsApp, este es el unico hilo que les queda
+     para volver a su pedido. Por eso va destacado y no como una nota al pie. #}
+  <div class="order-keep">
+    <h2>Guarda tu número de pedido</h2>
+    <p>
+      Con <strong>{{ order.number }}</strong> y tu correo puedes volver a ver este pedido cuando
+      quieras, aunque cierres esta página.
+    </p>
+    <div class="order-keep-actions">
+      {% if current_user.is_authenticated %}
+        <a href="{{ url_for('account.order_detail', number=order.number) }}" class="btn btn-outline btn-sm">Ver mi pedido</a>
+        <a href="{{ url_for('account.orders') }}" class="btn btn-outline btn-sm">Todos mis pedidos</a>
+      {% else %}
+        <a href="{{ url_for('storefront.track_order') }}" class="btn btn-outline btn-sm">Seguir mi pedido</a>
+        <a href="{{ url_for('auth.register') }}" class="btn btn-outline btn-sm">Crear una cuenta</a>
+      {% endif %}
+    </div>
+    {% if not current_user.is_authenticated %}
+      <p class="order-keep-tip">
+        Con una cuenta no tienes que apuntar nada: tus pedidos quedan guardados ahí.
+      </p>
+    {% endif %}
+  </div>
+
   <a href="{{ url_for('storefront.home') }}" style="display:inline-block; margin-top:20px; font-size:13.5px;">← Volver al inicio</a>
 </div>
 {% endblock %}

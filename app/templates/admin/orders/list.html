@@ -5,11 +5,24 @@
 {% block content %}
 <div class="toolbar-admin">
   <div class="filter-pills">
-    <a href="{{ url_for('admin.orders_list') }}" class="{{ 'active' if not status }}">Todos</a>
-    {% for s in statuses %}
-      <a href="{{ url_for('admin.orders_list', status=s) }}" class="{{ 'active' if status == s }}">{{ s.replace('_',' ')|capitalize }}</a>
-    {% endfor %}
+    <a href="{{ url_for('admin.orders_list') }}" class="{{ 'active' if vista == 'activos' }}">En curso ({{ activos }})</a>
+    <a href="{{ url_for('admin.orders_list', vista='archivados') }}" class="{{ 'active' if vista == 'archivados' }}">Archivados ({{ archivados }})</a>
+    <a href="{{ url_for('admin.orders_list', vista='todos') }}" class="{{ 'active' if vista == 'todos' }}">Todos</a>
   </div>
+  {% if vista == 'activos' and terminados_sin_archivar %}
+    <form action="{{ url_for('admin.orders_archive_finished') }}" method="post"
+          data-confirm="¿Archivar los {{ terminados_sin_archivar }} pedidos entregados o cancelados? Podrás verlos en «Archivados».">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button type="submit" class="btn btn-outline btn-sm">Archivar {{ terminados_sin_archivar }} terminados</button>
+    </form>
+  {% endif %}
+</div>
+
+<div class="filter-pills" style="margin-bottom:18px;">
+  <a href="{{ url_for('admin.orders_list', vista=vista) }}" class="{{ 'active' if not status }}">Todos los estados</a>
+  {% for s in statuses %}
+    <a href="{{ url_for('admin.orders_list', status=s, vista=vista) }}" class="{{ 'active' if status == s }}">{{ s.replace('_',' ')|capitalize }}</a>
+  {% endfor %}
 </div>
 
 <div class="admin-panel">
@@ -30,13 +43,53 @@
             <a href="{{ url_for('admin.order_detail', order_id=order.id) }}" title="Ver">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
             </a>
+            {% if order.is_archived %}
+              <form action="{{ url_for('admin.order_unarchive', order_id=order.id) }}" method="post" style="display:inline;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="icon-action" title="Devolver a la lista">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+                </button>
+              </form>
+              <form action="{{ url_for('admin.order_delete', order_id=order.id) }}" method="post" style="display:inline;"
+                    data-confirm="¿Eliminar el pedido {{ order.number }} para siempre? Esto no se puede deshacer y desaparecerá también de las ventas.">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="icon-action danger" title="Eliminar definitivamente">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>
+                </button>
+              </form>
+            {% else %}
+              <form action="{{ url_for('admin.order_archive', order_id=order.id) }}" method="post" style="display:inline;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="icon-action" title="Archivar">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="4"/><path d="M5 8v12h14V8"/><path d="M10 12h4"/></svg>
+                </button>
+              </form>
+            {% endif %}
           </td>
         </tr>
         {% else %}
-        <tr><td colspan="8" style="color:var(--ink-faint);">No hay pedidos todavía.</td></tr>
+        <tr><td colspan="8" style="color:var(--ink-faint);">
+          {% if vista == 'archivados' %}No hay pedidos archivados.
+          {% elif status %}No hay pedidos con ese estado.
+          {% else %}No hay pedidos en curso. Los entregados están en «Archivados».{% endif %}
+        </td></tr>
         {% endfor %}
       </tbody>
     </table>
   </div>
+
+  {% if page_obj.pages > 1 %}
+    <div class="pagination">
+      {% for p in page_obj.iter_pages() %}
+        {% if p %}
+          <a href="{{ url_for('admin.orders_list', vista=vista, status=status or None, page=p) }}"
+             class="{{ 'current' if p == page_obj.page }}">{{ p }}</a>
+        {% else %}<span>…</span>{% endif %}
+      {% endfor %}
+    </div>
+    <p class="admin-hint" style="text-align:center; margin-top:10px;">
+      {{ page_obj.total }} pedidos en total · página {{ page_obj.page }} de {{ page_obj.pages }}
+    </p>
+  {% endif %}
 </div>
 {% endblock %}

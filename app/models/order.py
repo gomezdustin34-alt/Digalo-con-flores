@@ -44,6 +44,11 @@ class Order(db.Model):
     # (al cancelarlo), para no devolverlas dos veces.
     stock_restored = db.Column(db.Boolean, default=False, nullable=False)
 
+    # Los pedidos terminados se archivan en vez de borrarse: salen de la lista
+    # de trabajo del panel pero siguen existiendo, porque son el soporte de una
+    # venta y la ley obliga a conservarlos.
+    archived_at = db.Column(db.DateTime, nullable=True)
+
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
@@ -81,6 +86,10 @@ class Order(db.Model):
         "entregado": "Entregado",
         "cancelado": "Cancelado",
     }
+
+    @property
+    def is_archived(self):
+        return self.archived_at is not None
 
     @property
     def status_label(self):

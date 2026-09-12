@@ -120,3 +120,13 @@ table.admin-table tr:hover td { background: var(--cream-soft); }
   75% { transform: rotate(12deg); }
 }
 @media (prefers-reduced-motion: reduce) { .admin-topbar-right a.suena { animation: none; } }
+
+/* Paginacion de las listas del panel */
+.pagination { display: flex; justify-content: center; gap: 8px; margin-top: 22px; flex-wrap: wrap; }
+.pagination a, .pagination span {
+  min-width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border); border-radius: 9px; font-size: 13px;
+  color: var(--ink-soft); background: var(--cream);
+}
+.pagination a:hover { border-color: var(--gold); color: var(--gold); }
+.pagination .current { background: var(--gold); color: var(--cream); border-color: var(--gold); }

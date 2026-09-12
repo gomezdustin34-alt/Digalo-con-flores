@@ -40,6 +40,7 @@
       </div>
       <div class="footer-col">
         <h4>Ayuda</h4>
+        <a href="{{ url_for('storefront.track_order') }}">Seguir mi pedido</a>
         <a href="{{ url_for('storefront.contact') }}">Contacto</a>
         <a href="{{ url_for('storefront.about') }}">Sobre nosotros</a>
         {% if current_user.is_authenticated %}

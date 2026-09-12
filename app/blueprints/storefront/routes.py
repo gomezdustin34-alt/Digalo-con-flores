@@ -2,12 +2,13 @@ from flask import render_template, request, redirect, url_for, flash
 from flask_login import current_user
 
 from app.blueprints.storefront import bp
-from app.blueprints.storefront.forms import ContactForm, NewsletterForm
+from app.blueprints.storefront.forms import ContactForm, NewsletterForm, SeguimientoForm
 from app.blueprints.storefront.product_query import filtered_products
 from app.extensions import db
 from app.models.category import Category
 from app.models.product import Product
 from app.models.contact import ContactMessage
+from app.models.order import Order
 from app.models.subscriber import Subscriber
 from app.models.review import Testimonial
 from app.models.favorite import Favorite
@@ -152,6 +153,24 @@ def terms():
 @bp.route("/envios-y-devoluciones")
 def shipping_policy():
     return _legal("envios")
+
+
+@bp.route("/mi-pedido", methods=["GET", "POST"])
+def track_order():
+    """Consultar un pedido con el numero y el correo, sin tener cuenta.
+
+    La mayoria de los pedidos los hacen invitados: sin esto, si cerraban la
+    pestaña de la confirmacion no tenian forma de volver a ver su pedido.
+    """
+    form = SeguimientoForm()
+    if form.validate_on_submit():
+        numero = form.number.data.strip().upper()
+        correo = form.email.data.strip().lower()
+        order = Order.query.filter_by(number=numero).first()
+        if order and (order.customer_email or "").lower() == correo:
+            return redirect(url_for("checkout.whatsapp_redirect", order_number=order.number))
+        flash("No encontramos un pedido con ese número y ese correo. Revísalos e intenta de nuevo.", "danger")
+    return render_template("storefront/track_order.html", form=form)
 
 
 @bp.route("/buscar")
