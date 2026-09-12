@@ -99,3 +99,51 @@ document.addEventListener("DOMContentLoaded", () => {
 
   setInterval(revisar, 30000);
 });
+
+// ---- Selección múltiple en las listas del panel ----
+// La casilla del encabezado marca todas las de la página; la barra de acciones
+// aparece sola en cuanto hay algo marcado y dice cuántos son.
+document.addEventListener("DOMContentLoaded", () => {
+  const todas = document.getElementById("marcar-todos");
+  const barra = document.getElementById("barra-lote");
+  const casillas = Array.from(document.querySelectorAll(".marca-pedido"));
+  if (!casillas.length) return;
+
+  function refrescar() {
+    const marcadas = casillas.filter((c) => c.checked);
+    if (barra) {
+      barra.hidden = marcadas.length === 0;
+      const contador = barra.querySelector("[data-seleccionados]");
+      if (contador) contador.textContent = marcadas.length;
+    }
+    if (todas) {
+      todas.checked = marcadas.length === casillas.length && casillas.length > 0;
+      todas.indeterminate = marcadas.length > 0 && marcadas.length < casillas.length;
+    }
+  }
+
+  todas?.addEventListener("change", () => {
+    casillas.forEach((c) => {
+      c.checked = todas.checked;
+    });
+    refrescar();
+  });
+  casillas.forEach((c) => c.addEventListener("change", refrescar));
+  refrescar();
+
+  // Confirmación antes de un borrado en lote, diciendo cuántos son.
+  document.querySelectorAll("[data-confirm-lote]").forEach((boton) => {
+    boton.addEventListener("click", (e) => {
+      const cuantos = casillas.filter((c) => c.checked).length;
+      if (!cuantos) {
+        e.preventDefault();
+        return;
+      }
+      const mensaje = boton.dataset.confirmLote.replace(
+        "los pedidos seleccionados",
+        cuantos === 1 ? "el pedido seleccionado" : `los ${cuantos} pedidos seleccionados`
+      );
+      if (!confirm(mensaje)) e.preventDefault();
+    });
+  });
+});

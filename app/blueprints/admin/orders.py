@@ -124,6 +124,65 @@ def orders_archive_finished():
     return redirect(url_for("admin.orders_list"))
 
 
+@bp.route("/pedidos/lote", methods=["POST"])
+def orders_bulk():
+    """Archiva, restaura o elimina varios pedidos marcados con las casillas."""
+    accion = request.form.get("accion")
+    ids = request.form.getlist("ids", type=int)
+
+    # El destino viene del formulario: solo se acepta si es una ruta del panel,
+    # para que nadie pueda convertir este boton en un salto a otro sitio.
+    volver = request.form.get("volver") or ""
+    if not volver.startswith("/admin/") or volver.startswith("//"):
+        volver = url_for("admin.orders_list")
+
+    if not ids:
+        flash("No marcaste ningún pedido.", "info")
+        return redirect(volver)
+
+    pedidos = Order.query.filter(Order.id.in_(ids)).all()
+
+    if accion == "archivar":
+        ahora = datetime.now(timezone.utc)
+        cuantos = 0
+        for pedido in pedidos:
+            if pedido.archived_at is None:
+                pedido.archived_at = ahora
+                cuantos += 1
+        db.session.commit()
+        flash(f"{cuantos} pedidos archivados.", "success")
+
+    elif accion == "restaurar":
+        cuantos = 0
+        for pedido in pedidos:
+            if pedido.archived_at is not None:
+                pedido.archived_at = None
+                cuantos += 1
+        db.session.commit()
+        flash(f"{cuantos} pedidos devueltos a la lista.", "success")
+
+    elif accion == "eliminar":
+        # Solo se borra lo archivado: asi no se puede perder de un clic un
+        # pedido que todavia esta en curso.
+        borrados, saltados = 0, 0
+        for pedido in pedidos:
+            if pedido.archived_at is None:
+                saltados += 1
+                continue
+            db.session.delete(pedido)
+            borrados += 1
+        db.session.commit()
+        if borrados:
+            flash(f"{borrados} pedidos eliminados definitivamente.", "info")
+        if saltados:
+            flash(f"{saltados} no se eliminaron porque siguen en curso: archívalos primero.", "danger")
+
+    else:
+        flash("Acción no reconocida.", "danger")
+
+    return redirect(volver)
+
+
 @bp.route("/pedidos/<int:order_id>/eliminar", methods=["POST"])
 def order_delete(order_id):
     """Borra un pedido para siempre.

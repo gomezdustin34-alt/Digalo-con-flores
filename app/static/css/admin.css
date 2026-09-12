@@ -130,3 +130,17 @@ table.admin-table tr:hover td { background: var(--cream-soft); }
 }
 .pagination a:hover { border-color: var(--gold); color: var(--gold); }
 .pagination .current { background: var(--gold); color: var(--cream); border-color: var(--gold); }
+
+/* Selección múltiple: casillas y barra de acciones */
+.admin-table .col-check { width: 38px; text-align: center; }
+.admin-table input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: var(--gold); }
+.bulk-bar {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  background: var(--blush); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 12px 16px; margin-bottom: 14px;
+}
+.bulk-count { font-size: 13.5px; color: var(--ink-soft); }
+.bulk-count b { color: var(--gold-dark); }
+.bulk-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.bulk-danger { color: var(--danger); border-color: var(--danger); }
+.bulk-danger:hover { background: var(--danger); color: var(--cream); }
