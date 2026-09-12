@@ -12,12 +12,46 @@ from app.models.media import MediaFile
 MAX_ANCHO = 1400
 CALIDAD_JPEG = 82
 
-EXTENSIONES_IMAGEN = {"jpg", "jpeg", "png", "webp", "gif", "avif"}
+EXTENSIONES_IMAGEN = {"jpg", "jpeg", "png", "webp", "gif"}
+
+# Formatos que aceptamos, identificados por lo que Pillow encuentra DENTRO del
+# archivo, no por como se llame. Se excluye SVG a proposito: es XML y puede
+# llevar scripts, asi que un SVG servido desde nuestro dominio seria una via de
+# XSS almacenado.
+FORMATOS_PERMITIDOS = {
+    "JPEG": ("jpg", "image/jpeg"),
+    "PNG": ("png", "image/png"),
+    "WEBP": ("webp", "image/webp"),
+    "GIF": ("gif", "image/gif"),
+}
+
 TIPOS = {
     "jpg": "image/jpeg", "jpeg": "image/jpeg", "png": "image/png",
-    "webp": "image/webp", "gif": "image/gif", "avif": "image/avif",
-    "ico": "image/x-icon", "svg": "image/svg+xml",
+    "webp": "image/webp", "gif": "image/gif",
 }
+
+# Tope por archivo, ademas del limite global de la peticion.
+MAX_BYTES = 6 * 1024 * 1024
+
+
+def _identificar(contenido):
+    """Averigua que hay realmente dentro del archivo.
+
+    Devuelve (extension, tipo_mime) o None si no es una imagen de las que
+    aceptamos. No se mira la extension del nombre: un .jpg puede contener
+    cualquier cosa.
+    """
+    try:
+        from PIL import Image
+    except ImportError:  # pragma: no cover - Pillow esta en requirements
+        return None
+    try:
+        img = Image.open(io.BytesIO(contenido))
+        img.verify()  # comprueba que el contenido es una imagen integra
+        formato = (img.format or "").upper()
+    except Exception:
+        return None
+    return FORMATOS_PERMITIDOS.get(formato)
 
 
 def _optimizar(contenido: bytes, extension: str):
@@ -67,17 +101,24 @@ def save_upload(file_storage, subfolder="products"):
         return None
 
     nombre_seguro = secure_filename(file_storage.filename)
-    extension = nombre_seguro.rsplit(".", 1)[-1].lower() if "." in nombre_seguro else "bin"
 
     contenido = file_storage.read()
-    if not contenido:
+    if not contenido or len(contenido) > MAX_BYTES:
         return None
+
+    # El tipo sale del contenido, nunca del nombre que envio el navegador.
+    identificado = _identificar(contenido)
+    if identificado is None:
+        return None
+    extension, _mime = identificado
 
     contenido, extension = _optimizar(contenido, extension)
 
+    # El identificador se genera aqui: el nombre original solo se guarda como
+    # dato informativo y nunca se usa como ruta ni como URL.
     archivo = MediaFile(
         id=f"{uuid.uuid4().hex}.{extension}",
-        content_type=TIPOS.get(extension, "application/octet-stream"),
+        content_type=TIPOS[extension],
         data=contenido,
         size=len(contenido),
         original_name=nombre_seguro[:255],

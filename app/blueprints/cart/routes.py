@@ -1,5 +1,6 @@
 from flask import render_template, request, redirect, url_for, flash, jsonify
 
+from app.extensions import limiter
 from app.blueprints.cart import bp
 from app.blueprints.cart import cart_service
 
@@ -71,6 +72,7 @@ def remove(key):
 
 
 @bp.route("/cupon", methods=["POST"])
+@limiter.limit("20 per hour")
 def apply_coupon():
     code = request.form.get("code", "")
     ok, error = cart_service.apply_coupon(code)

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   {# Marca que hay JavaScript activo: solo entonces se ocultan los elementos
      que aparecen al hacer scroll, para que nunca queden invisibles sin JS. #}
-  <script>document.documentElement.classList.add('js');</script>
+  <script nonce="{{ csp_nonce }}">document.documentElement.classList.add('js');</script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta name="theme-color" content="#FFFDF8">
@@ -31,8 +31,16 @@
   {# Fuentes: se conecta antes de tiempo y no bloquean el primer render #}
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" media="print" onload="this.media='all'"
+  <link rel="stylesheet" media="print" id="fuentes-google"
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Great+Vibes&family=Jost:wght@300;400;500;600&display=swap">
+  <script nonce="{{ csp_nonce }}">
+    // Las fuentes se cargan como "print" para no bloquear el primer pintado y
+    // aqui se pasan a "all" en cuanto llegan.
+    (function () {
+      var f = document.getElementById('fuentes-google');
+      if (f) f.addEventListener('load', function () { f.media = 'all'; });
+    })();
+  </script>
   <noscript>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Great+Vibes&family=Jost:wght@300;400;500;600&display=swap">
   </noscript>

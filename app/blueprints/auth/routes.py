@@ -8,6 +8,7 @@ from app.extensions import db, limiter
 from app.models.user import User
 from app.services.email import get_email_provider
 from app.utils.content import notify
+from app.utils.auditoria import seguridad
 
 
 def _post_login_redirect(user):
@@ -45,10 +46,17 @@ def login():
         user = User.query.filter_by(email=form.email.data.lower().strip()).first()
         if user and user.check_password(form.password.data):
             if user.is_blocked:
+                seguridad("inicio de sesión de cuenta bloqueada", resultado="denegado", email=user.email)
                 flash("Tu cuenta ha sido bloqueada. Contáctanos para más información.", "danger")
                 return render_template("auth/login.html", form=form)
             login_user(user, remember=form.remember.data)
+            seguridad("inicio de sesión", email=user.email)
             return redirect(_destino_seguro(user) or _post_login_redirect(user))
+        # Se registra el intento fallido, pero el mensaje sigue siendo el mismo
+        # para todos: decir "ese correo no existe" permitiria averiguar quien
+        # tiene cuenta en la tienda.
+        seguridad("inicio de sesión fallido", resultado="denegado",
+                  email=form.email.data.lower().strip())
         flash("Email o contraseña incorrectos.", "danger")
 
     return render_template("auth/login.html", form=form)
@@ -77,6 +85,7 @@ def register():
             db.session.add(user)
             notify("nuevo_cliente", f"Nuevo cliente registrado: {user.full_name}")
             db.session.commit()
+            seguridad("cuenta creada", email=user.email)
             login_user(user)
             flash("¡Cuenta creada! Bienvenido/a a Dígalo con Flores.", "success")
             return redirect(url_for("storefront.home"))
@@ -87,6 +96,7 @@ def register():
 @bp.route("/salir")
 @login_required
 def logout():
+    seguridad("cierre de sesión")
     logout_user()
     flash("Sesión cerrada.", "info")
     return redirect(url_for("storefront.home"))
@@ -128,6 +138,7 @@ def reset_password(token):
         if user:
             user.set_password(form.password.data)
             db.session.commit()
+            seguridad("contraseña restablecida", email=user.email)
             flash("Contraseña actualizada. Ya puedes iniciar sesión.", "success")
             return redirect(url_for("auth.login"))
 

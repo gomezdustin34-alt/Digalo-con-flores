@@ -1,7 +1,7 @@
 import os
 import tempfile
 
-from flask import Flask, flash, jsonify, redirect, render_template, request, url_for
+from flask import Flask, flash, jsonify, redirect, render_template, request, session, url_for
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -30,6 +30,14 @@ def create_app(config_class=Config):
     mail.init_app(app)
     limiter.init_app(app)
 
+    from app.utils import seguridad
+    seguridad.registrar(app)
+
+    @app.before_request
+    def _sesion_con_caducidad():
+        # Sin esto la cookie de sesion seria "de navegador" y no caducaria sola.
+        session.permanent = True
+
     from app.models.user import User
 
     @login_manager.unauthorized_handler
@@ -47,7 +55,19 @@ def create_app(config_class=Config):
 
     @login_manager.user_loader
     def load_user(user_id):
-        return db.session.get(User, int(user_id))
+        # La cookie trae "id|huella". Si la huella no coincide con la
+        # contraseña actual, la sesion es anterior a un cambio de contraseña y
+        # se descarta.
+        partes = str(user_id).split("|", 1)
+        if not partes[0].isdigit():
+            return None
+        usuario = db.session.get(User, int(partes[0]))
+        if usuario is None:
+            return None
+        huella = partes[1] if len(partes) > 1 else ""
+        if huella != usuario.huella_sesion:
+            return None
+        return usuario
 
     from app.blueprints.storefront import bp as storefront_bp
     from app.blueprints.auth import bp as auth_bp

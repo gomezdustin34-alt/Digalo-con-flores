@@ -17,7 +17,7 @@
         {% for key in ['q', 'price_min', 'price_max', 'in_stock', 'is_new', 'on_sale'] %}
           {% if request.args.get(key) %}<input type="hidden" name="{{ key }}" value="{{ request.args.get(key) }}">{% endif %}
         {% endfor %}
-        <select name="sort" onchange="this.form.submit()">
+        <select name="sort" class="auto-submit-select">
           <option value="mas_vendidos" {{ 'selected' if request.args.get('sort', 'mas_vendidos') == 'mas_vendidos' }}>Más vendidos</option>
           <option value="nuevos" {{ 'selected' if request.args.get('sort') == 'nuevos' }}>Nuevos</option>
           <option value="precio_asc" {{ 'selected' if request.args.get('sort') == 'precio_asc' }}>Precio: menor a mayor</option>

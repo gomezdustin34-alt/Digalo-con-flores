@@ -21,7 +21,7 @@
     {% if product.images|length > 1 %}
       <div class="product-thumbs">
         {% for img in product.images %}
-          <img src="{{ img.url }}" class="{{ 'active' if loop.first }}" onclick="document.getElementById('main-product-image').src=this.src; this.parentNode.querySelectorAll('img').forEach(i=>i.classList.remove('active')); this.classList.add('active');">
+          <img src="{{ img.url }}" class="galeria-mini {{ 'active' if loop.first }}" alt="{{ product.name }}" loading="lazy" decoding="async">
         {% endfor %}
       </div>
     {% endif %}

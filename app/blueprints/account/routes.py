@@ -1,5 +1,5 @@
 from flask import render_template, redirect, url_for, flash, request
-from flask_login import login_required, current_user
+from flask_login import login_required, login_user, current_user
 
 from app.blueprints.account import bp
 from app.blueprints.account.forms import ProfileForm, ChangePasswordForm, AddressForm
@@ -8,6 +8,7 @@ from app.models.order import Order
 from app.models.user import Address
 from app.models.favorite import Favorite
 from app.models.product import Product
+from app.utils.auditoria import seguridad
 
 
 @bp.before_request
@@ -54,7 +55,12 @@ def profile():
             if current_user.check_password(password_form.current_password.data):
                 current_user.set_password(password_form.new_password.data)
                 db.session.commit()
-                flash("Contraseña actualizada.", "success")
+                seguridad("contraseña cambiada")
+                # Cambiar la contraseña invalida las sesiones abiertas en otros
+                # dispositivos: si alguien habia entrado con la anterior, pierde
+                # el acceso en ese momento.
+                login_user(current_user, fresh=True)
+                flash("Contraseña actualizada. Se cerraron las sesiones abiertas en otros dispositivos.", "success")
             else:
                 flash("La contraseña actual no es correcta.", "danger")
             return redirect(url_for("account.profile"))

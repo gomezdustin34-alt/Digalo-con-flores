@@ -87,3 +87,30 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 4500);
   });
 });
+
+// Comportamientos que antes vivian en atributos onclick/onchange del HTML.
+// Se movieron aqui para que la pagina pueda declarar una CSP estricta: con
+// ella, el navegador ignora cualquier script incrustado en los atributos.
+document.addEventListener("DOMContentLoaded", () => {
+  // Galería del producto: la miniatura cambia la imagen grande
+  const principal = document.getElementById("main-product-image");
+  document.querySelectorAll(".galeria-mini").forEach((mini) => {
+    mini.addEventListener("click", () => {
+      if (principal) principal.src = mini.src;
+      mini.parentNode.querySelectorAll("img").forEach((i) => i.classList.remove("active"));
+      mini.classList.add("active");
+    });
+  });
+
+  // Botón redondo de las tarjetas: envía el formulario de su propia tarjeta
+  document.querySelectorAll(".add-cart-round").forEach((boton) => {
+    boton.addEventListener("click", () => {
+      boton.closest(".product-card")?.querySelector(".add-to-cart-form")?.requestSubmit();
+    });
+  });
+
+  // Selectores que recargan la página al cambiar (ordenar el catálogo)
+  document.querySelectorAll(".auto-submit-select").forEach((select) => {
+    select.addEventListener("change", () => select.form?.submit());
+  });
+});

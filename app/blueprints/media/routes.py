@@ -27,5 +27,11 @@ def serve(file_id):
             "Cache-Control": CACHE,
             "ETag": etag,
             "Content-Length": str(archivo.size),
+            # Los archivos los sube el panel, pero se sirven desde el mismo
+            # dominio que la tienda: si alguno llegara a contener HTML o un
+            # script, esto impide que el navegador lo ejecute.
+            "X-Content-Type-Options": "nosniff",
+            "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; sandbox",
+            "Content-Disposition": "inline",
         },
     )

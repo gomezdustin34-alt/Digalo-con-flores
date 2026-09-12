@@ -4,7 +4,7 @@ from flask_login import current_user
 from app.blueprints.storefront import bp
 from app.blueprints.storefront.forms import ContactForm, NewsletterForm, SeguimientoForm
 from app.blueprints.storefront.product_query import filtered_products
-from app.extensions import db
+from app.extensions import db, limiter
 from app.models.category import Category
 from app.models.product import Product
 from app.models.contact import ContactMessage
@@ -95,6 +95,7 @@ def about():
 
 
 @bp.route("/contacto", methods=["GET", "POST"])
+@limiter.limit("6 per hour", methods=["POST"])
 def contact():
     form = ContactForm()
     if form.validate_on_submit():
@@ -156,6 +157,7 @@ def shipping_policy():
 
 
 @bp.route("/mi-pedido", methods=["GET", "POST"])
+@limiter.limit("20 per hour", methods=["POST"])
 def track_order():
     """Consultar un pedido con el numero y el correo, sin tener cuenta.
 
@@ -188,6 +190,7 @@ def search():
 
 
 @bp.route("/newsletter/suscribir", methods=["POST"])
+@limiter.limit("10 per hour")
 def newsletter_subscribe():
     form = NewsletterForm()
     if form.validate_on_submit():

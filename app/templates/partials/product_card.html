@@ -28,7 +28,7 @@
         {% if product.is_on_sale %}<span class="price-old">{{ format_currency(product.compare_at_price, get_setting('currency', 'COP')) }}</span>{% endif %}
         <span class="price-current">{{ format_currency(product.price, get_setting('currency', 'COP')) }}</span>
       </div>
-      <button class="add-cart-round" type="button" onclick="this.closest('.product-card').querySelector('.add-to-cart-form').requestSubmit()" aria-label="Agregar al carrito">
+      <button class="add-cart-round" type="button" aria-label="Agregar al carrito">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8h12l-1 12H7L6 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
       </button>
     </div>

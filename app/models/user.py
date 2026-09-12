@@ -36,6 +36,26 @@ class User(db.Model, UserMixin):
         return check_password_hash(self.password_hash, raw_password)
 
     @property
+    def huella_sesion(self):
+        """Trozo del hash que identifica la contraseña vigente.
+
+        No permite deducir la contraseña: es un fragmento de un hash que ya es
+        irreversible. Sirve para saber si una sesion se abrio antes o despues
+        del ultimo cambio de contraseña.
+        """
+        return (self.password_hash or "")[-16:]
+
+    def get_id(self):
+        """Identidad que se guarda en la cookie de sesion.
+
+        Al llevar la huella de la contraseña, cambiarla deja sin valor todas
+        las sesiones abiertas antes: quien hubiera entrado con la contraseña
+        anterior (en otro equipo, o alguien que la hubiera robado) pierde el
+        acceso en ese mismo momento.
+        """
+        return f"{self.id}|{self.huella_sesion}"
+
+    @property
     def full_name(self):
         return f"{self.first_name} {self.last_name}".strip()
 

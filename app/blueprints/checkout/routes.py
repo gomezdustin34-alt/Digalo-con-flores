@@ -1,6 +1,7 @@
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import current_user
 
+from app.extensions import limiter
 from app.blueprints.checkout import bp
 from app.blueprints.checkout.forms import CheckoutForm
 from app.blueprints.checkout import order_service
@@ -12,6 +13,7 @@ from app.services.email.templates import order_confirmation_email
 
 
 @bp.route("/", methods=["GET", "POST"])
+@limiter.limit("12 per hour", methods=["POST"])
 def checkout():
     cart = cart_service.get_cart()
     if not cart["lines"]:

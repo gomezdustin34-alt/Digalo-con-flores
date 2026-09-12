@@ -29,3 +29,4 @@ __all__ = [
     "Favorite",
     "MediaFile",
 ]
+from app.models import audit  # noqa: F401,E402

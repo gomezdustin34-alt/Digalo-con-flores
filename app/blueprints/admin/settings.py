@@ -23,13 +23,18 @@ def settings():
         for field in SETTING_FIELDS:
             set_setting(field, request.form.get(field, ""))
 
-        logo_url = save_upload(request.files.get("logo"), "branding")
-        if logo_url:
-            set_setting("logo_url", logo_url)
-
-        favicon_url = save_upload(request.files.get("favicon"), "branding")
-        if favicon_url:
-            set_setting("favicon_url", favicon_url)
+        for campo, ajuste in (("logo", "logo_url"), ("favicon", "favicon_url")):
+            archivo = request.files.get(campo)
+            url = save_upload(archivo, "branding")
+            if url:
+                set_setting(ajuste, url)
+            elif archivo and archivo.filename:
+                # Se rechazo por no ser una imagen valida o por pesar demasiado.
+                flash(
+                    f"El archivo de {campo} no se guardó: debe ser una imagen "
+                    "JPG, PNG, WEBP o GIF de menos de 6 MB.",
+                    "danger",
+                )
 
         db.session.commit()
         clear_settings_cache()

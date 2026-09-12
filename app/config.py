@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -41,6 +42,16 @@ class Config:
     SESSION_COOKIE_SAMESITE = "Lax"
     # Cookies solo por HTTPS en producción (en local seguirían sin funcionar)
     SESSION_COOKIE_SECURE = EN_SERVERLESS or os.environ.get("FORCE_HTTPS") == "1"
+    # Una sesion no dura indefinidamente: si alguien deja la cuenta abierta en
+    # un equipo prestado, caduca sola. "Recordarme" usa su propia duracion.
+    PERMANENT_SESSION_LIFETIME = timedelta(days=int(os.environ.get("SESSION_DAYS", 7)))
+    REMEMBER_COOKIE_DURATION = timedelta(days=30)
+    REMEMBER_COOKIE_HTTPONLY = True
+    REMEMBER_COOKIE_SECURE = EN_SERVERLESS or os.environ.get("FORCE_HTTPS") == "1"
+    REMEMBER_COOKIE_SAMESITE = "Lax"
+    # El token CSRF caduca con la sesion y no antes: asi un formulario abierto
+    # un rato no falla al enviarse.
+    WTF_CSRF_TIME_LIMIT = None
 
     MAIL_SERVER = os.environ.get("MAIL_SERVER", "localhost")
     MAIL_PORT = int(os.environ.get("MAIL_PORT", 587))
@@ -70,4 +81,6 @@ class Config:
     # Caché de los archivos estáticos servidos por Flask (en Vercel los sirve el CDN)
     SEND_FILE_MAX_AGE_DEFAULT = 60 * 60 * 24 * 7
 
-    DEBUG = os.environ.get("FLASK_DEBUG", "0") == "1"
+    # En serverless nunca se activa el depurador, aunque la variable llegue a
+    # estar puesta por error: expondria trazas completas y una consola.
+    DEBUG = (not EN_SERVERLESS) and os.environ.get("FLASK_DEBUG", "0") == "1"
