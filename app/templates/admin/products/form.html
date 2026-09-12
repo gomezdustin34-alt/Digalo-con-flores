@@ -43,8 +43,24 @@
 
     <div class="field">
       {{ form.image.label }}{{ form.image() }}
+      <p class="admin-hint" style="margin-top:6px;">
+        Cada imagen que subas se <b>añade</b> a las que ya tiene el producto; la primera es la
+        principal. Para quitar una, usa la ✕ de su miniatura.
+      </p>
       {% if product and product.images %}
-        <div class="thumb-strip">{% for img in product.images %}<img src="{{ img.url }}" loading="lazy" decoding="async">{% endfor %}</div>
+        <div class="thumb-strip">
+          {% for img in product.images %}
+            <div class="thumb-item">
+              <img src="{{ img.url }}" loading="lazy" decoding="async" alt="Imagen de {{ product.name }}">
+              {% if loop.first %}<span class="thumb-badge">Principal</span>{% endif %}
+              <button type="submit" class="thumb-del"
+                      formaction="{{ url_for('admin.product_image_delete', product_id=product.id, image_id=img.id) }}"
+                      formnovalidate
+                      title="Eliminar esta imagen"
+                      data-confirm="¿Eliminar esta imagen del producto? No se puede deshacer.">✕</button>
+            </div>
+          {% endfor %}
+        </div>
       {% endif %}
     </div>
 

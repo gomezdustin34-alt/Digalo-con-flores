@@ -12,6 +12,17 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Botones (no formularios) que piden confirmar antes de enviar. Sirve para
+  // acciones como "eliminar esta imagen", que viven dentro de un formulario
+  // mayor y usan su propio formaction.
+  document.querySelectorAll("button[data-confirm]").forEach((boton) => {
+    boton.addEventListener("click", (e) => {
+      if (!confirm(boton.dataset.confirm)) {
+        e.preventDefault();
+      }
+    });
+  });
+
   document.querySelectorAll(".auto-submit-select").forEach((select) => {
     select.addEventListener("change", () => select.form?.submit());
   });

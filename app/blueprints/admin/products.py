@@ -73,6 +73,15 @@ def product_delete(product_id):
     return redirect(url_for("admin.products_list"))
 
 
+@bp.route("/productos/<int:product_id>/imagen/<int:image_id>/eliminar", methods=["POST"])
+def product_image_delete(product_id, image_id):
+    imagen = ProductImage.query.filter_by(id=image_id, product_id=product_id).first_or_404()
+    db.session.delete(imagen)
+    db.session.commit()
+    flash("Imagen eliminada.", "info")
+    return redirect(url_for("admin.product_edit", product_id=product_id))
+
+
 @bp.route("/productos/<int:product_id>/alternar-publicado", methods=["POST"])
 def product_toggle_active(product_id):
     product = Product.query.get_or_404(product_id)

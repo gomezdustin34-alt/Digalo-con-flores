@@ -12,6 +12,15 @@ ABOUT_FIELDS = ["about_title", "about_text"]
 FOOTER_FIELDS = ["footer_text"]
 
 
+@bp.route("/contenido/inicio/quitar-imagen", methods=["POST"])
+def content_home_remove_image():
+    set_content("hero_image", "", value_type="image", section="hero")
+    db.session.commit()
+    clear_content_cache()
+    flash("Imagen del inicio restaurada a la de por defecto.", "info")
+    return redirect(url_for("admin.content_home"))
+
+
 @bp.route("/contenido/inicio", methods=["GET", "POST"])
 def content_home():
     if request.method == "POST":

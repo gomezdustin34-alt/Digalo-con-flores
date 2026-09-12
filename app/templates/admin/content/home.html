@@ -4,6 +4,10 @@
 
 {% block content %}
 <div class="admin-panel" style="max-width:700px;">
+  <p class="admin-hint" style="margin-bottom:18px;">
+    Esto controla la <b>franja grande de la parte de arriba de la página de inicio</b> (el «hero»):
+    la imagen principal, el título, la frase y los botones que ve el visitante nada más entrar.
+  </p>
   <form method="post" enctype="multipart/form-data" novalidate>
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
     <div class="field">
@@ -28,11 +32,25 @@
       <div class="field"><label>Texto botón secundario</label><input type="text" name="hero_cta_secondary" value="{{ values.hero_cta_secondary }}"></div>
     </div>
     <div class="field">
-      <label>Imagen del hero</label>
+      <label>Imagen del inicio (la grande de la portada)</label>
       <input type="file" name="hero_image" accept="image/*">
-      {% if values.hero_image %}<div class="thumb-strip"><img src="{{ values.hero_image }}" loading="lazy" decoding="async"></div>{% endif %}
+      <div class="help">Recomendado: horizontal, al menos 1200px de ancho. Si no subes ninguna, se usa la de por defecto.</div>
+      {% if values.hero_image %}
+        <div class="thumb-strip" style="margin-top:10px;">
+          <div class="thumb-item" style="width:120px; height:80px;">
+            <img src="{{ values.hero_image }}" loading="lazy" decoding="async" alt="Imagen actual del inicio" style="width:120px; height:80px;">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-outline btn-sm" style="margin-top:10px;"
+                formaction="{{ url_for('admin.content_home_remove_image') }}" formnovalidate
+                data-confirm="¿Quitar la imagen del inicio y volver a la de por defecto?">
+          Quitar imagen y usar la de por defecto
+        </button>
+      {% endif %}
     </div>
-    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    <div style="margin-top:20px;">
+      <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    </div>
   </form>
 </div>
 {% endblock %}
