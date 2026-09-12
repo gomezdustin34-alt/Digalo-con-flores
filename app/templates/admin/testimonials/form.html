@@ -1,4 +1,5 @@
 {% extends "admin/base.html" %}
+{% import "admin/partials/errores.html" as err %}
 {% block title %}{{ 'Editar' if testimonial else 'Nuevo' }} testimonio — Panel{% endblock %}
 {% block page_title %}{{ 'Editar testimonio' if testimonial else 'Nuevo testimonio' }}{% endblock %}
 
@@ -6,6 +7,7 @@
 <div class="admin-panel" style="max-width:600px;">
   <form method="post" enctype="multipart/form-data" novalidate>
     {{ form.hidden_tag() }}
+    {{ err.resumen(form) }}
     <div class="field">{{ form.name.label }}{{ form.name() }}</div>
     <div class="field">{{ form.comment.label }}{{ form.comment(rows=4) }}</div>
     <div class="admin-form-grid">

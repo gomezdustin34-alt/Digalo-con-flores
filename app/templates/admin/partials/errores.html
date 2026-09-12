@@ -1,0 +1,25 @@
+{# Resumen de los errores de un formulario del panel.
+
+   Sin esto, cuando una validacion fallaba la pagina se recargaba igual y sin
+   decir nada: parecia que se habia guardado. Asi se creo la confusion de dar
+   de alta un usuario con una clave demasiado corta, creer que quedo hecho y
+   que la persona no pudiera entrar nunca. #}
+{% macro resumen(form) %}
+  {% if form.errors %}
+    <div class="form-errores" role="alert">
+      <strong>No se pudo guardar. Revisa esto:</strong>
+      <ul>
+        {% for campo, mensajes in form.errors.items() %}
+          {% for mensaje in mensajes %}
+            <li><b>{{ form[campo].label.text if campo in form else campo }}:</b> {{ mensaje }}</li>
+          {% endfor %}
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+{% endmacro %}
+
+{# Errores de un campo concreto, justo debajo de el. #}
+{% macro campo(f) %}
+  {% for mensaje in f.errors %}<div class="error">{{ mensaje }}</div>{% endfor %}
+{% endmacro %}

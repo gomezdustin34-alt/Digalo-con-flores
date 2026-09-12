@@ -1,4 +1,5 @@
 {% extends "admin/base.html" %}
+{% import "admin/partials/errores.html" as err %}
 {% block title %}{{ 'Editar' if staff_user else 'Nuevo' }} usuario — Panel{% endblock %}
 {% block page_title %}{{ 'Editar usuario' if staff_user else 'Nuevo usuario del panel' }}{% endblock %}
 
@@ -6,13 +7,27 @@
 <div class="admin-panel" style="max-width:520px;">
   <form method="post" novalidate>
     {{ form.hidden_tag() }}
+    {{ err.resumen(form) }}
     <div class="admin-form-grid">
-      <div class="field">{{ form.first_name.label }}{{ form.first_name() }}</div>
-      <div class="field">{{ form.last_name.label }}{{ form.last_name() }}</div>
+      <div class="field">{{ form.first_name.label }}{{ form.first_name() }}{{ err.campo(form.first_name) }}</div>
+      <div class="field">{{ form.last_name.label }}{{ form.last_name() }}{{ err.campo(form.last_name) }}</div>
     </div>
-    <div class="field">{{ form.email.label }}{{ form.email() }}</div>
-    <div class="field">{{ form.role.label }}{{ form.role() }}</div>
-    <div class="field">{{ form.password.label }}{{ form.password() }}</div>
+    <div class="field">{{ form.email.label }}{{ form.email() }}{{ err.campo(form.email) }}</div>
+    <div class="field">{{ form.role.label }}{{ form.role() }}{{ err.campo(form.role) }}</div>
+    <div class="field">
+      {{ form.password.label }}
+      {{ form.password(autocomplete="new-password") }}
+      {{ err.campo(form.password) }}
+      <p class="admin-hint" style="margin-top:6px;">
+        {% if staff_user %}
+          Déjala vacía para no cambiarla. Si la escribes, mínimo 10 caracteres.
+        {% else %}
+          Mínimo 10 caracteres. Es la contraseña con la que esta persona entrará al panel,
+          así que apúntala y entrégasela — aquí no vuelve a mostrarse. Podrá cambiarla ella
+          misma en «Mi contraseña».
+        {% endif %}
+      </p>
+    </div>
     <button type="submit" class="btn btn-primary">Guardar usuario</button>
     <a href="{{ url_for('admin.staff_list') }}" class="btn btn-outline">Cancelar</a>
   </form>

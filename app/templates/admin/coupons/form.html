@@ -1,4 +1,5 @@
 {% extends "admin/base.html" %}
+{% import "admin/partials/errores.html" as err %}
 {% block title %}{{ 'Editar' if coupon else 'Nuevo' }} cupón — Panel{% endblock %}
 {% block page_title %}{{ 'Editar cupón' if coupon else 'Nuevo cupón' }}{% endblock %}
 
@@ -6,6 +7,7 @@
 <div class="admin-panel" style="max-width:600px;">
   <form method="post" novalidate>
     {{ form.hidden_tag() }}
+    {{ err.resumen(form) }}
     <div class="field">{{ form.code.label }}{{ form.code(placeholder="FLORES20") }}</div>
     <div class="admin-form-grid">
       <div class="field">{{ form.discount_type.label }}{{ form.discount_type() }}</div>
