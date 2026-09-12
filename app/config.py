@@ -76,7 +76,7 @@ class Config:
 
     # Los archivos subidos se guardan en la base de datos (ver app/utils/uploads.py),
     # no en disco, para que funcionen en hosting serverless.
-    MAX_CONTENT_LENGTH = 8 * 1024 * 1024  # 8 MB por subida
+    MAX_CONTENT_LENGTH = 30 * 1024 * 1024  # 30 MB: cabe una foto de celular sin recortar
 
     # Caché de los archivos estáticos servidos por Flask (en Vercel los sirve el CDN)
     SEND_FILE_MAX_AGE_DEFAULT = 60 * 60 * 24 * 7

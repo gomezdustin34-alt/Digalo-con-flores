@@ -32,15 +32,24 @@ def format_currency(amount, currency="COP"):
     return f"{symbol}{amount:,.0f}".replace(",", ".")
 
 
-_SETTINGS_CACHE = {}
+def _settings_cache():
+    # Caché por-petición (ver la nota en app/utils/content.py). Una caché por
+    # proceso dejaba ajustes viejos servidos por otras instancias de Vercel.
+    from flask import g, has_request_context
+    if has_request_context():
+        if not hasattr(g, "_settings_cache"):
+            g._settings_cache = {}
+        return g._settings_cache
+    return {}
 
 
 def get_setting(key, default=None):
-    if key in _SETTINGS_CACHE:
-        return _SETTINGS_CACHE[key]
+    cache = _settings_cache()
+    if key in cache:
+        return cache[key]
     row = Setting.query.filter_by(key=key).first()
     value = row.value if row else default
-    _SETTINGS_CACHE[key] = value
+    cache[key] = value
     return value
 
 
@@ -51,8 +60,10 @@ def set_setting(key, value):
         db.session.add(row)
     else:
         row.value = value
-    _SETTINGS_CACHE[key] = value
+    _settings_cache()[key] = value
 
 
 def clear_settings_cache():
-    _SETTINGS_CACHE.clear()
+    from flask import g, has_request_context
+    if has_request_context():
+        g.pop("_settings_cache", None)

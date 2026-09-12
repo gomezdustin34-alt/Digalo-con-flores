@@ -1,17 +1,29 @@
+from flask import g, has_request_context
+
 from app.extensions import db
 from app.models.content import WebsiteContent, SiteSection
 from app.models.notification import Notification
 
-_CONTENT_CACHE = {}
-_SECTIONS_CACHE = None
+# La caché vive UNA petición, no la vida del proceso. En serverless hay varias
+# instancias: una caché por-proceso hacía que, tras editar el contenido en una
+# instancia, otra siguiera sirviendo el valor viejo de su memoria sin volver a
+# mirar la base de datos. Con flask.g cada petición lee fresco y solo memoiza
+# dentro de sí misma para no repetir consultas al pintar una página.
+def _cache():
+    if has_request_context():
+        if not hasattr(g, "_content_cache"):
+            g._content_cache = {}
+        return g._content_cache
+    return {}  # fuera de una petición (CLI, seed): sin caché
 
 
 def get_content(key, default=""):
-    if key in _CONTENT_CACHE:
-        return _CONTENT_CACHE[key]
+    cache = _cache()
+    if key in cache:
+        return cache[key]
     row = WebsiteContent.query.filter_by(key=key).first()
     value = row.value if row and row.value is not None else default
-    _CONTENT_CACHE[key] = value
+    cache[key] = value
     return value
 
 
@@ -24,21 +36,23 @@ def set_content(key, value, value_type="text", section=None):
         row.value = value
         if section:
             row.section = section
-    _CONTENT_CACHE[key] = value
+    _cache()[key] = value
 
 
 def clear_content_cache():
-    _CONTENT_CACHE.clear()
-    global _SECTIONS_CACHE
-    _SECTIONS_CACHE = None
+    if has_request_context():
+        g.pop("_content_cache", None)
+        g.pop("_sections_cache", None)
 
 
 def visible_sections():
-    global _SECTIONS_CACHE
-    if _SECTIONS_CACHE is None:
-        rows = SiteSection.query.order_by(SiteSection.sort_order).all()
-        _SECTIONS_CACHE = {row.key: row.is_visible for row in rows}
-    return _SECTIONS_CACHE
+    if has_request_context() and hasattr(g, "_sections_cache"):
+        return g._sections_cache
+    rows = SiteSection.query.order_by(SiteSection.sort_order).all()
+    mapa = {row.key: row.is_visible for row in rows}
+    if has_request_context():
+        g._sections_cache = mapa
+    return mapa
 
 
 def is_section_visible(key, default=True):

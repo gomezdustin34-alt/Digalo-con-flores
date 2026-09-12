@@ -3,6 +3,15 @@ import uuid
 
 from werkzeug.utils import secure_filename
 
+# Permite que Pillow abra fotos HEIC/HEIF (el formato por defecto del iPhone).
+# Sin esto, subir una foto del celular fallaba en silencio.
+try:
+    from pillow_heif import register_heif_opener
+    register_heif_opener()
+    _HEIF_OK = True
+except Exception:  # noqa: BLE001 - si no está instalado, se sigue sin HEIC
+    _HEIF_OK = False
+
 from app.extensions import db
 from app.models.media import MediaFile
 
@@ -12,7 +21,7 @@ from app.models.media import MediaFile
 MAX_ANCHO = 1400
 CALIDAD_JPEG = 82
 
-EXTENSIONES_IMAGEN = {"jpg", "jpeg", "png", "webp", "gif"}
+EXTENSIONES_IMAGEN = {"jpg", "jpeg", "png", "webp", "gif", "heic", "heif"}
 
 # Formatos que aceptamos, identificados por lo que Pillow encuentra DENTRO del
 # archivo, no por como se llame. Se excluye SVG a proposito: es XML y puede
@@ -23,6 +32,9 @@ FORMATOS_PERMITIDOS = {
     "PNG": ("png", "image/png"),
     "WEBP": ("webp", "image/webp"),
     "GIF": ("gif", "image/gif"),
+    # Fotos de iPhone. Se aceptan y se convierten a JPEG al recomprimir.
+    "HEIF": ("jpg", "image/jpeg"),
+    "HEIC": ("jpg", "image/jpeg"),
 }
 
 TIPOS = {
@@ -30,8 +42,10 @@ TIPOS = {
     "webp": "image/webp", "gif": "image/gif",
 }
 
-# Tope por archivo, ademas del limite global de la peticion.
-MAX_BYTES = 6 * 1024 * 1024
+# Tope por archivo. Alto a proposito: las fotos de celular pesan varios MB y de
+# todas formas se recomprimen a ~1400px antes de guardarse, asi que lo que
+# queda almacenado es pequeño.
+MAX_BYTES = 25 * 1024 * 1024
 
 
 def _identificar(contenido):

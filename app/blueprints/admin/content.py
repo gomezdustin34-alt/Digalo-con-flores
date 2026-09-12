@@ -7,6 +7,8 @@ from app.utils.content import get_content, set_content, clear_content_cache
 from app.utils.uploads import save_upload
 
 
+IMAGEN_RECHAZADA = ("La imagen no se guardó: debe ser una foto JPG, PNG, WEBP, GIF o HEIC de menos de 25 MB. El resto de los cambios sí se guardaron.")
+
 HERO_FIELDS = ["hero_eyebrow", "hero_title", "hero_script", "hero_description", "hero_cta_primary", "hero_cta_secondary"]
 ABOUT_FIELDS = ["about_title", "about_text"]
 FOOTER_FIELDS = ["footer_text"]
@@ -26,12 +28,16 @@ def content_home():
     if request.method == "POST":
         for field in HERO_FIELDS:
             set_content(field, request.form.get(field, ""), section="hero")
-        image_url = save_upload(request.files.get("hero_image"), "content")
+        archivo = request.files.get("hero_image")
+        image_url = save_upload(archivo, "content")
         if image_url:
             set_content("hero_image", image_url, value_type="image", section="hero")
         db.session.commit()
         clear_content_cache()
-        flash("Contenido del inicio actualizado.", "success")
+        if archivo and archivo.filename and not image_url:
+            flash(IMAGEN_RECHAZADA, "danger")
+        else:
+            flash("Contenido del inicio actualizado.", "success")
         return redirect(url_for("admin.content_home"))
 
     values = {field: get_content(field) for field in HERO_FIELDS}
@@ -44,12 +50,16 @@ def content_about():
     if request.method == "POST":
         for field in ABOUT_FIELDS:
             set_content(field, request.form.get(field, ""), section="about")
-        image_url = save_upload(request.files.get("about_image"), "content")
+        archivo = request.files.get("about_image")
+        image_url = save_upload(archivo, "content")
         if image_url:
             set_content("about_image", image_url, value_type="image", section="about")
         db.session.commit()
         clear_content_cache()
-        flash("Contenido de Nosotros actualizado.", "success")
+        if archivo and archivo.filename and not image_url:
+            flash(IMAGEN_RECHAZADA, "danger")
+        else:
+            flash("Contenido de Nosotros actualizado.", "success")
         return redirect(url_for("admin.content_about"))
 
     values = {field: get_content(field) for field in ABOUT_FIELDS}
