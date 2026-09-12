@@ -65,6 +65,7 @@ def create_order_from_cart(form):
         coupon_id=cart["coupon"].id if cart["coupon"] else None,
         delivery_address=f"{form.address.data}, {form.city.data}",
         delivery_city=form.city.data,
+        delivery_notes=form.additional_info.data or None,
         delivery_date=form.delivery_date.data or _fecha(regalo["delivery_date"]),
         delivery_time=delivery_time or regalo["delivery_time"],
         dedication_message=form.dedication_message.data or regalo["dedication_message"],

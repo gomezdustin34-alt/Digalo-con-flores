@@ -58,6 +58,7 @@ def admin_new_order_email(order, panel_url=None):
         + fila("Email", order.customer_email)
         + fila("Destinatario", order.recipient_name)
         + fila("Entrega", order.delivery_address)
+        + fila("Cómo llegar", order.delivery_notes)
         + fila("Fecha", fecha)
         + fila("Dedicatoria", order.dedication_message)
     )

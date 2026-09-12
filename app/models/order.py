@@ -33,6 +33,8 @@ class Order(db.Model):
 
     delivery_address = db.Column(db.String(400))
     delivery_city = db.Column(db.String(100))
+    # Referencias para llegar: apartamento, porteria, un punto conocido...
+    delivery_notes = db.Column(db.String(300))
     delivery_date = db.Column(db.Date)
     delivery_time = db.Column(db.String(50))
     dedication_message = db.Column(db.Text)

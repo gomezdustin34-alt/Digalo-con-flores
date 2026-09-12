@@ -33,6 +33,8 @@ def _texto_whatsapp(order):
         lineas.append(f"Para: {order.recipient_name}")
     if order.delivery_address:
         lineas.append(f"Entrega: {order.delivery_address}")
+    if order.delivery_notes:
+        lineas.append(f"Cómo llegar: {order.delivery_notes}")
     if order.delivery_date:
         fecha = order.delivery_date.strftime("%d/%m/%Y")
         lineas.append(f"Fecha: {fecha}{' · ' + order.delivery_time if order.delivery_time else ''}")

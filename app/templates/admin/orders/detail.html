@@ -61,6 +61,7 @@
     <div class="admin-panel">
       <h2>Entrega</h2>
       <p style="margin-bottom:6px;">{{ order.delivery_address }}</p>
+      {% if order.delivery_notes %}<p style="margin-bottom:6px;"><strong>Cómo llegar:</strong> {{ order.delivery_notes }}</p>{% endif %}
       {% if order.delivery_date %}<p style="margin-bottom:6px;">{{ order.delivery_date.strftime('%d/%m/%Y') }} — {{ order.delivery_time or 'Sin preferencia' }}</p>{% endif %}
       {% if order.dedication_message %}<p style="margin-bottom:6px;"><strong>Dedicatoria:</strong> "{{ order.dedication_message }}"</p>{% endif %}
     </div>
