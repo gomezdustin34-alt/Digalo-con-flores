@@ -12,6 +12,43 @@ from app.models.subscriber import Subscriber
 from app.utils.fechas import ahora as ahora_local, hoy as hoy_local, inicio_del_dia, inicio_del_mes
 
 
+# Medidas del grafico de ventas, en unidades del viewBox del SVG.
+ANCHO, ALTO, MARGEN_X, MARGEN_ARRIBA, MARGEN_ABAJO = 700, 200, 34, 16, 26
+
+
+def _puntos_del_grafico(etiquetas, valores):
+    """Convierte la serie de ventas en coordenadas listas para dibujar.
+
+    Se calcula aqui y no en el navegador para que el panel no dependa de
+    ninguna descarga externa: el grafico llega ya dibujado en el HTML.
+    """
+    maximo = max(valores) if valores else 0
+    util_ancho = ANCHO - MARGEN_X * 2
+    util_alto = ALTO - MARGEN_ARRIBA - MARGEN_ABAJO
+    pasos = max(len(valores) - 1, 1)
+
+    puntos = []
+    for i, (etiqueta, valor) in enumerate(zip(etiquetas, valores)):
+        x = MARGEN_X + (util_ancho * i / pasos)
+        # Sin ventas todavia: la linea descansa en la base.
+        y = ALTO - MARGEN_ABAJO - (util_alto * (valor / maximo) if maximo else 0)
+        puntos.append({"etiqueta": etiqueta, "valor": valor, "x": round(x, 1), "y": round(y, 1)})
+
+    return {
+        "puntos": puntos,
+        "maximo": maximo,
+        "linea": " ".join(f"{p['x']},{p['y']}" for p in puntos),
+        "area": (
+            f"M {puntos[0]['x']},{ALTO - MARGEN_ABAJO} "
+            + " ".join(f"L {p['x']},{p['y']}" for p in puntos)
+            + f" L {puntos[-1]['x']},{ALTO - MARGEN_ABAJO} Z"
+        ) if puntos else "",
+        "base": ALTO - MARGEN_ABAJO,
+        "ancho": ANCHO,
+        "alto": ALTO,
+    }
+
+
 @bp.route("/")
 def dashboard():
     # Los cortes de dia y de mes son los de la floristeria, no los del servidor
@@ -63,8 +100,13 @@ def dashboard():
         days.append(day.strftime("%d/%m"))
         sales_series.append(float(day_total or 0))
 
+    # El grafico se dibuja como SVG en la propia pagina: antes dependia de una
+    # libreria externa cuyo archivo devolvia 404, asi que no se veia nada.
+    grafico = _puntos_del_grafico(days, sales_series)
+
     return render_template(
         "admin/dashboard.html",
+        grafico=grafico,
         total_sales=total_sales,
         sales_today=sales_today,
         sales_month=sales_month,

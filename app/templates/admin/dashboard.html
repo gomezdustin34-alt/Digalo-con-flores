@@ -20,7 +20,32 @@
 <div class="panel-grid-2">
   <div class="admin-panel">
     <h2>Ventas de los últimos 7 días</h2>
-    <canvas id="salesChart" height="110"></canvas>
+    {% if grafico.maximo %}
+      <svg class="sales-chart" viewBox="0 0 {{ grafico.ancho }} {{ grafico.alto }}"
+           preserveAspectRatio="none" role="img"
+           aria-label="Ventas de los últimos 7 días, máximo {{ format_currency(grafico.maximo, get_setting('currency','COP')) }}">
+        <path d="{{ grafico.area }}" class="sales-area"/>
+        <polyline points="{{ grafico.linea }}" class="sales-line"/>
+        {% for p in grafico.puntos %}
+          <circle cx="{{ p.x }}" cy="{{ p.y }}" r="4" class="sales-dot">
+            <title>{{ p.etiqueta }}: {{ format_currency(p.valor, get_setting('currency','COP')) }}</title>
+          </circle>
+        {% endfor %}
+      </svg>
+      <div class="sales-axis">
+        {% for p in grafico.puntos %}
+          <span{% if p.valor %} class="tiene-ventas"{% endif %}>{{ p.etiqueta }}</span>
+        {% endfor %}
+      </div>
+      <p class="admin-hint" style="margin-top:10px;">
+        Día más alto: {{ format_currency(grafico.maximo, get_setting('currency','COP')) }}.
+        Pasa el cursor por cada punto para ver su valor.
+      </p>
+    {% else %}
+      <div class="empty-state" style="padding:26px 0;">
+        <p>Todavía no hay ventas en los últimos 7 días.</p>
+      </div>
+    {% endif %}
   </div>
   <div class="admin-panel">
     <h2>Productos más vendidos</h2>
@@ -78,27 +103,4 @@
 </div>
 {% endblock %}
 
-{% block extra_js %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
-<script>
-  const ctx = document.getElementById('salesChart');
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: {{ chart_days | tojson }},
-      datasets: [{
-        label: 'Ventas',
-        data: {{ chart_sales | tojson }},
-        borderColor: '#8A6A3A',
-        backgroundColor: 'rgba(138,106,58,0.12)',
-        fill: true,
-        tension: 0.35,
-      }],
-    },
-    options: {
-      plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true } },
-    },
-  });
-</script>
-{% endblock %}
+
