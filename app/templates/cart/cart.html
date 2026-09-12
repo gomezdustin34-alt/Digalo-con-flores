@@ -61,6 +61,9 @@
     <div class="summary-row"><span>Envío</span><span>{{ 'Gratis' if cart.shipping == 0 else format_currency(cart.shipping, get_setting('currency','COP')) }}</span></div>
     <div class="summary-row total"><span>Total</span><span>{{ format_currency(cart.total, get_setting('currency','COP')) }}</span></div>
 
+    {% if cart.coupon_note %}
+      <p class="coupon-note">{{ cart.coupon_note }}</p>
+    {% endif %}
     {% if cart.coupon %}
       <form action="{{ url_for('cart.remove_coupon') }}" method="post" style="margin:14px 0;">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">

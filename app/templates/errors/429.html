@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Demasiados intentos — {{ store_name }}{% endblock %}
+{% block content %}
+<div class="container section text-center">
+  <span class="error-icon">
+    <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
+    </svg>
+  </span>
+  <h1>Demasiados intentos seguidos</h1>
+  <p>
+    Por seguridad bloqueamos esta acción durante un minuto. Espera un momento y vuelve a intentarlo.
+  </p>
+  <p>
+    Si olvidaste tu contraseña, puedes
+    <a href="{{ url_for('auth.forgot_password') }}">restablecerla</a> en lugar de seguir intentando.
+  </p>
+  <a href="{{ url_for('storefront.home') }}" class="btn btn-primary" style="margin-top:10px;">Volver al inicio</a>
+</div>
+{% endblock %}

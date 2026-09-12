@@ -5,7 +5,7 @@ from flask import session
 
 from app.models.product import Product
 from app.models.coupon import Coupon
-from app.utils.helpers import get_setting
+from app.utils.helpers import format_currency, get_setting
 
 DEFAULT_SHIPPING_FLAT_RATE = 12000
 DEFAULT_FREE_SHIPPING_THRESHOLD = 150000
@@ -134,9 +134,28 @@ def apply_coupon(code):
     valid, error = coupon.is_valid_now()
     if not valid:
         return False, error
+
+    # La compra minima depende del carrito, asi que is_valid_now() no puede
+    # comprobarla. Sin esto se aceptaba el cupon, compute_discount devolvia 0 y
+    # el cliente veia "Cupon aplicado" sin ningun descuento ni explicacion.
+    minimo = float(coupon.min_purchase or 0)
+    if minimo > _subtotal_actual():
+        moneda = get_setting("currency", "COP")
+        return False, f"Este cupón aplica en compras desde {format_currency(minimo, moneda)}."
+
     session["coupon_code"] = coupon.code
     session.modified = True
     return True, None
+
+
+def _subtotal_actual():
+    """Suma del carrito antes de descuentos y envio."""
+    subtotal = 0
+    for line in _raw_cart():
+        producto = Product.query.get(line["product_id"])
+        if producto:
+            subtotal += float(line["unit_price"]) * line["quantity"]
+    return subtotal
 
 
 def remove_coupon():
@@ -178,6 +197,7 @@ def get_cart():
 
     discount = 0
     coupon = None
+    coupon_note = None
     coupon_code = session.get("coupon_code")
     if coupon_code:
         coupon = Coupon.query.filter_by(code=coupon_code).first()
@@ -185,6 +205,16 @@ def get_cart():
             valid, _ = coupon.is_valid_now()
             if valid:
                 discount = coupon.compute_discount(subtotal)
+                # El cupon era valido al aplicarlo, pero el carrito cambio y ya
+                # no llega al minimo. Sin este aviso el cliente ve el cupon
+                # puesto y ningun descuento, sin saber por que.
+                minimo = float(coupon.min_purchase or 0)
+                if discount == 0 and minimo > subtotal:
+                    moneda = get_setting("currency", "COP")
+                    coupon_note = (
+                        f"El cupón {coupon.code} aplica en compras desde "
+                        f"{format_currency(minimo, moneda)}."
+                    )
             else:
                 coupon = None
                 session.pop("coupon_code", None)
@@ -201,6 +231,7 @@ def get_cart():
         "subtotal": subtotal,
         "discount": discount,
         "coupon": coupon,
+        "coupon_note": coupon_note,
         "shipping": shipping,
         "total": total,
     }

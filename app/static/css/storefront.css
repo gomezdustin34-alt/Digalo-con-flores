@@ -324,3 +324,10 @@
   .gift-summary { flex-direction: column; }
   .gift-summary dt { min-width: 0; width: 100%; }
 }
+
+/* Aviso cuando el cupon esta puesto pero todavia no alcanza el minimo */
+.coupon-note {
+  font-size: 12.5px; line-height: 1.55; color: var(--gold-dark);
+  background: var(--blush); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 10px 12px; margin: 12px 0 0;
+}

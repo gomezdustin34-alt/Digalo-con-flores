@@ -12,13 +12,26 @@ def coupons_list():
     return render_template("admin/coupons/list.html", coupons=coupons)
 
 
+def _codigo_repetido(codigo, excluir_id=None):
+    """El codigo es unico en la base de datos: sin esta comprobacion, guardar uno
+    repetido reventaba con un IntegrityError y el panel mostraba un error 500."""
+    query = Coupon.query.filter_by(code=codigo)
+    if excluir_id is not None:
+        query = query.filter(Coupon.id != excluir_id)
+    return query.first() is not None
+
+
 @bp.route("/cupones/nuevo", methods=["GET", "POST"])
 def coupon_new():
     form = CouponForm()
     if form.validate_on_submit():
-        coupon = Coupon(code=form.code.data.strip().upper())
+        codigo = form.code.data.strip().upper()
+        if _codigo_repetido(codigo):
+            flash(f"Ya existe un cupón con el código {codigo}.", "danger")
+            return render_template("admin/coupons/form.html", form=form, coupon=None)
+        coupon = Coupon(code=codigo)
         form.populate_obj(coupon)
-        coupon.code = form.code.data.strip().upper()
+        coupon.code = codigo
         db.session.add(coupon)
         db.session.commit()
         flash("Cupón creado.", "success")
@@ -31,8 +44,12 @@ def coupon_edit(coupon_id):
     coupon = Coupon.query.get_or_404(coupon_id)
     form = CouponForm(obj=coupon)
     if form.validate_on_submit():
+        codigo = form.code.data.strip().upper()
+        if _codigo_repetido(codigo, excluir_id=coupon.id):
+            flash(f"Ya existe otro cupón con el código {codigo}.", "danger")
+            return render_template("admin/coupons/form.html", form=form, coupon=coupon)
         form.populate_obj(coupon)
-        coupon.code = form.code.data.strip().upper()
+        coupon.code = codigo
         db.session.commit()
         flash("Cupón actualizado.", "success")
         return redirect(url_for("admin.coupons_list"))

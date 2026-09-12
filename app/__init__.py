@@ -118,6 +118,13 @@ def register_error_handlers(app):
     def forbidden(e):
         return render_template("errors/403.html"), 403
 
+    @app.errorhandler(429)
+    def too_many_requests(e):
+        # El limitador protege el login y la recuperacion de contrasena. Sin
+        # este manejador, quien se pasaba del limite veia la pagina en blanco
+        # de Flask, en ingles y sin forma de volver.
+        return render_template("errors/429.html"), 429
+
     @app.errorhandler(500)
     def server_error(e):
         return render_template("errors/500.html"), 500
