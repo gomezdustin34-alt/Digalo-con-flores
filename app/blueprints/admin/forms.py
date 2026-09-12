@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms import (
     StringField, TextAreaField, DecimalField, IntegerField, BooleanField,
-    SelectField, DateField, DateTimeField,
+    SelectField, DateField, DateTimeField, PasswordField,
 )
 from wtforms.validators import DataRequired, Optional, Length, NumberRange
 
@@ -81,4 +81,7 @@ class StaffUserForm(FlaskForm):
         ("editor", "Editor"),
         ("order_manager", "Gestor de pedidos"),
     ])
-    password = StringField("Contraseña (dejar en blanco para no cambiar)", validators=[Optional(), Length(min=8)])
+    # PasswordField y no StringField: antes la clave se escribia a la vista de
+    # cualquiera que estuviera mirando la pantalla.
+    password = PasswordField("Contraseña (dejar en blanco para no cambiar)",
+                             validators=[Optional(), Length(min=10)])

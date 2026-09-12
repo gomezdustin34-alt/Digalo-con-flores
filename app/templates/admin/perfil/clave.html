@@ -1,0 +1,35 @@
+{% extends "admin/base.html" %}
+{% block title %}Mi contraseña — Panel{% endblock %}
+{% block page_title %}Mi contraseña{% endblock %}
+
+{% block content %}
+<div class="admin-panel" style="max-width:520px;">
+  <p class="admin-hint" style="margin-bottom:20px;">
+    Elige una contraseña de al menos 10 caracteres que no uses en ningún otro sitio.
+    Al guardarla se cerrarán las sesiones abiertas en otros dispositivos.
+  </p>
+
+  <form method="post" novalidate autocomplete="off">
+    {{ form.hidden_tag() }}
+    <p class="form-required-note">Los campos con <b>*</b> son obligatorios.</p>
+
+    <div class="field">
+      {{ form.actual.label }}
+      {{ form.actual(autocomplete="current-password") }}
+      {% for e in form.actual.errors %}<div class="error">{{ e }}</div>{% endfor %}
+    </div>
+    <div class="field">
+      {{ form.nueva.label }}
+      {{ form.nueva(autocomplete="new-password") }}
+      {% for e in form.nueva.errors %}<div class="error">{{ e }}</div>{% endfor %}
+    </div>
+    <div class="field">
+      {{ form.confirmar.label }}
+      {{ form.confirmar(autocomplete="new-password") }}
+      {% for e in form.confirmar.errors %}<div class="error">{{ e }}</div>{% endfor %}
+    </div>
+
+    <button type="submit" class="btn btn-primary btn-block" style="margin-top:8px;">Cambiar contraseña</button>
+  </form>
+</div>
+{% endblock %}

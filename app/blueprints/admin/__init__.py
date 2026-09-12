@@ -16,6 +16,7 @@ SECTION_ROLES = [
     ("order", ORDER_ROLES),
     ("content", CONTENT_ROLES),
     ("testimonial", CONTENT_ROLES),
+    ("cambiar_clave", STAFF_ROLES),
     ("staff", ("super_admin",)),
     ("audit", ("super_admin",)),
 ]
@@ -60,6 +61,7 @@ def registrar_accion(respuesta):
 
 from app.blueprints.admin import (  # noqa: E402,F401
     audit,
+    perfil,
     dashboard,
     products,
     categories,
