@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, session
 from flask_login import current_user
 
 from app.extensions import limiter
@@ -52,6 +52,14 @@ def checkout():
             order_confirmation_email(order),
         )
 
+        # Se recuerda en la sesion que este navegador acaba de hacer el pedido.
+        # Es lo que autoriza a ver la pagina de confirmacion sin tener cuenta,
+        # sin abrirla a cualquiera que conozca el numero.
+        recientes = session.get("mis_pedidos", [])
+        recientes = ([order.number] + recientes)[:20]
+        session["mis_pedidos"] = recientes
+        session.modified = True
+
         return redirect(url_for("checkout.whatsapp_redirect", order_number=order.number))
 
     return render_template(
@@ -60,9 +68,29 @@ def checkout():
     )
 
 
+def _puede_ver(order):
+    """Quien puede ver la pagina de confirmacion de un pedido.
+
+    - Quien lo acaba de hacer (guardado en la sesion de este navegador).
+    - El cliente con cuenta que es su dueño.
+    Un desconocido que solo tenga el numero NO: para eso esta "Seguir mi
+    pedido", que exige numero + correo.
+    """
+    if order.number in session.get("mis_pedidos", []):
+        return True
+    if current_user.is_authenticated and order.user_id == current_user.id:
+        return True
+    return False
+
+
 @bp.route("/pedido/<order_number>")
 def whatsapp_redirect(order_number):
     order = Order.query.filter_by(number=order_number).first_or_404()
+    if not _puede_ver(order):
+        # No es de este navegador ni de esta cuenta: se manda a la consulta con
+        # correo, sin confirmar siquiera si el numero existe.
+        flash("Para ver un pedido, confírmalo con tu número y tu correo.", "info")
+        return redirect(url_for("storefront.track_order"))
     return render_template(
         "checkout/whatsapp.html",
         order=order,

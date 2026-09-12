@@ -8,6 +8,7 @@ from app.extensions import db, limiter
 from app.models.user import User
 from app.services.email import get_email_provider
 from app.utils.content import notify
+from app.utils.urls import url_absoluta
 from app.utils.auditoria import seguridad
 
 
@@ -110,7 +111,9 @@ def forgot_password():
         user = User.query.filter_by(email=form.email.data.lower().strip()).first()
         if user:
             token = generate_reset_token(user.email)
-            reset_url = url_for("auth.reset_password", token=token, _external=True)
+            # Anclado a SITE_URL: el enlace del correo no depende del host de
+            # la peticion, que un atacante podria manipular.
+            reset_url = url_absoluta("auth.reset_password", token=token)
             html = f"""
             <div style='font-family:Arial,sans-serif;'>
               <h2>Recupera tu contraseña</h2>

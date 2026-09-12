@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect, url_for, flash
+from flask import render_template, request, redirect, url_for, flash, session
 from flask_login import current_user
 
 from app.blueprints.storefront import bp
@@ -170,6 +170,12 @@ def track_order():
         correo = form.email.data.strip().lower()
         order = Order.query.filter_by(number=numero).first()
         if order and (order.customer_email or "").lower() == correo:
+            # Verificado numero + correo: se autoriza a este navegador a ver la
+            # pagina de confirmacion de ese pedido.
+            recientes = session.get("mis_pedidos", [])
+            if order.number not in recientes:
+                session["mis_pedidos"] = ([order.number] + recientes)[:20]
+                session.modified = True
             return redirect(url_for("checkout.whatsapp_redirect", order_number=order.number))
         flash("No encontramos un pedido con ese número y ese correo. Revísalos e intenta de nuevo.", "danger")
     return render_template("storefront/track_order.html", form=form)
