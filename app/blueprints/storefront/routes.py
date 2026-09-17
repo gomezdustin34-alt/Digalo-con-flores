@@ -116,7 +116,7 @@ def contact():
 
 # Fecha de la ultima revision de los textos legales. Actualizala cuando cambies
 # el contenido de cualquiera de las paginas de abajo.
-LEGAL_ACTUALIZADO = "11 de septiembre de 2026"
+LEGAL_ACTUALIZADO = "16 de septiembre de 2026"
 
 PAGINAS_LEGALES = {
     "privacidad": ("Politica de Privacidad y Tratamiento de Datos", "Politica de privacidad"),

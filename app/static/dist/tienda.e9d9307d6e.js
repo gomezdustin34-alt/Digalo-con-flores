@@ -50,34 +50,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Aviso de cookies: se muestra una sola vez por navegador. El acceso al
-  // almacenamiento local puede fallar (modo privado, cookies bloqueadas), y en
-  // ese caso simplemente se muestra el aviso sin recordar que se cerro.
-  const cookieNotice = document.getElementById("cookie-notice");
-  if (cookieNotice) {
-    const CLAVE = "aviso_cookies";
-    let yaVisto = false;
-    try {
-      yaVisto = localStorage.getItem(CLAVE) === "1";
-    } catch (e) {
-      yaVisto = false;
-    }
-    if (!yaVisto) {
-      cookieNotice.hidden = false;
-      const aceptar = document.getElementById("cookie-notice-accept");
-      if (aceptar) {
-        aceptar.addEventListener("click", () => {
-          cookieNotice.hidden = true;
-          try {
-            localStorage.setItem(CLAVE, "1");
-          } catch (e) {
-            /* sin almacenamiento: el aviso volvera a aparecer, no pasa nada */
-          }
-        });
-      }
-    }
-  }
-
   // Auto-cierre de flash messages
   document.querySelectorAll(".flash").forEach((el) => {
     setTimeout(() => {
