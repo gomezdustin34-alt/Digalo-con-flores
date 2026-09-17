@@ -5,18 +5,20 @@ from flask import session
 
 from app.models.product import Product
 from app.models.coupon import Coupon
-from app.utils.helpers import format_currency, get_setting
+from app.utils.helpers import format_currency, get_setting, parse_amount
 
 DEFAULT_SHIPPING_FLAT_RATE = 12000
 DEFAULT_FREE_SHIPPING_THRESHOLD = 150000
 
 
+# Con float() a secas, un "$12.000" o "150,000" escrito en Configuracion dejaba
+# el carrito y el checkout en error 500 para todos los clientes.
 def _shipping_flat_rate():
-    return float(get_setting("shipping_flat_rate") or DEFAULT_SHIPPING_FLAT_RATE)
+    return parse_amount(get_setting("shipping_flat_rate"), DEFAULT_SHIPPING_FLAT_RATE)
 
 
 def _free_shipping_threshold():
-    return float(get_setting("free_shipping_threshold") or DEFAULT_FREE_SHIPPING_THRESHOLD)
+    return parse_amount(get_setting("free_shipping_threshold"), DEFAULT_FREE_SHIPPING_THRESHOLD)
 
 
 def _line_key(product_id, variation_label, recipient_name, dedication_message, delivery_date, delivery_time):
@@ -54,7 +56,7 @@ def add_to_cart(product_id, quantity=1, variation_id=None,
     aplica— de la variación guardada en la base de datos. Nunca se acepta un
     precio ni un ajuste de precio enviado por el navegador.
     """
-    product = Product.query.get_or_404(product_id)
+    product = Product.query.filter_by(id=product_id, is_active=True).first_or_404()
 
     variation_label = None
     price_delta = 0
@@ -169,10 +171,14 @@ def get_cart():
     subtotal = 0
     count = 0
 
+    vigentes = []
     for line in cart:
         product = Product.query.get(line["product_id"])
-        if not product:
+        # Un producto borrado o despublicado despues de agregarlo ya no se
+        # puede comprar: sale del carrito (y del contador del icono).
+        if not product or not product.is_active:
             continue
+        vigentes.append(line)
 
         # El precio se recalcula desde la base de datos en cada lectura, para que
         # siempre refleje el precio vigente del producto y de su variación.
@@ -194,6 +200,10 @@ def get_cart():
             "product": product,
             "line_total": line_total,
         })
+
+    if len(vigentes) != len(cart):
+        session["cart"] = vigentes
+        session.modified = True
 
     discount = 0
     coupon = None

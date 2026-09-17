@@ -23,6 +23,11 @@ def _safe_int(raw):
         return None
 
 
+def _texto(raw, maximo):
+    valor = (raw or "").strip()
+    return valor[:maximo] or None
+
+
 @bp.route("/")
 def view_cart():
     cart = cart_service.get_cart()
@@ -35,10 +40,13 @@ def add(product_id):
     # El precio NUNCA viene del formulario: se resuelve en el servidor a partir
     # del id de la variación guardada en la base de datos.
     variation_id = _safe_int(request.form.get("variation_id"))
-    recipient_name = request.form.get("recipient_name") or None
-    dedication_message = request.form.get("dedication_message") or None
-    delivery_date = request.form.get("delivery_date") or None
-    delivery_time = request.form.get("delivery_time") or None
+    # Recortados al tamaño de sus columnas: el formulario no los limita y un
+    # texto mas largo hacia fallar el checkout en PostgreSQL (y ademas viaja en
+    # la cookie de sesion, que tiene un tope de 4 KB).
+    recipient_name = _texto(request.form.get("recipient_name"), 150)
+    dedication_message = _texto(request.form.get("dedication_message"), 500)
+    delivery_date = _texto(request.form.get("delivery_date"), 10)
+    delivery_time = _texto(request.form.get("delivery_time"), 50)
 
     cart_service.add_to_cart(
         product_id, quantity, variation_id,

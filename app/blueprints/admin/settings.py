@@ -2,7 +2,7 @@ from flask import render_template, request, redirect, url_for, flash
 
 from app.blueprints.admin import bp
 from app.extensions import db
-from app.utils.helpers import get_setting, set_setting, clear_settings_cache
+from app.utils.helpers import get_setting, set_setting, clear_settings_cache, parse_amount
 from app.utils.uploads import save_upload
 
 SETTING_FIELDS = [
@@ -16,12 +16,22 @@ SETTING_FIELDS = [
     "shipping_flat_rate", "free_shipping_threshold",
 ]
 
+CAMPOS_IMPORTE = ("shipping_flat_rate", "free_shipping_threshold")
+
 
 @bp.route("/configuracion", methods=["GET", "POST"])
 def settings():
     if request.method == "POST":
         for field in SETTING_FIELDS:
-            set_setting(field, request.form.get(field, ""))
+            valor = request.form.get(field, "")
+            if field in CAMPOS_IMPORTE and valor.strip():
+                numero = parse_amount(valor)
+                if numero is None:
+                    flash(f"El valor «{valor}» no es un importe válido; no se cambió.", "danger")
+                    continue
+                # Se guarda limpio ("12000"), sin simbolos ni puntos de miles.
+                valor = str(int(numero)) if numero.is_integer() else str(numero)
+            set_setting(field, valor)
 
         for campo, ajuste in (("logo", "logo_url"), ("favicon", "favicon_url")):
             archivo = request.files.get(campo)

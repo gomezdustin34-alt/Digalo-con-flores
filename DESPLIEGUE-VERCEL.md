@@ -57,7 +57,27 @@ viejo.
 ## Si cambias un modelo
 
 Vercel **no** corre migraciones al desplegar. Hay que aplicarlas a mano *antes*
-de hacer push, o el código nuevo saldrá contra el esquema viejo:
+de hacer push, o el código nuevo saldrá contra el esquema viejo y cosas como
+guardar un pedido empezarán a fallar para todos los clientes.
+
+La forma corta, que además comprueba el resultado:
+
+```bash
+python scripts/migrar_produccion.py
+```
+
+Toma la URL de `.env.local` (la *unpooled*), dice qué le falta a la base, pide
+confirmación y al terminar verifica que el esquema coincida con los modelos.
+Si no hay nada pendiente, lo dice y no toca nada. Se puede correr las veces que
+haga falta.
+
+También sirve para una base local desactualizada:
+
+```bash
+python scripts/migrar_produccion.py "sqlite:///instance/digaloconflores.db"
+```
+
+Lo mismo a mano, si prefieres:
 
 ```bash
 # PowerShell

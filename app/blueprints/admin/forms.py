@@ -4,7 +4,7 @@ from wtforms import (
     StringField, TextAreaField, DecimalField, IntegerField, BooleanField,
     SelectField, DateField, DateTimeField, PasswordField,
 )
-from wtforms.validators import DataRequired, Optional, Length, NumberRange
+from wtforms.validators import DataRequired, InputRequired, Optional, Length, NumberRange, ValidationError
 
 from app.utils.icons import ICONOS
 
@@ -18,7 +18,9 @@ class ProductForm(FlaskForm):
     compare_at_price = DecimalField("Precio anterior", validators=[Optional(), NumberRange(min=0)])
 
     sku = StringField("SKU", validators=[Optional(), Length(max=60)])
-    stock = IntegerField("Stock", validators=[DataRequired(), NumberRange(min=0)])
+    # InputRequired y no DataRequired: DataRequired toma el 0 como vacio y no
+    # dejaba guardar un producto agotado.
+    stock = IntegerField("Stock", validators=[InputRequired(), NumberRange(min=0)])
     stock_minimo = IntegerField("Stock mínimo", validators=[Optional(), NumberRange(min=0)])
 
     category_id = SelectField("Categoría", coerce=int, validators=[DataRequired()])
@@ -55,6 +57,10 @@ class CouponForm(FlaskForm):
     max_uses = IntegerField("Usos máximos", validators=[Optional(), NumberRange(min=1)])
     min_purchase = DecimalField("Compra mínima", validators=[Optional(), NumberRange(min=0)], default=0)
     is_active = BooleanField("Activo", default=True)
+
+    def validate_discount_value(self, campo):
+        if self.discount_type.data == "percent" and campo.data is not None and campo.data > 100:
+            raise ValidationError("Un descuento en porcentaje no puede pasar de 100.")
 
 
 class TestimonialForm(FlaskForm):

@@ -4,7 +4,7 @@ from flask_login import login_required, login_user, current_user
 from app.blueprints.account import bp
 from app.blueprints.account.forms import ProfileForm, ChangePasswordForm, AddressForm
 from app.extensions import db
-from sqlalchemy import or_, func
+from sqlalchemy import and_, or_, func
 
 from app.models.order import Order
 from app.models.user import Address
@@ -18,7 +18,12 @@ def _mios():
     con su mismo correo (aún no vinculados)."""
     return or_(
         Order.user_id == current_user.id,
-        func.lower(Order.guest_email) == (current_user.email or "").lower(),
+        # Solo los que no tienen dueño: un pedido hecho desde OTRA cuenta que
+        # escribio este correo en el checkout no es de este usuario.
+        and_(
+            Order.user_id.is_(None),
+            func.lower(Order.guest_email) == (current_user.email or "").lower(),
+        ),
     )
 
 

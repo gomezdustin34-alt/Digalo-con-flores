@@ -72,6 +72,14 @@ def order_update_status(order_id):
                     item.product.stock = (item.product.stock or 0) + item.quantity
             order.stock_restored = True
             flash("Pedido cancelado: las unidades volvieron al inventario.", "info")
+        elif new_status != "cancelado" and order.stock_restored:
+            # Se reactiva un pedido que estaba cancelado: sus unidades se habian
+            # devuelto, asi que se vuelven a descontar. Antes quedaban contadas
+            # dos veces y el inventario mostraba stock que no existia.
+            for item in order.items:
+                if item.product:
+                    item.product.stock = max(0, (item.product.stock or 0) - item.quantity)
+            order.stock_restored = False
 
         # Entregado o cancelado ya no es trabajo pendiente: sale de la lista.
         if new_status in ESTADOS_TERMINADOS and order.archived_at is None:

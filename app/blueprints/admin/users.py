@@ -1,5 +1,5 @@
 from flask import render_template, redirect, url_for, flash
-from flask_login import current_user
+from flask_login import current_user, login_user
 
 from app.blueprints.admin import bp
 from app.blueprints.admin.forms import StaffUserForm
@@ -44,15 +44,29 @@ def staff_edit(user_id):
     staff_user = User.query.filter(User.id == user_id, User.role != "customer").first_or_404()
     form = StaffUserForm(obj=staff_user)
     if form.validate_on_submit():
-        staff_user.first_name = form.first_name.data
-        staff_user.last_name = form.last_name.data
-        staff_user.email = form.email.data.lower().strip()
-        staff_user.role = form.role.data
-        if form.password.data:
-            staff_user.set_password(form.password.data)
-        db.session.commit()
-        flash("Usuario actualizado.", "success")
-        return redirect(url_for("admin.staff_list"))
+        email = form.email.data.lower().strip()
+        es_uno_mismo = staff_user.id == current_user.id
+        if User.query.filter(User.email == email, User.id != staff_user.id).first():
+            # El email es unico: sin esto, guardar uno repetido daba error 500.
+            flash("Ya existe otro usuario con ese email.", "danger")
+        elif es_uno_mismo and form.role.data != staff_user.role:
+            # Quitarse a uno mismo el rol de super administrador deja la tienda
+            # sin nadie que pueda gestionar usuarios.
+            flash("No puedes cambiar tu propio rol.", "danger")
+        else:
+            staff_user.first_name = form.first_name.data
+            staff_user.last_name = form.last_name.data
+            staff_user.email = email
+            staff_user.role = form.role.data
+            if form.password.data:
+                staff_user.set_password(form.password.data)
+            db.session.commit()
+            if es_uno_mismo and form.password.data:
+                # La sesion depende de la contraseña: sin esto, cambiarse la
+                # propia clave desde aqui cerraba la sesion de quien lo hacia.
+                login_user(staff_user, fresh=True)
+            flash("Usuario actualizado.", "success")
+            return redirect(url_for("admin.staff_list"))
     return render_template("admin/staff/form.html", form=form, staff_user=staff_user)
 
 

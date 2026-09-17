@@ -1,3 +1,5 @@
+import re
+
 from slugify import slugify as _slugify
 
 from app.extensions import db
@@ -30,6 +32,23 @@ def format_currency(amount, currency="COP"):
         amount = 0
     symbol = "$" if currency == "COP" else currency + " "
     return f"{symbol}{amount:,.0f}".replace(",", ".")
+
+
+def parse_amount(valor, default=None):
+    """Convierte un importe escrito a mano en un numero.
+
+    Acepta como lo escribe la gente en Colombia: "12000", "$12.000",
+    "150,000", "12.000,50". Devuelve `default` si no hay ningun numero.
+    """
+    texto = re.sub(r"[^\d.,]", "", str(valor or ""))
+    if not re.search(r"\d", texto):
+        return default
+    ultimo = max(texto.rfind("."), texto.rfind(","))
+    # Uno o dos digitos tras el ultimo separador son decimales; tres, miles.
+    if ultimo != -1 and len(texto) - ultimo - 1 in (1, 2):
+        entero = re.sub(r"[.,]", "", texto[:ultimo]) or "0"
+        return float(f"{entero}.{texto[ultimo + 1:]}")
+    return float(re.sub(r"[.,]", "", texto))
 
 
 def _settings_cache():

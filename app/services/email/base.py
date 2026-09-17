@@ -17,8 +17,8 @@ class EmailProvider(ABC):
         sent = 0
         for to in recipients:
             try:
-                self.send(to, subject, html_body, text_body)
-                sent += 1
+                if self.send(to, subject, html_body, text_body) is not False:
+                    sent += 1
             except Exception:
                 continue
         return sent

@@ -113,7 +113,7 @@ def forgot_password():
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data.lower().strip()).first()
         if user:
-            token = generate_reset_token(user.email)
+            token = generate_reset_token(user)
             # Anclado a SITE_URL: el enlace del correo no depende del host de
             # la peticion, que un atacante podria manipular.
             reset_url = url_absoluta("auth.reset_password", token=token)
@@ -133,14 +133,14 @@ def forgot_password():
 
 @bp.route("/restablecer/<token>", methods=["GET", "POST"])
 def reset_password(token):
-    email = verify_reset_token(token)
-    if not email:
+    datos = verify_reset_token(token)
+    user = User.query.filter_by(email=datos[0]).first() if datos else None
+    if user is None or user.huella_sesion != datos[1]:
         flash("El enlace de recuperación no es válido o expiró.", "danger")
         return redirect(url_for("auth.forgot_password"))
 
     form = ResetPasswordForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=email).first()
         if user:
             user.set_password(form.password.data)
             db.session.commit()

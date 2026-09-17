@@ -9,6 +9,11 @@ coupon_categories = db.Table(
 )
 
 
+def _dia(valor):
+    """Fecha de un valor que puede llegar como datetime (de la base) o date (del formulario)."""
+    return valor.date() if isinstance(valor, datetime) else valor
+
+
 class Coupon(db.Model):
     __tablename__ = "coupons"
 
@@ -32,12 +37,17 @@ class Coupon(db.Model):
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
     def is_valid_now(self):
-        now = datetime.now(timezone.utc)
+        # El panel solo pide el dia de inicio y el de expiracion, asi que se
+        # comparan dias del calendario de la tienda. Antes se comparaba contra
+        # la medianoche UTC: un cupon que "vence el 30" dejaba de servir el 29
+        # a las 7 de la noche en Colombia, y uno que "empieza hoy" no servia.
+        from app.utils.fechas import hoy
+        today = hoy()
         if not self.is_active:
             return False, "Este cupón ya no está activo."
-        if self.starts_at and now < self.starts_at.replace(tzinfo=timezone.utc):
+        if self.starts_at and today < _dia(self.starts_at):
             return False, "Este cupón todavía no está disponible."
-        if self.expires_at and now > self.expires_at.replace(tzinfo=timezone.utc):
+        if self.expires_at and today > _dia(self.expires_at):
             return False, "Este cupón ha expirado."
         if self.max_uses is not None and self.used_count >= self.max_uses:
             return False, "Este cupón alcanzó su límite de usos."

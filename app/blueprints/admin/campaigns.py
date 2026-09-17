@@ -60,6 +60,10 @@ def campaign_delete(campaign_id):
 @bp.route("/campanas/<int:campaign_id>/enviar", methods=["POST"])
 def campaign_send(campaign_id):
     campaign = EmailCampaign.query.get_or_404(campaign_id)
+    if campaign.status == "enviada":
+        # Un doble clic o un reenvio del formulario la mandaba otra vez a todos.
+        flash("Esta campaña ya fue enviada.", "info")
+        return redirect(url_for("admin.campaigns_list"))
     recipients = [s.email for s in Subscriber.query.filter_by(is_active=True).all()]
 
     sent = get_email_provider().send_bulk(recipients, campaign.subject, campaign.content_html)

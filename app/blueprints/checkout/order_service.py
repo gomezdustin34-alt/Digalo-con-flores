@@ -76,7 +76,10 @@ def create_order_from_cart(form):
 
     order = Order(
         user_id=current_user.id if current_user.is_authenticated else None,
-        guest_name=f"{form.first_name.data} {form.last_name.data}".strip(),
+        # Recortes al tamaño de las columnas: nombre y apellido (100 + 100) o
+        # direccion y ciudad (400 + 100) juntos podian pasarse y PostgreSQL
+        # rechazaba el pedido entero.
+        guest_name=f"{form.first_name.data} {form.last_name.data}".strip()[:150],
         guest_email=form.email.data.lower().strip(),
         guest_phone=form.phone.data,
         subtotal=cart["subtotal"],
@@ -84,7 +87,7 @@ def create_order_from_cart(form):
         shipping_total=cart["shipping"],
         total=cart["total"],
         coupon_id=cart["coupon"].id if cart["coupon"] else None,
-        delivery_address=f"{form.address.data}, {form.city.data}",
+        delivery_address=f"{form.address.data}, {form.city.data}"[:400],
         delivery_city=form.city.data,
         delivery_notes=form.additional_info.data or None,
         delivery_date=form.delivery_date.data or _fecha(regalo["delivery_date"]),

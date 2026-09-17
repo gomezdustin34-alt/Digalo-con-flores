@@ -52,12 +52,11 @@ def notify_new_order(order):
     destino = get_setting("order_notification_email") or get_setting("contact_email")
     if destino:
         try:
-            get_email_provider().send(
+            resultado["email"] = get_email_provider().send(
                 destino,
                 f"🌸 Nuevo pedido {order.number} — ${order.total:,.0f}",
                 admin_new_order_email(order, admin_order_url(order)),
-            )
-            resultado["email"] = True
+            ) is not False
         except Exception as e:  # noqa: BLE001 - ningun fallo de correo detiene un pedido
             current_app.logger.warning("No se pudo avisar del pedido %s por correo: %s", order.number, e)
 
