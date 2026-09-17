@@ -28,6 +28,10 @@ a:hover { color: var(--coral); }
 img { max-width: 100%; display: block; }
 
 .container {
+  /* width:100% es imprescindible cuando el contenedor es hijo de un flex (el
+     hero lo es): sin esto se encoge al ancho de su contenido y la columna de
+     la foto se queda en cero, dejando medio inicio vacio. */
+  width: 100%;
   max-width: var(--container);
   margin: 0 auto;
   padding: 0 24px;
