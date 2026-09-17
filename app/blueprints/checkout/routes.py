@@ -46,6 +46,9 @@ def checkout():
             flash("Tu carrito está vacío.", "info")
             return redirect(url_for("cart.view_cart"))
 
+        if current_user.is_authenticated:
+            order_service.completar_perfil(current_user, form)
+
         get_email_provider().send(
             order.customer_email,
             f"Confirmación de tu pedido {order.number}",

@@ -64,6 +64,19 @@ def vincular_pedidos_invitado(user):
     return len(pedidos)
 
 
+def completar_perfil(user, form):
+    """Guarda en la cuenta los datos que le faltaban, para no volver a pedirlos.
+
+    Solo rellena lo que está vacío en el perfil. Si el cliente cambió algo
+    únicamente para este pedido (otro teléfono, por ejemplo), su perfil no se
+    toca: eso se edita en "Mi perfil".
+    """
+    telefono = (form.phone.data or "").strip()
+    if telefono and not (user.phone or "").strip():
+        user.phone = telefono[:30]
+        db.session.commit()
+
+
 def create_order_from_cart(form):
     cart = cart_service.get_cart()
     if not cart["lines"]:

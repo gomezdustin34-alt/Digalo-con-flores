@@ -56,23 +56,22 @@ class Order(db.Model):
     payments = db.relationship("Payment", backref="order", cascade="all, delete-orphan")
     coupon = db.relationship("Coupon", backref="orders")
 
+    # Los datos de contacto del pedido son los que el cliente escribió al
+    # comprar, aunque tenga cuenta: el formulario llega autocompletado con los
+    # de su perfil, y si cambió algo (otro teléfono para esta entrega, por
+    # ejemplo) es eso lo que vale. Antes se tomaban siempre los de la cuenta y
+    # el cambio se perdía. La cuenta queda solo como respaldo si faltara algo.
     @property
     def customer_name(self):
-        if self.user:
-            return self.user.full_name
-        return self.guest_name
+        return self.guest_name or (self.user.full_name if self.user else None)
 
     @property
     def customer_email(self):
-        if self.user:
-            return self.user.email
-        return self.guest_email
+        return self.guest_email or (self.user.email if self.user else None)
 
     @property
     def customer_phone(self):
-        if self.user and self.user.phone:
-            return self.user.phone
-        return self.guest_phone
+        return self.guest_phone or (self.user.phone if self.user else None)
 
     @property
     def latest_payment(self):
